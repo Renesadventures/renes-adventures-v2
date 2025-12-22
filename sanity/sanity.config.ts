@@ -7,8 +7,8 @@ export default defineConfig({
   name: 'renes-adventures-v2',
   title: "Rene's Adventures",
   
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  projectId: 't58ax63x',
+  dataset: 'production',
   
   basePath: '/studio',
   
