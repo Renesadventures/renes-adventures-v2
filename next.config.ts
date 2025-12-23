@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Disable Turbopack due to Windows symlink permission issues
+  experimental: {
+    turbo: false,
+  },
 };
 
 export default nextConfig;
