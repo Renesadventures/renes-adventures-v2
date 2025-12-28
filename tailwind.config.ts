@@ -10,6 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         // Belize-inspired color palette
+        'belize-turquoise': '#00A9E0',
+        'sunset-orange': '#FF6B35',
+        'ocean-blue': '#1E3A8A',
+        'jungle': '#10B981',
         belize: {
           50: '#e6f7ff',
           100: '#bae7ff',
@@ -72,9 +76,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Playfair Display', 'serif'],
         mono: ['var(--font-geist-mono)', 'monospace'],
-        display: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-playfair)', 'Playfair Display', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
