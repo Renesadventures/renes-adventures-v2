@@ -139,7 +139,7 @@ export default function HeroSection() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href={currentChannel.tourLink}
-                  className="px-8 py-4 bg-amber-500 text-gray-900 rounded-full font-bold hover:bg-amber-400 transition shadow-xl hover:shadow-2xl hover:scale-105 transform"
+                  className="px-8 py-4 bg-tropical-coral text-white rounded-full font-bold hover:bg-tropical-orange transition shadow-xl hover:shadow-2xl hover:scale-105 transform"
                 >
                   Book This Adventure
                 </a>
@@ -147,7 +147,7 @@ export default function HeroSection() {
                   onClick={() => {
                     window.dispatchEvent(new CustomEvent('lia:open'));
                   }}
-                  className="px-8 py-4 bg-white/20 text-white rounded-full font-bold hover:bg-white/30 transition backdrop-blur-md border border-white/30"
+                  className="px-8 py-4 bg-transparent text-white rounded-full font-bold transition backdrop-blur-md border border-tropical-turquoise hover:bg-tropical-turquoise/20"
                 >
                   Ask Lia About This Tour
                 </button>
@@ -161,8 +161,8 @@ export default function HeroSection() {
                       onClick={() => setCurrentChannel(channel)}
                       className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                         currentChannel.id === channel.id
-                          ? 'bg-white text-gray-900 shadow-lg'
-                          : 'bg-white/20 text-white hover:bg-white/30'
+                          ? 'bg-tropical-coral text-white shadow-lg'
+                          : 'bg-tropical-turquoise/30 text-white hover:bg-tropical-turquoise/45'
                       }`}
                     >
                       {channel.name}

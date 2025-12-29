@@ -17,7 +17,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
     >
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-belize-turquoise flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-tropical-turquoise flex items-center justify-center flex-shrink-0">
           <span className="text-white text-sm">👋</span>
         </div>
       )}
@@ -25,18 +25,18 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
           isUser
-            ? 'bg-gradient-to-br from-teal-500 to-blue-600 text-white shadow-lg'
-            : 'bg-white text-gray-900 border border-gray-200 shadow-sm'
+            ? 'bg-gradient-to-br from-tropical-coral to-tropical-orange text-white shadow-lg'
+            : 'bg-gradient-to-r from-cyan-600 to-teal-600 text-white border border-white/20 shadow-lg shadow-cyan-500/15'
         }`}
       >
         {!isUser && (
           <div className="flex items-center gap-2 mb-2">
             <span className="text-lg">👋</span>
-            <span className="font-semibold text-gray-900">Lia</span>
+            <span className="font-semibold text-white/90">Lia</span>
           </div>
         )}
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-        <p className={`text-xs mt-1 ${isUser ? 'text-white/70' : 'text-gray-500'}`}>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
+        <p className={`text-xs mt-1 ${isUser ? 'text-white/70' : 'text-white/70'}`}>
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>

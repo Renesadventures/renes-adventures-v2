@@ -3,136 +3,133 @@ export interface Tour {
   title: string;
   slug: string;
   description: string;
-  shortDescription: string;
-  duration: string;
   price: number;
+  duration: string;
   maxGuests: number;
-  includes: string[];
-  category: 'fishing' | 'snorkeling' | 'cruise' | 'adventure';
+  includedGuests: number;
+  additionalGuestPrice: number;
   imageUrl: string;
-  featured: boolean;
+  features: string[];
+  priceWithout?: number;
+  priceFullDay?: number;
 }
 
 export const tours: Tour[] = [
   {
-    id: '1',
-    title: 'Deep Sea Fishing - Half Day',
-    slug: 'deep-sea-fishing-half-day',
-    description:
-      'Target mahi-mahi, wahoo, and tuna 12+ miles offshore. Includes all tackle, bait, and fishing licenses.',
-    shortDescription: 'Half-day deep sea fishing adventure',
-    duration: '5 hours',
-    price: 600,
-    maxGuests: 4,
-    includes: ['All fishing gear', 'Bait & tackle', 'Fishing licenses', 'Water & sodas', 'Snacks'],
-    category: 'fishing',
-    imageUrl: '/images/tours/deep-sea-fishing.jpg',
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Reef Fishing + Snorkeling',
-    slug: 'reef-fishing-snorkeling',
-    description: 'Catch snapper and grouper, then snorkel Hol Chan Marine Reserve. Perfect for families.',
-    shortDescription: 'Fish the reef and snorkel crystal waters',
-    duration: '4 hours',
-    price: 450,
-    maxGuests: 6,
-    includes: ['Fishing gear', 'Snorkel equipment', 'Marine park fees', 'Water & sodas', 'Snacks'],
-    category: 'fishing',
-    imageUrl: '/images/tours/reef-fishing.jpg',
-    featured: true,
-  },
-  {
-    id: '3',
-    title: 'Hol Chan Snorkel + Beach BBQ',
-    slug: 'hol-chan-snorkel-beach-bbq',
-    description: 'Swim with sea turtles and rays, then enjoy fresh-caught BBQ on a private beach.',
-    shortDescription: 'Snorkel paradise + beach feast',
-    duration: '6 hours',
+    id: "custom-adventure-bbq",
+    title: "Rene's Custom Adventure with Beach BBQ",
+    slug: "custom-adventure-bbq",
+    description: "The ultimate Belize experience: Speargun or rod fishing, snorkel the Belize Barrier Reef, Hol Chan Marine Reserve with sharks & rays, Caye Caulker with famous high dive, feed tarpon, spot seahorses, and enjoy authentic Mayan-style Beach BBQ with lobster or conch ceviche (seasonal).",
     price: 675,
-    maxGuests: 6,
-    includes: ['Snorkel gear', 'Marine park fees', 'Beach BBQ lunch', 'Rum punch', 'Water & sodas'],
-    category: 'snorkeling',
-    imageUrl: '/images/tours/beach-bbq.jpg',
-    featured: true,
+    priceWithout: 600,
+    duration: "Full Day",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/3A6pymWQ",
+    features: [
+      "Speargun or rod and reel fishing",
+      "Snorkel the Belize Barrier Reef",
+      "Hol Chan Marine Reserve (sharks & rays)",
+      "Caye Caulker & famous high dive",
+      "Feed tarpon & spot seahorses",
+      "Authentic Mayan-style Beach BBQ",
+      "Lobster or conch ceviche (seasonal)"
+    ]
   },
   {
-    id: '4',
-    title: 'Sunset Cruise',
-    slug: 'sunset-cruise',
-    description: 'Romantic sunset cruise with champagne and appetizers. Perfect for couples and proposals.',
-    shortDescription: 'Golden hour magic on the water',
-    duration: '2.5 hours',
-    price: 350,
-    maxGuests: 4,
-    includes: ['Champagne or wine', 'Appetizers', 'Soft drinks', 'Romantic ambiance'],
-    category: 'cruise',
-    imageUrl: '/images/tours/sunset-cruise.jpg',
-    featured: false,
-  },
-  {
-    id: '5',
-    title: 'Full Day Ultimate Adventure',
-    slug: 'full-day-adventure',
-    description: 'Fish, snorkel, beach BBQ, and Secret Beach visit. Our most popular tour!',
-    shortDescription: 'Everything in one epic day',
-    duration: '8 hours',
-    price: 950,
-    maxGuests: 6,
-    includes: ['All fishing & snorkel gear', 'Beach BBQ', 'Rum punch', 'Marine park fees', 'GoPro rental'],
-    category: 'adventure',
-    imageUrl: '/images/tours/full-day-adventure.jpg',
-    featured: true,
-  },
-  {
-    id: '6',
-    title: 'Secret Beach Half Day',
-    slug: 'secret-beach-half-day',
-    description:
-      'Visit the famous Secret Beach on the north side of Ambergris Caye. Swim, relax, and explore.',
-    shortDescription: 'Pristine beach paradise',
-    duration: '4 hours',
-    price: 400,
-    maxGuests: 6,
-    includes: ['Beach chairs', 'Cooler with drinks', 'Snacks', 'Beach games'],
-    category: 'adventure',
-    imageUrl: '/images/tours/secret-beach.jpg',
-    featured: false,
-  },
-  {
-    id: '7',
-    title: 'Tarpon Feeding + Snorkel',
-    slug: 'tarpon-feeding-snorkel',
-    description: 'Hand-feed massive tarpon and snorkel with stingrays. Unforgettable wildlife encounter!',
-    shortDescription: 'Feed giant tarpon up close',
-    duration: '3 hours',
-    price: 375,
-    maxGuests: 6,
-    includes: ['Snorkel gear', 'Tarpon feeding', 'Marine park fees', 'Water & sodas'],
-    category: 'snorkeling',
-    imageUrl: '/images/tours/tarpon-feeding.jpg',
-    featured: false,
-  },
-  {
-    id: '8',
-    title: 'Private Charter - Custom',
-    slug: 'private-charter-custom',
-    description:
-      'Create your own adventure! Mix fishing, snorkeling, beach time, and anything else you want.',
-    shortDescription: 'Your tour, your way',
-    duration: 'Flexible',
+    id: "deep-sea-fishing",
+    title: "Deep Sea Fishing",
+    slug: "deep-sea-fishing",
+    description: "Target big game fish species with experienced crew and all equipment. Bait and licenses included, fresh catch cleaned and filleted. Available as half-day or full-day charter.",
     price: 600,
-    maxGuests: 6,
-    includes: ['Fully customizable', 'All gear provided', 'Captain & crew', 'Water & sodas'],
-    category: 'adventure',
-    imageUrl: '/images/tours/private-charter.jpg',
-    featured: true,
+    priceFullDay: 900,
+    duration: "Half Day (4 hours) or Full Day (8 hours)",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/TEy7Rea5",
+    features: [
+      "Experienced crew with all equipment",
+      "Target big game fish species",
+      "Bait and licenses included",
+      "Fresh catch cleaned and filleted"
+    ]
   },
+  {
+    id: "sunset-cruise",
+    title: "Sunset Cruise",
+    slug: "sunset-cruise",
+    description: "Perfect for couples and friends. Departure between 6-7 PM with champagne, wine, or beverages available. Optional waterfront stop to watch the Caribbean sunset.",
+    price: 350,
+    duration: "2.5 Hours",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/vmG7KFcd",
+    features: [
+      "Departure between 6-7 PM",
+      "Perfect for couples and friends",
+      "Champagne, wine, or beverages available",
+      "Optional waterfront stop"
+    ]
+  },
+  {
+    id: "blue-hole-adventure",
+    title: "Blue Hole Adventure",
+    slug: "blue-hole-adventure",
+    description: "Visit the iconic Blue Hole, snorkel this world-class dive site, and explore surrounding reefs. Full-day adventure to one of Belize's most famous landmarks.",
+    price: 900,
+    duration: "Full Day",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/Evtwel7K",
+    features: [
+      "Visit the iconic Blue Hole",
+      "Snorkel world-class dive site",
+      "Explore surrounding reefs",
+      "Full-day adventure"
+    ]
+  },
+  {
+    id: "secret-beach",
+    title: "Secret Beach",
+    slug: "secret-beach",
+    description: "Visit the famous Secret Beach with crystal-clear turquoise waters. Beach bars and restaurants nearby, perfect for relaxation. Available as half-day or full-day trip.",
+    price: 400,
+    priceFullDay: 600,
+    duration: "Half Day or Full Day",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/Gx3f4FmG",
+    features: [
+      "Visit the famous Secret Beach",
+      "Crystal-clear turquoise waters",
+      "Beach bars and restaurants nearby",
+      "Perfect for relaxation"
+    ]
+  },
+  {
+    id: "reef-fishing",
+    title: "Reef Fishing",
+    slug: "reef-fishing",
+    description: "Target snapper, grouper, and barracuda near Belize's stunning coral reefs. Perfect for families and first-timers with experienced local guides.",
+    price: 550,
+    duration: "6 Hours",
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: "https://www.genspark.ai/api/files/s/NErvl51H",
+    features: [
+      "Target reef fish species",
+      "Snapper, grouper, barracuda",
+      "Near stunning coral reefs",
+      "Perfect for families"
+    ]
+  }
 ];
 
-// Helper functions
-export const getFeaturedTours = () => tours.filter((tour) => tour.featured);
+export const getFeaturedTours = () => tours.slice(0, 3);
 export const getTourBySlug = (slug: string) => tours.find((tour) => tour.slug === slug);
-export const getToursByCategory = (category: Tour['category']) =>
-  tours.filter((tour) => tour.category === category);

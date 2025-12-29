@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
 
     const tourContext = `Available Tours:
 ${tours
-  .map((t) => `- ${t.title} ($${t.price}, ${t.duration}) - ${t.shortDescription}`)
+  .map((t) => `- ${t.title} ($${t.price}, ${t.duration}) - ${t.description}`)
   .join('\n')}
 
 Featured Tours: ${getFeaturedTours()

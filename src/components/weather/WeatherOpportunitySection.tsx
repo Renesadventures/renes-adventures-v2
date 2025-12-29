@@ -84,7 +84,7 @@ export function WeatherOpportunitySection() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gradient-to-b from-slate-950 to-slate-900">
+      <section className="py-20 bg-gradient-to-br from-slate-950 via-indigo-950/40 to-slate-950">
         <div className="container mx-auto px-4">
           <div className="text-center text-white/60">Loading conditions...</div>
         </div>
@@ -94,7 +94,7 @@ export function WeatherOpportunitySection() {
 
   if (forecast.length === 0) {
     return (
-      <section className="py-20 bg-gradient-to-b from-slate-950 to-slate-900">
+      <section className="py-20 bg-gradient-to-br from-slate-950 via-indigo-950/40 to-slate-950">
         <div className="container mx-auto px-4">
           <div className="text-center text-white/60">Conditions unavailable right now.</div>
         </div>
@@ -103,13 +103,24 @@ export function WeatherOpportunitySection() {
   }
 
   return (
-    <section className="py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-black relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03]">
+    <section className="py-24 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+      <div className="absolute inset-0 bg-tropical-aurora opacity-100" />
+      <div className="absolute inset-0 opacity-[0.10]">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px), repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px)',
+              'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.10) 35px, rgba(255,255,255,0.10) 70px), repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,0.08) 35px, rgba(255,255,255,0.08) 70px)',
+          }}
+        />
+      </div>
+
+      <div className="absolute inset-0 opacity-[0.35]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 15% 25%, rgba(79, 70, 229, 0.35) 0%, transparent 45%), radial-gradient(circle at 85% 20%, rgba(255, 107, 53, 0.30) 0%, transparent 42%), radial-gradient(circle at 70% 80%, rgba(46, 204, 113, 0.26) 0%, transparent 50%), radial-gradient(circle at 25% 85%, rgba(139, 92, 246, 0.25) 0%, transparent 55%)',
           }}
         />
       </div>
@@ -122,15 +133,15 @@ export function WeatherOpportunitySection() {
           className="text-center mb-16"
         >
           <div className="inline-block mb-4">
-            <span className="text-amber-400 text-sm uppercase tracking-[0.3em] font-light">
+            <span className="text-tropical-coral text-sm uppercase tracking-[0.3em] font-light">
               The Rene&apos;s Advantage
             </span>
           </div>
           <h2 className="text-5xl md:text-6xl font-light text-white mb-6 tracking-tight">
             Conditions-Based
-            <span className="block font-serif italic text-amber-400">Intelligence</span>
+            <span className="block font-serif italic text-tropical-coral">Intelligence</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
+          <p className="text-white/70 text-lg max-w-2xl mx-auto font-light">
             We don&apos;t just check the weather—we decode it. Each day reveals unique opportunities that only local
             expertise can unlock.
           </p>
@@ -148,11 +159,13 @@ export function WeatherOpportunitySection() {
               key={day.date}
               onClick={() => setSelectedDay(i)}
               className={`
-                group relative px-8 py-6 rounded-2xl border transition-all duration-300
+                group relative px-8 py-6 rounded-2xl border transition-all duration-300 backdrop-blur-sm
                 ${
                   selectedDay === i
-                    ? 'bg-white/10 border-amber-400 shadow-xl shadow-amber-400/20'
-                    : 'bg-white/5 border-slate-700 hover:border-slate-600 hover:bg-white/[0.07]'
+                    ? 'bg-gradient-to-br from-tropical-coral via-tropical-orange to-tropical-pink text-white border-white/40 shadow-xl shadow-orange-500/30'
+                    : i === 0
+                      ? 'bg-white/10 text-white border-belize-400/40 hover:border-belize-300 shadow-lg shadow-belize-500/15'
+                      : 'bg-white/10 text-white border-white/15 hover:border-tropical-turquoise/50 shadow-lg shadow-tropical-turquoise/10'
                 }
               `}
             >
@@ -161,8 +174,10 @@ export function WeatherOpportunitySection() {
                 text-sm uppercase tracking-wider mb-2 font-medium transition-colors
                 ${
                   selectedDay === i
-                    ? 'text-amber-400'
-                    : 'text-slate-500 group-hover:text-slate-400'
+                    ? 'text-white'
+                    : i === 0
+                      ? 'text-white/85 group-hover:text-white'
+                      : 'text-white/75 group-hover:text-white'
                 }
               `}
               >
@@ -172,7 +187,7 @@ export function WeatherOpportunitySection() {
               <div
                 className={`
                 text-3xl font-light transition-colors
-                ${selectedDay === i ? 'text-white' : 'text-slate-300 group-hover:text-white'}
+                ${selectedDay === i ? 'text-white' : 'text-white'}
               `}
               >
                 {day.temp}°
@@ -181,7 +196,7 @@ export function WeatherOpportunitySection() {
               <div
                 className={`
                 text-xs mt-2 transition-colors
-                ${selectedDay === i ? 'text-slate-300' : 'text-slate-600 group-hover:text-slate-500'}
+                ${selectedDay === i ? 'text-white/85' : i === 0 ? 'text-white/75' : 'text-white/70'}
               `}
               >
                 {day.wind} • {day.waveHeight}
@@ -190,7 +205,7 @@ export function WeatherOpportunitySection() {
               {selectedDay === i && (
                 <motion.div
                   layoutId="activeDay"
-                  className="absolute inset-0 border-2 border-amber-400 rounded-2xl"
+                  className="absolute inset-0 border-2 border-white/60 rounded-2xl"
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
               )}
@@ -206,18 +221,20 @@ export function WeatherOpportunitySection() {
             transition={{ duration: 0.5 }}
             className="max-w-5xl mx-auto"
           >
-            <div className="relative bg-gradient-to-br from-slate-900 to-slate-950 rounded-3xl border border-slate-800 p-10 md:p-12 shadow-2xl overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400/5 rounded-full blur-3xl" />
+            <div className="relative bg-white/10 backdrop-blur-md rounded-3xl border border-white/15 p-10 md:p-12 shadow-2xl overflow-hidden">
+              <div className="absolute -top-24 -right-24 w-[520px] h-[520px] bg-tropical-pink/25 rounded-full blur-3xl" />
+              <div className="absolute -bottom-28 -left-28 w-[560px] h-[560px] bg-tropical-turquoise/25 rounded-full blur-3xl" />
+              <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[480px] h-[480px] bg-tropical-green/20 rounded-full blur-3xl" />
 
               <div className="relative z-10">
                 {recommendation.urgency === 'high' && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-amber-400/10 border border-amber-400/30 rounded-full"
+                    className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-tropical-coral/10 border border-tropical-coral/30 rounded-full"
                   >
-                    <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-                    <span className="text-amber-400 text-sm font-medium tracking-wide">HIGH OPPORTUNITY</span>
+                    <span className="w-2 h-2 bg-tropical-coral rounded-full animate-pulse" />
+                    <span className="text-tropical-coral text-sm font-medium tracking-wide">HIGH OPPORTUNITY</span>
                   </motion.div>
                 )}
 
@@ -225,14 +242,14 @@ export function WeatherOpportunitySection() {
                   {recommendation.title}
                 </h3>
 
-                <p className="text-amber-400 text-xl font-light mb-8 italic">{recommendation.subtitle}</p>
+                <p className="text-tropical-coral text-xl font-light mb-8 italic">{recommendation.subtitle}</p>
 
-                <p className="text-slate-300 text-lg leading-relaxed mb-8 font-light max-w-3xl">
+                <p className="text-white/80 text-lg leading-relaxed mb-8 font-light max-w-3xl">
                   {recommendation.description}
                 </p>
 
-                <div className="flex items-center gap-3 mb-10 p-4 bg-white/5 border border-slate-800 rounded-xl">
-                  <p className="text-slate-400 text-sm font-medium">{recommendation.exclusiveNote}</p>
+                <div className="flex items-center gap-3 mb-10 p-4 bg-white/5 border border-white/10 rounded-xl">
+                  <p className="text-white/70 text-sm font-medium">{recommendation.exclusiveNote}</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -240,7 +257,7 @@ export function WeatherOpportunitySection() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-10 py-5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-semibold rounded-xl shadow-xl shadow-amber-400/20 hover:shadow-amber-400/40 transition-all duration-300 text-lg tracking-wide"
+                      className="px-10 py-5 bg-gradient-to-r from-tropical-coral to-tropical-pink text-white font-bold rounded-xl border border-white/25 shadow-xl shadow-orange-500/25 hover:shadow-pink-500/25 transition-all duration-300 text-lg tracking-wide"
                     >
                       {recommendation.cta}
                     </motion.button>
@@ -250,7 +267,7 @@ export function WeatherOpportunitySection() {
                     onClick={() => {
                       window.dispatchEvent(new CustomEvent('lia:open'));
                     }}
-                    className="px-10 py-5 bg-white/5 border border-slate-700 text-white font-medium rounded-xl hover:bg-white/10 hover:border-slate-600 transition-all duration-300 text-lg"
+                    className="px-10 py-5 bg-white/10 text-white font-semibold rounded-xl border border-tropical-turquoise/40 hover:border-tropical-turquoise/70 hover:bg-white/15 transition-all duration-300 text-lg"
                   >
                     Ask Lia for Details
                   </button>
@@ -267,7 +284,7 @@ export function WeatherOpportunitySection() {
           transition={{ delay: 0.4 }}
           className="text-center mt-16"
         >
-          <p className="text-slate-600 text-sm uppercase tracking-[0.3em] font-light">
+          <p className="text-white/50 text-sm uppercase tracking-[0.3em] font-light">
             Exclusive • Intelligent • Uncompromising
           </p>
         </motion.div>

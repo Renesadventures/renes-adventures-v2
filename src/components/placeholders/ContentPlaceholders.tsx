@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import TourCards from '@/components/tours/TourCards';
 
 export function BoatGalleryPlaceholder() {
   return (
@@ -53,45 +54,5 @@ export function BoatGalleryPlaceholder() {
 }
 
 export function TourShowcasePlaceholder() {
-  return (
-    <section id="tours" className="py-24 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <span className="text-amber-600 text-sm uppercase tracking-widest font-semibold">In Development</span>
-          <h2 className="text-4xl font-bold text-slate-900 mt-4 mb-4">Tour Landing Pages</h2>
-          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-            Each tour will have a dedicated page with POV videos, itinerary details, pricing, testimonials, and instant
-            booking.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {[
-            { name: 'Deep Sea Fishing', icon: '🎣', price: '$600' },
-            { name: 'Hol Chan Snorkel', icon: '🤿', price: '$675' },
-            { name: 'Sunset Cruise', icon: '🌅', price: '$350' },
-            { name: 'Full Day Ultimate', icon: '⚡', price: '$950' },
-          ].map((tour, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-slate-50 rounded-xl p-6 border border-slate-200 hover:border-amber-400 hover:shadow-xl transition-all group"
-            >
-              <div className="mb-5">
-                <div className="w-12 h-1 bg-gradient-to-r from-amber-400 to-transparent" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">{tour.name}</h3>
-              <p className="text-amber-600 font-semibold text-lg mb-4">From {tour.price}</p>
-              <div className="w-full py-3 bg-slate-200 text-slate-500 rounded-lg text-center text-sm font-medium">
-                Landing Page In Progress
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <TourCards />;
 }

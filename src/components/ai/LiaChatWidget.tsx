@@ -83,16 +83,12 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 bg-belize-turquoise hover:bg-belize-turquoise/90 text-white rounded-full px-6 py-4 shadow-2xl flex items-center gap-3 transition-all hover:scale-105"
+          className="fixed bottom-4 right-4 z-50 w-14 h-14 bg-tropical-coral hover:bg-tropical-orange text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
         >
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-            <span className="text-2xl">👋</span>
-          </div>
-          <div className="text-left">
-            <p className="font-semibold">Chat with Lia</p>
-            <p className="text-xs opacity-90">Your adventure guide</p>
-          </div>
-          <div className="animate-pulse w-2 h-2 bg-white rounded-full" />
+          <span className="text-xl" aria-hidden>
+            👋
+          </span>
+          <span className="sr-only">Chat with Lia</span>
         </motion.button>
       )}
 
@@ -103,21 +99,21 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-0 right-0 z-50 w-full sm:w-96 h-[500px] sm:bottom-24 sm:right-6 bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-20 right-4 z-50 w-full max-w-sm h-96 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200"
           >
-            <div className="bg-gradient-to-r from-teal-500 to-blue-600 p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">🌴</span>
+            <div className="relative bg-gradient-to-r from-tropical-coral to-tropical-turquoise p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🌴</span>
                 <div>
-                  <h3 className="text-white font-bold text-lg">Chat with Lia</h3>
+                  <h3 className="text-white font-semibold text-base">Chat with Lia</h3>
                   <p className="text-white/80 text-xs">Your adventure guide</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative z-10">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl transition-all"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-lg transition-all"
                   aria-label="Minimize chat"
                 >
                   −
@@ -128,7 +124,7 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
                     setIsOpen(false);
                     clearMessages();
                   }}
-                  className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl transition-all"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-lg transition-all"
                   aria-label="Close chat"
                 >
                   ×
@@ -139,7 +135,7 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
             {messages.length > 3 && (
               <button
                 onClick={scrollToTop}
-                className="absolute top-20 right-4 bg-black/10 hover:bg-black/20 text-gray-900 rounded-full w-9 h-9 flex items-center justify-center transition"
+                className="absolute top-16 right-3 bg-gray-900/10 hover:bg-gray-900/20 text-gray-700 rounded-full w-8 h-8 flex items-center justify-center transition text-sm"
                 aria-label="Scroll to top"
               >
                 ↑
@@ -147,7 +143,7 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
             )}
 
             {/* Messages */}
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 space-y-4 text-sm leading-relaxed bg-white">
               {messages.length === 0 && (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-4">👋</div>
@@ -164,7 +160,7 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
                       <button
                         key={action}
                         onClick={() => handleQuickAction(action)}
-                        className="block w-full text-left px-4 py-2 bg-white rounded-lg hover:bg-gray-100 transition-colors text-sm text-gray-700"
+                        className="block w-full text-left px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-sm text-gray-700 border border-gray-200"
                       >
                         {action}
                       </button>
@@ -179,10 +175,10 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
 
               {isLoading && (
                 <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 rounded-full bg-belize-turquoise flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-tropical-turquoise flex items-center justify-center">
                     <span className="text-white text-sm">👋</span>
                   </div>
-                  <div className="bg-gray-100 rounded-lg px-4 py-2">
+                  <div className="bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
                     <div className="flex gap-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
@@ -196,7 +192,7 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t">
+            <div className="p-3 bg-white border-t border-gray-200">
               <div className="flex gap-2">
                 <input
                   ref={inputRef}
@@ -205,15 +201,15 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask me anything..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-belize-turquoise"
+                  className="flex-1 px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-tropical-turquoise placeholder:text-gray-400 text-sm"
                   disabled={isLoading}
                 />
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
-                  className="bg-belize-turquoise hover:bg-belize-turquoise/90 text-white rounded-lg px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="bg-tropical-coral hover:bg-tropical-orange text-white rounded-lg w-8 h-8 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                 </button>
               </div>
             </div>
