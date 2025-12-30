@@ -35,18 +35,59 @@ export default function TourCards() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-2 border-gray-100 hover:border-orange-500 overflow-hidden"
+              style={{
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+                border: '2px solid #f3f4f6',
+                transition: 'all 0.3s'
+              }}
+              className="transform hover:scale-[1.02] hover:shadow-2xl hover:border-orange-500"
             >
               {/* Image Section */}
-              <div className="relative aspect-video overflow-hidden">
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  width: '100%',
+                  height: '250px',
+                  position: 'relative',
+                  borderTopLeftRadius: '16px',
+                  borderTopRightRadius: '16px'
+                }}
+              >
                 <img
                   src={tour.imageUrl}
                   alt={getAltText(tour.title)}
-                  className="w-full h-full object-cover"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
                   loading="lazy"
                 />
-                <div className="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  🕐 {tour.duration}
+
+                {/* Duration Badge with inline styles */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '16px',
+                    right: '16px',
+                    backgroundColor: '#FF6B35',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <span>🕐</span>
+                  <span>{tour.duration}</span>
                 </div>
               </div>
 
@@ -90,6 +131,7 @@ export default function TourCards() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link
                     href={`/tours/${tour.slug}`}
+                    prefetch={false}
                     className="flex-1 text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
                   >
                     Book This Adventure
