@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { tours } from '@/data/tours';
 
 function formatMoney(amount: number) {
@@ -29,12 +28,8 @@ export default function TourCards() {
         {/* Tour Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {tours.map((tour, i) => (
-            <motion.article
+            <article
               key={tour.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
               style={{
                 backgroundColor: 'white',
                 borderRadius: '16px',
@@ -152,7 +147,7 @@ export default function TourCards() {
                   </button>
                 </div>
               </div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </div>
