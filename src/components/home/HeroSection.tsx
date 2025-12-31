@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 const CHANNELS = [
@@ -8,7 +8,7 @@ const CHANNELS = [
     id: 'deep-sea-fishing',
     title: 'Deep Sea Fishing',
     tagline: 'Big game fishing beyond the reef—where the ocean turns electric.',
-    videoUrl: '/videos/hero/deep-sea-fishing.mp4',
+    videoUrl: '/Videos/hero/deep-sea-fishing.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/deep-sea-fishing'
   },
@@ -16,7 +16,7 @@ const CHANNELS = [
     id: 'reef-fishing',
     title: 'Reef Fishing',
     tagline: 'Cast your line in paradise—snappers, groupers, and pure Caribbean bliss.',
-    videoUrl: '/videos/hero/reef-fishing.mp4',
+    videoUrl: '/Videos/hero/reef-fishing.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/reef-fishing'
   },
@@ -24,7 +24,7 @@ const CHANNELS = [
     id: 'sunset-cruise',
     title: 'Sunset Cruise',
     tagline: 'Watch the sky ignite as the Caribbean melts into gold.',
-    videoUrl: '/videos/hero/sunset-cruise.mp4',
+    videoUrl: '/Videos/hero/sunset-cruise.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/sunset-cruise'
   },
@@ -32,7 +32,7 @@ const CHANNELS = [
     id: 'blue-hole',
     title: 'Blue Hole Adventure',
     tagline: 'Dive into the icon—snorkel the Great Blue Hole and surrounding reefs.',
-    videoUrl: '/videos/hero/blue-hole.mp4',
+    videoUrl: '/Videos/hero/blue-hole.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/blue-hole-adventure'
   },
@@ -40,7 +40,7 @@ const CHANNELS = [
     id: 'beach-bbq',
     title: 'Secret Beach',
     tagline: "The island's most vibrant beach party destination.",
-    videoUrl: '/videos/hero/beach-bbq.mp4',
+    videoUrl: '/Videos/hero/beach-bbq.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/secret-beach'
   },
@@ -48,7 +48,7 @@ const CHANNELS = [
     id: 'full-day',
     title: "Rene's Custom Adventure",
     tagline: 'The ultimate Belize experience—fish, snorkel, explore, and feast.',
-    videoUrl: '/videos/hero/full-day-ultimate.mp4',
+    videoUrl: '/Videos/hero/full-day-ultimate.mp4',
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/custom-adventure-bbq'
   }
@@ -61,6 +61,23 @@ export default function HeroSection() {
 
   const currentChannel = CHANNELS[currentChannelIndex];
 
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+
+    try {
+      el.load();
+      const playPromise = el.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore autoplay blocking
+        });
+      }
+    } catch {
+      // ignore
+    }
+  }, [currentChannel.videoUrl]);
+
   const switchChannel = (index: number) => {
     if (index === currentChannelIndex) return;
 
@@ -69,11 +86,6 @@ export default function HeroSection() {
     setTimeout(() => {
       setCurrentChannelIndex(index);
       setIsChangingChannel(false);
-
-      if (videoRef.current) {
-        videoRef.current.load();
-        videoRef.current.play();
-      }
     }, 300);
   };
 
@@ -82,6 +94,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0">
         <div className={`absolute inset-0 transition-opacity duration-300 ${isChangingChannel ? 'opacity-0' : 'opacity-100'}`}>
           <video
+            key={currentChannel.id}
             ref={videoRef}
             autoPlay
             loop
