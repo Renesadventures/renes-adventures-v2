@@ -26,7 +26,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/3A6pymWQ",
+    imageUrl: "https://www.genspark.ai/api/files/s/kMJrvQRy",
     features: [
       "Speargun or rod and reel fishing",
       "Snorkel the Belize Barrier Reef",
@@ -48,7 +48,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/TEy7Rea5",
+    imageUrl: "https://www.genspark.ai/api/files/s/ExO3ZAOV",
     features: [
       "Experienced crew with all equipment",
       "Target big game fish species",
@@ -66,7 +66,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/vmG7KFcd",
+    imageUrl: "https://www.genspark.ai/api/files/s/mjXmouWv",
     features: [
       "Departure between 6-7 PM",
       "Perfect for couples and friends",
@@ -84,7 +84,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/Evtwel7K",
+    imageUrl: "https://www.genspark.ai/api/files/s/DuY3lCpO",
     features: [
       "Visit the iconic Blue Hole",
       "Snorkel world-class dive site",
@@ -103,7 +103,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/Gx3f4FmG",
+    imageUrl: "https://www.genspark.ai/api/files/s/4mGWV9xf",
     features: [
       "Visit the famous Secret Beach",
       "Crystal-clear turquoise waters",
@@ -121,7 +121,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/NErvl51H",
+    imageUrl: "https://www.genspark.ai/api/files/s/r5b7Uw61",
     features: [
       "Target reef fish species",
       "Snapper, grouper, barracuda",
