@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { tours, getFeaturedTours } from '@/data/tours';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const runtime = 'nodejs';
+
+function getOpenAIClient(apiKey: string) {
+  return new OpenAI({
+    apiKey
+  });
+}
 
 const SYSTEM_PROMPT = `RESPONSE LENGTH RULES:
 - Keep responses under 50 words maximum
@@ -185,8 +189,43 @@ NON-NEGOTIABLE
 - You must always end with either a booking step or a follow-up question that advances the booking.`;
 
 export async function POST(request: NextRequest) {
+  console.log('[Lia Chat] API endpoint hit');
+
   try {
-    const { messages, context } = await request.json();
+    const body = await request.json().catch(() => null);
+    console.log('[Lia Chat] Request body:', JSON.stringify(body, null, 2));
+
+    if (!body || typeof body !== 'object') {
+      console.error('[Lia Chat] Invalid JSON body');
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    console.log('[Lia Chat] API key exists:', !!apiKey);
+
+    if (!apiKey) {
+      console.error('[Lia Chat] OpenAI API key is missing');
+      return NextResponse.json({ error: 'API configuration error' }, { status: 500 });
+    }
+
+    const openai = getOpenAIClient(apiKey);
+
+    const context = (body as any).context;
+
+    // Support both payload shapes:
+    // - { message: string, tourId?: string, context?: any }
+    // - { messages: Array<{role, content}>, context?: any }
+    let messages = (body as any).messages;
+    const incomingMessage = (body as any).message;
+
+    if ((!messages || !Array.isArray(messages)) && typeof incomingMessage === 'string') {
+      messages = [{ role: 'user', content: incomingMessage }];
+    }
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      console.error('[Lia Chat] No messages provided');
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
 
     const tourContext = `Available Tours:
 ${tours
@@ -220,20 +259,29 @@ Featured Tours: ${getFeaturedTours()
       ...messages.slice(-10), // Keep last 10 messages for context
     ];
 
+    console.log('[Lia Chat] Calling OpenAI API...');
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: formattedMessages as any,
       temperature: 0.7,
-      max_tokens: 300,
+      max_tokens: 300
     });
 
-    const message = completion.choices[0]?.message?.content || 'I apologize, but I encountered an error. Please try again.';
+    console.log('[Lia Chat] OpenAI response received');
 
-    return NextResponse.json({ message });
+    const aiMessage =
+      completion.choices[0]?.message?.content ||
+      'I apologize, but I encountered an error. Please try again.';
+
+    return NextResponse.json({ message: aiMessage });
   } catch (error) {
-    console.error('OpenAI API error:', error);
+    console.error('[Lia Chat] Unexpected error:', error);
     return NextResponse.json(
-      { error: 'Failed to get AI response', message: 'I apologize, but I\'m having trouble right now. Please try again in a moment!' },
+      {
+        error: 'Failed to get AI response',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        message: "I apologize, but I'm having trouble right now. Please try again in a moment!"
+      },
       { status: 500 }
     );
   }
