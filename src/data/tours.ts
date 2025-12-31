@@ -26,7 +26,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/kMJrvQRy",
+    imageUrl: "/images/tours/full-day-ultimate.jpg",
     features: [
       "Speargun or rod and reel fishing",
       "Snorkel the Belize Barrier Reef",
@@ -48,7 +48,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/ExO3ZAOV",
+    imageUrl: "/images/tours/deep-sea-fishing.jpg",
     features: [
       "Experienced crew with all equipment",
       "Target big game fish species",
@@ -66,7 +66,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/mjXmouWv",
+    imageUrl: "/images/tours/sunset-cruise.jpg",
     features: [
       "Departure between 6-7 PM",
       "Perfect for couples and friends",
@@ -84,7 +84,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/DuY3lCpO",
+    imageUrl: "/images/tours/hol-chan-snorkel.jpg",
     features: [
       "Visit the iconic Blue Hole",
       "Snorkel world-class dive site",
@@ -103,7 +103,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/4mGWV9xf",
+    imageUrl: "/images/tours/beach-bbq.jpg",
     features: [
       "Visit the famous Secret Beach",
       "Crystal-clear turquoise waters",
@@ -121,7 +121,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "https://www.genspark.ai/api/files/s/r5b7Uw61",
+    imageUrl: "/images/tours/reef-fishing.jpg",
     features: [
       "Target reef fish species",
       "Snapper, grouper, barracuda",
