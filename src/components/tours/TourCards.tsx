@@ -36,7 +36,10 @@ export default function TourCards() {
                 boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                 overflow: 'hidden',
                 border: '2px solid #f3f4f6',
-                transition: 'all 0.3s'
+                transition: 'all 0.3s',
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%'
               }}
               className="transform hover:scale-[1.02] hover:shadow-2xl hover:border-orange-500"
             >
