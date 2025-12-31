@@ -2,6 +2,682 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { tours, getTourBySlug } from '@/data/tours';
 import TourActions from './TourActions';
+import TourMediaCarousel from './TourMediaCarousel';
+import AskLiaLink from './AskLiaLink';
+
+type Difficulty = 'Easy' | 'Moderate' | 'Advanced';
+
+type ItineraryItem = {
+  time: string;
+  title: string;
+  description: string;
+};
+
+type Review = {
+  rating: number;
+  text: string;
+  name?: string;
+  author?: string;
+  location?: string;
+  date?: string;
+};
+
+type TourExtras = {
+  tagline: string;
+  rating: number;
+  reviewCount: number;
+  difficulty: Difficulty;
+  includedHighlights: string[];
+  pickup: string;
+  languages: string[];
+  whyUnforgettable: string;
+  itinerary: ItineraryItem[];
+  included: string[];
+  notIncluded: string[];
+  whatToBring: string[];
+  reviews: Review[];
+  galleryImages: string[];
+};
+
+function formatMoney(amount: number) {
+  return `$${amount.toLocaleString('en-US')}`;
+}
+
+function clampRating(rating: number) {
+  return Math.max(0, Math.min(5, rating));
+}
+
+function renderStars(rating: number) {
+  const full = Math.round(clampRating(rating));
+  return Array.from({ length: 5 }, (_, i) => (i < full ? '★' : '☆')).join('');
+}
+
+const DEFAULT_WHAT_TO_BRING = [
+  'Sunscreen (reef-safe required)',
+  'Sunglasses and hat',
+  'Camera/phone in waterproof case',
+  'Light jacket for morning',
+  'Motion sickness medication (if needed)',
+  'Cash for gratuity'
+];
+
+const DEFAULT_NOT_INCLUDED = [
+  'Gratuity (15-20% recommended)',
+  'Alcoholic beverages',
+  'Personal items',
+  'Travel insurance'
+];
+
+const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
+  'deep-sea-fishing': {
+    tagline: 'Big game fishing beyond the reef—where the ocean turns electric.',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Moderate',
+    includedHighlights: ['Equipment', 'Bait', 'Licenses', 'Guide'],
+    pickup: 'San Pedro Hotels',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "Imagine leaving the calm turquoise shallows behind and watching the water shift to deep, inky blue as the boat cuts across the Caribbean. The horizon feels endless out here—just you, the captain, the hum of the engine, and the possibility of a screaming reel at any moment. This isn’t a ‘cast-and-wait’ kind of day. It’s a full sensory adventure: salt on your skin, the sun rising higher, and the steady anticipation that the next strike could be the one you’ll talk about for years.\n\nYour crew sets the spread, explains the technique, and keeps everything moving—so first-timers feel confident and seasoned anglers feel right at home. When the bite turns on, it’s pure adrenaline: rods bent, lines tight, and everyone on deck locked into the moment. Between action, you’ll have cold drinks, shade breaks, and plenty of chances for photos with the sea as your backdrop.\n\nWhat makes this tour different is the balance—serious fishing with a relaxed, friendly vibe. Whether you land a trophy fish or not, you’ll come back with stories, laughter, and that rare feeling of having done something truly wild and real.",
+    itinerary: [
+      {
+        time: '7:00 AM',
+        title: 'Hotel Pickup',
+        description: 'Your captain meets you at your San Pedro hotel.'
+      },
+      {
+        time: '7:30 AM',
+        title: 'Departure',
+        description: 'Board our 25-foot center-console fishing boat for a quick safety briefing.'
+      },
+      {
+        time: '8:00 AM',
+        title: 'Arrive at Fishing Grounds',
+        description: 'Head 12 miles offshore and start targeting marlin and sailfish.'
+      },
+      {
+        time: '8:00 AM - 3:00 PM',
+        title: 'Fishing Action',
+        description: 'Troll for big game fish, light tackle fishing, refreshments on board.'
+      },
+      {
+        time: '3:30 PM',
+        title: 'Return to Shore',
+        description: 'Catch cleaned and filleted, photo opportunities.'
+      },
+      {
+        time: '4:00 PM',
+        title: 'Hotel Drop-off',
+        description: 'We take you back to your hotel in San Pedro.'
+      }
+    ],
+    included: [
+      'Professional captain and crew',
+      'All fishing equipment and bait',
+      'Fishing licenses',
+      'Refreshments and snacks',
+      'Fish cleaning and filleting',
+      'Hotel pickup/drop-off',
+      'Safety equipment'
+    ],
+    notIncluded: DEFAULT_NOT_INCLUDED,
+    whatToBring: DEFAULT_WHAT_TO_BRING,
+    reviews: [
+      {
+        name: 'Samantha R.',
+        rating: 5,
+        text: "We booked deep sea and it exceeded expectations. Crew was professional, fun, and we were hooked up all day. Absolute must-do in San Pedro."
+      },
+      {
+        name: 'Mike T.',
+        rating: 5,
+        text: 'Felt like a private charter experience—great boat, great gear, and constant action. They took care of everything.'
+      },
+      {
+        name: 'Carlos V.',
+        rating: 5,
+        text: 'Easy pickup, smooth ride out, and we landed fish we never thought we’d see in real life. 10/10.'
+      }
+    ],
+    galleryImages: ['/images/tours/deep-sea-fishing.jpg']
+  },
+  'reef-fishing': {
+    tagline: 'Discover the vibrant world beneath the Caribbean waves',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Easy',
+    includedHighlights: ['Equipment', 'Food', 'Guide'],
+    pickup: 'All San Pedro hotels',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "Cast your line into crystal-clear turquoise waters where the Caribbean Sea meets the second-largest barrier reef in the world. Reef fishing with Rene's Adventures isn't just about catching fish—it's about experiencing Belize's underwater paradise while targeting snapper, grouper, and barracuda in their natural habitat.\n\nOur expert captains know every secret spot along the reef, where the fish are most active and the scenery is breathtaking. Watch schools of tropical fish dart between coral formations as you wait for that telltale tug on your line. Perfect for families and first-timers, reef fishing offers non-stop action in calm, protected waters with the stunning Belizean coast as your backdrop.\n\nWhether you're teaching your kids to fish or looking for a more relaxed alternative to deep-sea fishing, this 6-hour adventure delivers authentic Caribbean fishing with guaranteed catches and unforgettable memories.",
+    itinerary: [
+      {
+        time: '8:00 AM',
+        title: 'Hotel Pickup',
+        description: 'Meet your captain at your San Pedro accommodation'
+      },
+      {
+        time: '8:30 AM',
+        title: 'Safety Briefing',
+        description: 'Board the boat, equipment overview, and safety procedures'
+      },
+      {
+        time: '9:00 AM',
+        title: 'First Reef Spot',
+        description: 'Start fishing near vibrant coral formations'
+      },
+      {
+        time: '9:00 AM - 1:30 PM',
+        title: 'Reef Fishing',
+        description: 'Target snapper, grouper, and barracuda with multiple reef stops'
+      },
+      {
+        time: '12:00 PM',
+        title: 'Lunch Break',
+        description: 'Fresh ceviche and refreshments on board'
+      },
+      {
+        time: '2:00 PM',
+        title: 'Return to Shore',
+        description: 'Catch cleaned and filleted, photos with your fish'
+      },
+      {
+        time: '2:30 PM',
+        title: 'Hotel Drop-off',
+        description: 'Return to your accommodation with fresh catch'
+      }
+    ],
+    included: [
+      'Professional captain and first mate',
+      'All fishing rods, reels, and tackle',
+      'Fresh bait and lures',
+      'Fishing licenses for all guests',
+      'Cooler with ice, water, and soft drinks',
+      'Fresh ceviche lunch',
+      'Fish cleaning and filleting service',
+      'Hotel pickup and drop-off in San Pedro',
+      'Life jackets and safety equipment',
+      'Shaded areas on boat'
+    ],
+    notIncluded: [
+      'Gratuity for crew (15-20% recommended)',
+      'Alcoholic beverages (available for purchase)',
+      'Underwater camera rental',
+      'Personal items and souvenirs',
+      'Travel insurance'
+    ],
+    whatToBring: [
+      'Reef-safe sunscreen (mandatory in Belize)',
+      'Polarized sunglasses to see fish underwater',
+      'Wide-brimmed hat and light long-sleeve shirt',
+      'Waterproof phone case for photos',
+      'Light jacket for morning breeze',
+      'Cash for gratuity and optional purchases'
+    ],
+    reviews: [
+      {
+        rating: 5,
+        author: 'Thompson Family',
+        location: 'Ontario, Canada',
+        date: 'November 2024',
+        text: 'Perfect family adventure! Our kids (ages 8 and 11) caught their first fish ever. Captain Rene was incredibly patient and made sure everyone had a turn. The ceviche was amazing!'
+      },
+      {
+        rating: 5,
+        author: 'Michael R.',
+        location: 'Florida, USA',
+        date: 'October 2024',
+        text: 'Caught a 15lb grouper and several snappers. Calm waters, beautiful reef views, and constant action. Way more fun than I expected!'
+      },
+      {
+        rating: 5,
+        author: 'Lisa & James',
+        location: 'UK',
+        date: 'September 2024',
+        text: "We're not experienced fishers but the crew made it so easy. Watching the tropical fish around the boat was worth it alone. Highly recommend!"
+      }
+    ],
+    galleryImages: ['/images/tours/reef-fishing.jpg']
+  },
+  'sunset-cruise': {
+    tagline: 'Romance meets Caribbean paradise',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Easy',
+    includedHighlights: ['Drinks', 'Appetizers', 'Captain', 'Pickup'],
+    pickup: 'All San Pedro hotels',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "There's something magical about watching the sun melt into the Caribbean Sea, painting the sky in brilliant oranges, pinks, and purples. Our Sunset Cruise offers the perfect blend of romance, relaxation, and natural beauty—an experience that will become one of your most cherished Belize memories.\n\nGlide across calm turquoise waters as the golden hour transforms San Pedro's coastline into a photographer's dream. Sip champagne or your favorite beverage while gentle waves lap against the hull, and distant island music drifts across the water. Whether you're celebrating an anniversary, honeymoon, proposal, or simply want to unwind after a day of adventure, this 2.5-hour journey offers pure serenity.\n\nWe'll cruise past iconic landmarks, stop at scenic viewpoints for photos, and give you front-row seats to nature's greatest show. Couples love this intimate experience, but it's equally perfect for small groups of friends or family wanting to experience Belize's legendary sunsets from the best vantage point—the water.",
+    itinerary: [
+      {
+        time: '5:30 PM',
+        title: 'Hotel Pickup',
+        description: 'Pickup from your San Pedro accommodation (flexible timing based on sunset)'
+      },
+      {
+        time: '6:00 PM',
+        title: 'Departure',
+        description: 'Board the boat, welcome drinks, and safety briefing'
+      },
+      {
+        time: '6:15 PM',
+        title: 'Coastal Cruise',
+        description: 'Gentle cruise along San Pedro coastline with photo opportunities'
+      },
+      {
+        time: '6:45 PM',
+        title: 'Sunset Viewing',
+        description: 'Anchor at prime sunset location, enjoy drinks and appetizers'
+      },
+      {
+        time: '7:30 PM',
+        title: 'Evening Cruise',
+        description: 'Leisurely return under early stars with ambient island music'
+      },
+      {
+        time: '8:00 PM',
+        title: 'Return to Shore',
+        description: 'Dockside drop-off and hotel transfer'
+      }
+    ],
+    included: [
+      'Private boat charter',
+      'Professional captain',
+      'Welcome champagne or sparkling wine',
+      'Selection of beverages (beer, wine, soft drinks)',
+      'Light appetizers and fresh fruit',
+      'Bluetooth speaker for your music',
+      'Hotel pickup and drop-off',
+      'Sunset photo assistance',
+      'Cozy blankets for evening breeze'
+    ],
+    notIncluded: [
+      'Gratuity for captain (15-20% recommended)',
+      'Premium spirits (available upon request)',
+      'Dinner (light appetizers provided)',
+      'Professional photographer (can be arranged)'
+    ],
+    whatToBring: [
+      'Camera or phone for sunset photos',
+      'Light jacket or sweater for evening',
+      'Sunglasses for golden hour',
+      'Your favorite music playlist (Bluetooth ready)',
+      'Cash for gratuity'
+    ],
+    reviews: [
+      {
+        rating: 5,
+        author: 'David & Sarah',
+        location: 'California, USA',
+        date: 'December 2024',
+        text: 'I proposed during the sunset and she said yes! Captain Rene had champagne ready and took amazing photos for us. Absolutely perfect evening.'
+      },
+      {
+        rating: 5,
+        author: 'Martinez Family',
+        location: 'Texas, USA',
+        date: 'November 2024',
+        text: 'Celebrated our 25th anniversary with this cruise. Romantic, peaceful, and the sunset was breathtaking. Better than any restaurant!'
+      },
+      {
+        rating: 5,
+        author: 'Emma L.',
+        location: 'Australia',
+        date: 'October 2024',
+        text: 'Solo traveler here—this was the highlight of my trip. Met lovely people, incredible views, and felt so relaxed. Worth every penny!'
+      }
+    ],
+    galleryImages: ['/images/tours/sunset-cruise.jpg']
+  },
+  'blue-hole-adventure': {
+    tagline: 'Dive into a world wonder—bucket list adventure awaits',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Moderate',
+    includedHighlights: ['Snorkel Gear', 'Breakfast', 'BBQ Lunch', 'Permits'],
+    pickup: 'All San Pedro hotels (early morning)',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "The Great Blue Hole isn't just a diving site—it's a UNESCO World Heritage Site and one of the most iconic natural wonders on Earth. This full-day adventure takes you 70 miles offshore to snorkel the legendary Blue Hole and surrounding coral atolls, where Jacques Cousteau once declared it one of the top dive sites in the world.\n\nFrom above, the Blue Hole appears as a perfect dark blue circle in the lighter turquoise sea—a 1,000-foot-wide sinkhole dropping 400 feet into an ancient underwater cave system. While scuba divers explore the depths, snorkelers glide across the surface, peering into the mysterious blue abyss while tropical fish, nurse sharks, and sometimes even dolphins circle below.\n\nBut the adventure doesn't stop there. We visit three stunning locations: the Blue Hole itself, Half Moon Caye (a protected bird sanctuary), and Long Caye for pristine snorkeling among sea turtles and vibrant coral gardens. This is the ultimate Belize bucket-list experience—adventure, natural beauty, and world-class snorkeling combined into one unforgettable day.",
+    itinerary: [
+      { time: '6:00 AM', title: 'Early Hotel Pickup', description: 'Meet at your San Pedro hotel for the journey' },
+      { time: '6:30 AM', title: 'Departure', description: 'Board our fast boat, continental breakfast provided' },
+      {
+        time: '8:30 AM',
+        title: 'Arrive at Blue Hole',
+        description: 'First look at the iconic circular formation from surface'
+      },
+      {
+        time: '8:45 AM - 10:00 AM',
+        title: 'Blue Hole Snorkel',
+        description: 'Snorkel the outer rim, observe the deep blue abyss'
+      },
+      {
+        time: '10:30 AM',
+        title: 'Half Moon Caye',
+        description: 'Explore the island, see red-footed boobies and frigatebirds'
+      },
+      {
+        time: '12:00 PM',
+        title: 'Lunch on the Beach',
+        description: 'Fresh Belizean BBQ lunch on a pristine caye'
+      },
+      {
+        time: '1:00 PM - 2:30 PM',
+        title: 'Long Caye Snorkel',
+        description: 'World-class snorkeling with sea turtles and rays'
+      },
+      {
+        time: '3:00 PM',
+        title: 'Return Journey',
+        description: 'Refreshments and sunset views on the way back'
+      },
+      { time: '5:00 PM', title: 'Arrival & Drop-off', description: 'Return to San Pedro hotels' }
+    ],
+    included: [
+      'Round-trip boat transportation (2.5 hours each way)',
+      'Experienced captain and dive master',
+      'All snorkeling equipment (mask, fins, snorkel)',
+      'Life jackets and safety gear',
+      'Continental breakfast on departure',
+      'Full Belizean BBQ lunch on the beach',
+      'Refreshments throughout the day',
+      'Blue Hole park fees and permits',
+      'Waterproof action camera (GoPro) rental',
+      'Hotel pickup and drop-off',
+      'First aid and emergency equipment'
+    ],
+    notIncluded: [
+      'Gratuity for crew (15-20% recommended)',
+      'Alcoholic beverages',
+      'Wetsuits (available for rent)',
+      'Underwater photos (can be purchased)',
+      'Travel insurance'
+    ],
+    whatToBring: [
+      'Reef-safe sunscreen (strictly enforced)',
+      'Swimsuit and rash guard or wetsuit',
+      'Towel and dry change of clothes',
+      'Underwater camera (or use our GoPro)',
+      'Motion sickness medication (long boat ride)',
+      'Hat, sunglasses, and flip-flops',
+      'Cash for gratuity and optional purchases',
+      'Sense of adventure!'
+    ],
+    reviews: [
+      {
+        rating: 5,
+        author: 'Robert & Jennifer',
+        location: 'New York, USA',
+        date: 'November 2024',
+        text: 'Absolutely incredible! The Blue Hole is even more impressive in person. We saw eagle rays, nurse sharks, and sea turtles. Long day but SO worth it!'
+      },
+      {
+        rating: 5,
+        author: 'Chen Family',
+        location: 'Singapore',
+        date: 'October 2024',
+        text: "Bucket list checked! Our kids won't stop talking about the Blue Hole. The crew was professional, lunch was delicious, and Half Moon Caye was stunning."
+      },
+      {
+        rating: 5,
+        author: 'Marcus T.',
+        location: 'UK',
+        date: 'September 2024',
+        text: 'Best snorkeling of my life. Crystal-clear water, incredible marine life, and the Blue Hole is surreal. The boat ride is long but the experience is unforgettable.'
+      }
+    ],
+    galleryImages: ['/images/tours/hol-chan-snorkel.jpg']
+  },
+  'secret-beach': {
+    tagline: "Escape to paradise—Belize's hidden gem awaits",
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Easy',
+    includedHighlights: ['Transport', 'Chairs', 'Snorkel Gear', 'Guide'],
+    pickup: 'All San Pedro hotels',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "Forget crowded tourist beaches. Secret Beach is Ambergris Caye's best-kept paradise—a stunning stretch of pristine white sand and impossibly clear turquoise water on the island's quiet western shore. This half-day or full-day adventure takes you away from the hustle to a place where time slows down, hammocks sway between palms, and the only soundtrack is gentle waves and island music.\n\nAccessible only by boat or golf cart, Secret Beach maintains its laid-back, authentic Caribbean vibe. Wade into bath-warm water that stays shallow for 100 feet, perfect for families with kids or anyone who wants to float and relax without a care. Beach bars serve ice-cold Belikin beer and fresh conch ceviche, while local vendors offer fresh coconuts and handmade crafts.\n\nWhether you choose a half-day escape or a full-day retreat, you'll experience the Belize that locals love—no schedules, no crowds, just pure Caribbean bliss. Swim, sunbathe, play beach volleyball, or simply hang in a hammock with a good book. This is what vacation should feel like.",
+    itinerary: [
+      { time: '10:00 AM', title: 'Hotel Pickup', description: 'Meet at your San Pedro accommodation' },
+      { time: '10:30 AM', title: 'Boat Departure', description: 'Scenic 20-minute boat ride along the coast' },
+      { time: '11:00 AM', title: 'Arrive at Secret Beach', description: 'Welcome to paradise! Choose your perfect spot' },
+      {
+        time: '11:00 AM - 3:00 PM',
+        title: 'Beach Time',
+        description: 'Swim, relax, explore beach bars, enjoy the atmosphere'
+      },
+      {
+        time: '1:00 PM',
+        title: 'Lunch (Full Day Option)',
+        description: 'Fresh seafood at one of the beachfront restaurants'
+      },
+      { time: '3:30 PM', title: 'Return Boat', description: 'Reluctantly leave paradise behind' },
+      { time: '4:00 PM', title: 'Hotel Drop-off', description: 'Return to San Pedro refreshed and relaxed' }
+    ],
+    included: [
+      'Round-trip boat transportation',
+      'Beach chairs and umbrellas',
+      'Cooler with ice and soft drinks',
+      'Snorkeling equipment',
+      'Beach volleyball and games',
+      'Hammock access',
+      'Hotel pickup and drop-off',
+      'Local guide recommendations'
+    ],
+    notIncluded: [
+      'Lunch and drinks at beach bars (pay as you go)',
+      'Alcoholic beverages',
+      'Beach massages (available on-site)',
+      'Souvenirs and crafts',
+      'Gratuity for boat captain'
+    ],
+    whatToBring: [
+      'Swimsuit and beach cover-up',
+      'Reef-safe sunscreen',
+      'Towel (or use ours)',
+      'Sunglasses and hat',
+      'Cash for food, drinks, and tips',
+      'Waterproof phone case',
+      'Good book or Kindle',
+      'Relaxation mindset!'
+    ],
+    reviews: [
+      {
+        rating: 5,
+        author: 'Anderson Family',
+        location: 'Colorado, USA',
+        date: 'December 2024',
+        text: 'The perfect beach day! Our kids played in the shallow water for hours while we relaxed in hammocks. The conch fritters at the beach bar were incredible!'
+      },
+      {
+        rating: 5,
+        author: 'Nicole & Brad',
+        location: 'Australia',
+        date: 'November 2024',
+        text: 'We did the full-day option and it was heaven. Crystal-clear water, friendly locals, and no crowds. Exactly what we needed after busy dive days.'
+      },
+      {
+        rating: 5,
+        author: 'Gary M.',
+        location: 'Texas, USA',
+        date: 'October 2024',
+        text: 'Secret Beach lives up to the hype! Beautiful, peaceful, and authentic. Captain Rene dropped us off and picked us up right on time. Highly recommend!'
+      }
+    ],
+    galleryImages: ['/images/tours/beach-bbq.jpg']
+  },
+  'custom-adventure-bbq': {
+    tagline: 'The ultimate Belize experience—everything in one epic day',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Moderate',
+    includedHighlights: ['Fishing', 'Snorkeling', 'BBQ', 'Hol Chan Fees'],
+    pickup: 'All San Pedro hotels',
+    languages: ['English', 'Spanish', 'Mayan'],
+    whyUnforgettable:
+      "Why choose between fishing, snorkeling, and beach time when you can have it all? Rene's Custom Adventure with Beach BBQ is our signature full-day experience that combines the best of Belize into one unforgettable journey. This is the tour that gets rave reviews, repeat bookings, and generates the most fish stories—because it delivers everything you came to Belize to experience.\n\nStart your morning with speargun or rod fishing, targeting fresh catch for your beach BBQ. Then dive into the crystal-clear waters of Hol Chan Marine Reserve, where you'll swim alongside nurse sharks, southern stingrays, and sea turtles—an underwater encounter you'll never forget. Stop at Caye Caulker's famous high-dive platform (if you dare!), feed tarpon in the shallows, and spot tiny seahorses clinging to sea grass.\n\nThe grand finale? Your captain prepares an authentic Mayan-style beach BBQ featuring your fresh-caught fish, grilled lobster (seasonal), and homemade conch ceviche on a pristine private beach. This isn't just a tour—it's a full Belizean immersion that shows you why this tiny Caribbean nation consistently ranks among the world's top destinations.",
+    itinerary: [
+      { time: '7:30 AM', title: 'Hotel Pickup', description: 'Early start for a full day of adventure' },
+      { time: '8:00 AM', title: 'Morning Fishing', description: 'Speargun or rod fishing for your BBQ catch' },
+      {
+        time: '9:30 AM',
+        title: 'Hol Chan Marine Reserve',
+        description: 'Snorkel with nurse sharks, rays, and sea turtles'
+      },
+      {
+        time: '10:45 AM',
+        title: 'Shark Ray Alley',
+        description: 'Up-close encounters with friendly southern stingrays'
+      },
+      {
+        time: '11:30 AM',
+        title: 'Caye Caulker',
+        description: 'Explore the island, try the famous high dive (optional)'
+      },
+      {
+        time: '12:30 PM',
+        title: 'Tarpon & Seahorse Feeding',
+        description: 'Hand-feed massive tarpon and spot delicate seahorses'
+      },
+      {
+        time: '1:30 PM',
+        title: 'Private Beach BBQ',
+        description: 'Authentic Mayan-style feast with your fresh catch'
+      },
+      {
+        time: '3:00 PM',
+        title: 'Beach Relaxation',
+        description: 'Swim, nap in hammocks, or explore the beach'
+      },
+      {
+        time: '4:00 PM',
+        title: 'Return Journey',
+        description: 'Cruise back with full bellies and unforgettable memories'
+      },
+      {
+        time: '4:30 PM',
+        title: 'Hotel Drop-off',
+        description: 'Return tired, happy, and planning your next trip'
+      }
+    ],
+    included: [
+      'Professional captain and crew',
+      'Fishing equipment (speargun or rods)',
+      'All snorkeling gear',
+      'Hol Chan Marine Reserve entry fees',
+      'Fresh-caught fish BBQ',
+      'Grilled lobster or conch (seasonal)',
+      'Conch ceviche appetizer',
+      'Rice, beans, and tropical sides',
+      'Fresh fruit and dessert',
+      'Unlimited drinks (water, soft drinks, rum punch)',
+      'Beach access and hammocks',
+      'Hotel pickup and drop-off',
+      'Underwater photos (GoPro footage)',
+      'Life jackets and safety equipment'
+    ],
+    notIncluded: [
+      'Gratuity for crew (15-20% recommended)',
+      'Alcoholic beverages beyond rum punch',
+      'Personal underwater camera',
+      'Wetsuits (available for rent)',
+      'Travel insurance'
+    ],
+    whatToBring: [
+      'Swimsuit (wear under clothes)',
+      'Reef-safe sunscreen (mandatory)',
+      'Towel and dry change of clothes',
+      'Waterproof phone/camera case',
+      'Hat, sunglasses, and flip-flops',
+      'Light jacket for morning boat ride',
+      'Cash for gratuity',
+      'Appetite and adventurous spirit!'
+    ],
+    reviews: [
+      {
+        rating: 5,
+        author: 'Johnson Family',
+        location: 'Ohio, USA',
+        date: 'December 2024',
+        text: 'Best day of our entire vacation! Our 10-year-old still talks about swimming with sharks. The beach BBQ was incredible—freshly caught fish cooked right there. Worth every penny!'
+      },
+      {
+        rating: 5,
+        author: 'Rachel & Tom',
+        location: 'UK',
+        date: 'November 2024',
+        text: "We've done tours all over the world and this is top 3 ever. Captain Rene made it personal, the snorkeling was world-class, and that BBQ! Already planning to come back."
+      },
+      {
+        rating: 5,
+        author: 'Miguel & Sofia',
+        location: 'Mexico',
+        date: 'October 2024',
+        text: 'Perfecto! Every part of the day was amazing. My wife was nervous about the sharks but loved it. The tarpon feeding was crazy! Best tour in Belize hands down.'
+      }
+    ],
+    galleryImages: ['/images/tours/full-day-ultimate.jpg']
+  }
+};
+
+function getTourExtras(slug: string, fallbackImageUrl: string): TourExtras {
+  const base = TOUR_EXTRAS_BY_SLUG[slug];
+  if (base) return base;
+
+  return {
+    tagline: 'A Belize adventure crafted for unforgettable moments on the water.',
+    rating: 5.0,
+    reviewCount: 127,
+    difficulty: 'Easy',
+    includedHighlights: ['Equipment', 'Guide'],
+    pickup: 'San Pedro Hotels',
+    languages: ['English', 'Spanish'],
+    whyUnforgettable:
+      "Imagine stepping onto the water as Belize opens up around you—warm breezes, crystal views, and the kind of calm excitement that makes time slow down. This experience is designed to feel effortless: your captain handles the details, the pace stays relaxed, and every stop is chosen for maximum beauty and fun.\n\nYou’ll explore the highlights that make this part of the Caribbean legendary—whether that means fishing, cruising, or snorkeling. Along the way you’ll have plenty of time for photos, small surprises, and those ‘this is exactly why we came’ moments.\n\nWhat makes this tour different is the personalization. The crew adapts to your group, your comfort level, and your goals—so it feels like a private adventure, not a checklist.",
+    itinerary: [
+      {
+        time: 'Start',
+        title: 'Meet & Depart',
+        description: 'Meet your captain and depart from San Pedro.'
+      },
+      {
+        time: 'Mid-Trip',
+        title: 'Main Experience',
+        description: 'Enjoy the core adventure with guidance, equipment, and support.'
+      },
+      {
+        time: 'Finish',
+        title: 'Return',
+        description: 'Head back with photos, stories, and unforgettable memories.'
+      }
+    ],
+    included: ['Professional captain and crew', 'Safety equipment', 'Guidance and local knowledge'],
+    notIncluded: DEFAULT_NOT_INCLUDED,
+    whatToBring: DEFAULT_WHAT_TO_BRING,
+    reviews: [
+      {
+        name: 'Guest Review',
+        rating: 5,
+        text: 'Beautiful experience from start to finish. The crew was friendly and everything felt easy and well planned.'
+      },
+      {
+        name: 'Happy Traveler',
+        rating: 5,
+        text: 'Perfect day on the water—highly recommend if you want a premium, local experience.'
+      },
+      {
+        name: 'Belize Bound',
+        rating: 5,
+        text: 'We would book again in a heartbeat. Great communication and an unforgettable day.'
+      }
+    ],
+    galleryImages: [fallbackImageUrl]
+  };
+}
 
 export async function generateStaticParams() {
   return tours.map((tour) => ({
@@ -37,57 +713,76 @@ export default async function TourDetailPage({
   }
 
   const relatedTours = tours.filter((t) => t.id !== tour.id).slice(0, 3);
+  const extras = getTourExtras(slug, tour.imageUrl);
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="relative h-[60vh] min-h-[400px]">
-        <img src={tour.imageUrl} alt={tour.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        <div className="absolute inset-0 flex items-end">
-          <div className="container mx-auto px-4 pb-12">
-            <h1 className="text-5xl font-bold text-white mb-4">{tour.title}</h1>
-            <div className="flex gap-6 text-white/90 text-lg">
-              <span>🕐 {tour.duration}</span>
-              <span>👥 Up to {tour.maxGuests} guests</span>
-              <span className="text-tropical-coral font-bold">${tour.price}</span>
-            </div>
-          </div>
+      <section className="relative min-h-screen">
+        <div className="absolute inset-0">
+          <TourMediaCarousel images={extras.galleryImages} alt={tour.title} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
         </div>
-      </section>
 
-      <section className="py-16">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="md:col-span-2">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">About This Experience</h2>
-              <p className="text-lg text-gray-700 leading-relaxed mb-8">{tour.description}</p>
+        <div className="relative z-10 h-full">
+          <div className="container mx-auto px-4 pt-8">
+            <nav className="text-white/80 text-sm">
+              <Link href="/" className="hover:text-white">Home</Link>
+              <span className="mx-2">›</span>
+              <Link href="/#tours" className="hover:text-white">Tours</Link>
+              <span className="mx-2">›</span>
+              <span className="text-white">{tour.title}</span>
+            </nav>
+          </div>
 
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">What's Included</h3>
-              <ul className="space-y-3">
-                {tour.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-3 text-gray-700">
-                    <span className="text-tropical-coral text-xl mt-0.5">✓</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="md:col-span-1">
-              <div className="bg-gray-50 rounded-2xl p-6 sticky top-4">
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-bold text-tropical-coral mb-2">${tour.price}</div>
-                  <p className="text-sm text-gray-600">Up to {tour.includedGuests} guests included</p>
-                  <p className="text-sm text-gray-600">+${tour.additionalGuestPrice} per additional guest</p>
-                  <p className="text-sm text-gray-500 mt-2">Maximum {tour.maxGuests} guests</p>
+          <div className="container mx-auto px-4 pt-16 pb-10 md:pb-16">
+            <div className="grid lg:grid-cols-12 gap-10 items-end">
+              <div className="lg:col-span-7">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 mb-6">
+                  <span className="text-yellow-300">{renderStars(extras.rating)}</span>
+                  <span className="text-white font-semibold">{extras.rating.toFixed(1)}</span>
+                  <span className="text-white/70">({extras.reviewCount} reviews)</span>
                 </div>
 
-                <TourActions title={tour.title} />
+                <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">{tour.title}</h1>
+                <p className="text-white/90 text-xl md:text-2xl mt-5 max-w-2xl">{extras.tagline}</p>
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 text-center">
-                    <span className="font-semibold">Duration:</span> {tour.duration}
-                  </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {extras.includedHighlights.map((item) => (
+                    <span
+                      key={item}
+                      className="px-4 py-2 rounded-full bg-black/25 backdrop-blur-md border border-white/15 text-white/90 text-sm"
+                    >
+                      ✓ {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 hidden lg:block">
+                <div className="rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 shadow-2xl">
+                  <div className="flex items-baseline justify-between">
+                    <div>
+                      <div className="text-white/80 text-sm">From</div>
+                      <div className="text-4xl font-bold text-white">{formatMoney(tour.price)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-white/80 text-sm">Duration</div>
+                      <div className="text-white font-semibold">{tour.duration}</div>
+                    </div>
+                  </div>
+                  <div className="mt-5">
+                    <TourActions title={tour.title} />
+                  </div>
+                  <div className="mt-5 pt-5 border-t border-white/15 text-white/80 text-sm">
+                    <div className="flex justify-between">
+                      <span>Max group size</span>
+                      <span className="text-white">{tour.maxGuests} guests</span>
+                    </div>
+                    <div className="flex justify-between mt-2">
+                      <span>Pickup</span>
+                      <span className="text-white">{extras.pickup}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,37 +790,271 @@ export default async function TourDetailPage({
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">You Might Also Like</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {relatedTours.map((relatedTour) => (
-              <Link
-                key={relatedTour.id}
-                href={`/tours/${relatedTour.slug}`}
-                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all"
-              >
-                <img
-                  src={relatedTour.imageUrl}
-                  alt={relatedTour.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">{relatedTour.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedTour.description}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-tropical-coral font-bold">${relatedTour.price}</span>
-                    <span className="text-sm text-gray-500">{relatedTour.duration}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+      <section className="border-y border-gray-200 bg-white sticky top-0 z-20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">🕐</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Duration</div>
+                <div className="font-semibold text-gray-900">{tour.duration}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xl">👥</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Group Size</div>
+                <div className="font-semibold text-gray-900">Max {tour.maxGuests}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xl">⭐</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Difficulty</div>
+                <div className="font-semibold text-gray-900">{extras.difficulty}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xl">✓</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Included</div>
+                <div className="font-semibold text-gray-900">{extras.includedHighlights.slice(0, 2).join(', ')}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xl">📍</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Pickup</div>
+                <div className="font-semibold text-gray-900">{extras.pickup}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xl">🗣️</span>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500">Languages</div>
+                <div className="font-semibold text-gray-900">{extras.languages.join(', ')}</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-8">
-        <div className="container mx-auto px-4 max-w-5xl text-center">
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-8">
+              <h2 className="text-4xl font-bold text-gray-900">Why This Tour is Unforgettable</h2>
+              <p className="mt-6 text-lg text-gray-700 leading-relaxed whitespace-pre-line">{extras.whyUnforgettable}</p>
+
+              <div className="mt-12 rounded-3xl border border-gray-200 bg-gray-50 p-8">
+                <div className="flex items-start justify-between gap-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Featured Fish Story</h3>
+                    <p className="mt-2 text-gray-700">
+                      See how a guest landed the catch of a lifetime on this exact tour.
+                    </p>
+                    <p className="mt-4 text-sm text-gray-500">Coming soon</p>
+                  </div>
+                  <div className="hidden md:block w-40 h-24 rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                    <img src={tour.imageUrl} alt={tour.title} className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    disabled
+                    className="px-6 py-3 rounded-xl bg-gray-200 text-gray-500 font-semibold cursor-not-allowed"
+                  >
+                    Read Full Story
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-16" id="itinerary">
+                <h2 className="text-4xl font-bold text-gray-900 mb-8">Hour-by-Hour Breakdown</h2>
+                <div className="space-y-4">
+                  {extras.itinerary.map((item) => (
+                    <div key={`${item.time}-${item.title}`} className="rounded-2xl border border-gray-200 p-6">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        <div className="text-tropical-coral font-bold text-lg">{item.time}</div>
+                        <div className="text-gray-900 font-semibold text-lg md:text-right">{item.title}</div>
+                      </div>
+                      <p className="mt-3 text-gray-700">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-16" id="included">
+                <h2 className="text-4xl font-bold text-gray-900 mb-8">What&apos;s Included</h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="rounded-2xl border border-gray-200 p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Included</h3>
+                    <ul className="space-y-3">
+                      {extras.included.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-gray-700">
+                          <span className="text-tropical-coral text-xl mt-0.5">✓</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-2xl border border-gray-200 p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Not Included</h3>
+                    <ul className="space-y-3">
+                      {extras.notIncluded.map((item) => (
+                        <li key={item} className="flex items-start gap-3 text-gray-700">
+                          <span className="text-gray-500 text-xl mt-0.5">✗</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-16" id="bring">
+                <h2 className="text-4xl font-bold text-gray-900 mb-8">What to Bring</h2>
+                <div className="rounded-2xl border border-gray-200 p-6">
+                  <ul className="grid md:grid-cols-2 gap-4">
+                    {extras.whatToBring.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-gray-700">
+                        <span className="text-lg">□</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-16" id="reviews">
+                <div className="flex items-end justify-between gap-6 flex-wrap">
+                  <div>
+                    <h2 className="text-4xl font-bold text-gray-900">Reviews & Testimonials</h2>
+                    <div className="mt-3 text-gray-700">
+                      <span className="text-yellow-500 font-bold">{renderStars(extras.rating)}</span>
+                      <span className="ml-2 font-semibold">{extras.rating.toFixed(1)}</span>
+                      <span className="text-gray-500"> ({extras.reviewCount} reviews)</span>
+                    </div>
+                  </div>
+                  <AskLiaLink
+                    message={`Share reviews for ${tour.title}`}
+                    className="text-tropical-turquoise font-semibold hover:underline"
+                  />
+                </div>
+
+                <div className="mt-8 grid md:grid-cols-2 gap-6">
+                  {extras.reviews.map((review) => (
+                    <div
+                      key={review.author || review.name || review.text}
+                      className="rounded-2xl border border-gray-200 p-6 bg-white"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-gray-900">{review.author || review.name}</div>
+                          {(review.location || review.date) && (
+                            <div className="text-xs text-gray-500">
+                              {[review.location, review.date].filter(Boolean).join(' • ')}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-yellow-500">{renderStars(review.rating)}</div>
+                      </div>
+                      <p className="mt-4 text-gray-700 leading-relaxed">{review.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-8">You Might Also Like</h2>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {relatedTours.map((relatedTour) => (
+                    <Link
+                      key={relatedTour.id}
+                      href={`/tours/${relatedTour.slug}`}
+                      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-gray-100"
+                    >
+                      <img
+                        src={relatedTour.imageUrl}
+                        alt={relatedTour.title}
+                        className="w-full h-44 object-cover"
+                      />
+                      <div className="p-5">
+                        <h3 className="font-bold text-lg text-gray-900 mb-2">{relatedTour.title}</h3>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedTour.description}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-tropical-coral font-bold">{formatMoney(relatedTour.price)}</span>
+                          <span className="text-sm text-gray-500">{relatedTour.duration}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4">
+              <div className="lg:hidden rounded-2xl border border-gray-200 bg-gray-50 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-gray-500 text-sm">From</div>
+                    <div className="text-3xl font-bold text-gray-900">{formatMoney(tour.price)}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-500 text-sm">Duration</div>
+                    <div className="font-semibold text-gray-900">{tour.duration}</div>
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <TourActions title={tour.title} />
+                </div>
+              </div>
+
+              <div className="hidden lg:block sticky top-24">
+                <div className="rounded-3xl border border-gray-200 bg-white shadow-xl p-8">
+                  <div className="flex items-start justify-between gap-6">
+                    <div>
+                      <div className="text-gray-500 text-sm">From</div>
+                      <div className="text-4xl font-bold text-gray-900">{formatMoney(tour.price)}</div>
+                      <div className="mt-2 text-sm text-gray-600">Up to {tour.includedGuests} guests included</div>
+                      <div className="text-sm text-gray-600">+{formatMoney(tour.additionalGuestPrice)} per additional</div>
+                      <div className="mt-2 text-sm text-gray-500">Maximum {tour.maxGuests} guests</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-gray-500 text-sm">Rating</div>
+                      <div className="text-yellow-500 font-bold">{renderStars(extras.rating)}</div>
+                      <div className="text-sm text-gray-600">{extras.reviewCount} reviews</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <TourActions title={tour.title} />
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-sm text-gray-700 flex items-center justify-between">
+                      <span className="font-semibold">Duration</span>
+                      <span>{tour.duration}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-700 flex items-center justify-between">
+                      <span className="font-semibold">Pickup</span>
+                      <span>{extras.pickup}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-700 flex items-center justify-between">
+                      <span className="font-semibold">Languages</span>
+                      <span>{extras.languages.join(', ')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 bg-gray-50">
+        <div className="container mx-auto px-4 text-center">
           <Link
             href="/#tours"
             className="inline-block px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-tropical-coral hover:text-tropical-coral transition-all"
