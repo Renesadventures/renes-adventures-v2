@@ -57,6 +57,7 @@ export default function TourCards() {
                 <img
                   src={tour.imageUrl}
                   alt={getAltText(tour.title)}
+                  crossOrigin="anonymous"
                   style={{
                     width: '100%',
                     height: '100%',
