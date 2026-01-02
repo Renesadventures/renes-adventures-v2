@@ -432,7 +432,7 @@ const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
     galleryImages: ['/images/tours/hol-chan-snorkel.jpg']
   },
   'secret-beach': {
-    tagline: "Escape to paradise—Belize's hidden gem awaits",
+    tagline: "The island's most vibrant beach party destination",
     rating: 5.0,
     reviewCount: 127,
     difficulty: 'Easy',
@@ -440,7 +440,7 @@ const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
     pickup: 'All San Pedro hotels',
     languages: ['English', 'Spanish'],
     whyUnforgettable:
-      "Forget crowded tourist beaches. Secret Beach is Ambergris Caye's best-kept paradise—a stunning stretch of pristine white sand and impossibly clear turquoise water on the island's quiet western shore. This half-day or full-day adventure takes you away from the hustle to a place where time slows down, hammocks sway between palms, and the only soundtrack is gentle waves and island music.\n\nAccessible only by boat or golf cart, Secret Beach maintains its laid-back, authentic Caribbean vibe. Wade into bath-warm water that stays shallow for 100 feet, perfect for families with kids or anyone who wants to float and relax without a care. Beach bars serve ice-cold Belikin beer and fresh conch ceviche, while local vendors offer fresh coconuts and handmade crafts.\n\nWhether you choose a half-day escape or a full-day retreat, you'll experience the Belize that locals love—no schedules, no crowds, just pure Caribbean bliss. Swim, sunbathe, play beach volleyball, or simply hang in a hammock with a good book. This is what vacation should feel like.",
+      "Secret Beach has transformed from a hidden gem into San Pedro's premier beach party destination. This isn't your quiet, secluded escape—it's where the island comes alive. Picture colorful beach bars, floating water parks with massive inflatables, live music drifting across turquoise water, and that perfect blend of Caribbean energy and laid-back vibes. It's the spot locals and tourists alike flock to for sun, swimming, and socializing.\n\nWhat makes this tour special is the boat ride itself—cruising along Ambergris Caye's stunning western coastline, feeling the breeze, and arriving in style. You'll have time to explore the floating obstacles, grab drinks from beachfront bars, swim in crystal-clear shallow water, and soak up the party atmosphere. Whether you want to go wild on the inflatables or just lounge with a cold Belikin, Secret Beach delivers that quintessential Belize beach day everyone talks about.",
     itinerary: [
       { time: '10:00 AM', title: 'Hotel Pickup', description: 'Meet at your San Pedro accommodation' },
       { time: '10:30 AM', title: 'Boat Departure', description: 'Scenic 20-minute boat ride along the coast' },
