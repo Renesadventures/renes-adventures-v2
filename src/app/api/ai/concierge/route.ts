@@ -9,6 +9,9 @@ import { Redis } from '@upstash/redis';
 
 export const runtime = 'nodejs';
 
+// TEMP: Disabled rate limiting due to Upstash connection issues
+// TODO: Debug and re-enable after fixing
+/*
 function getRatelimit() {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -21,6 +24,7 @@ function getRatelimit() {
     analytics: true
   });
 }
+*/
 
 function sanitizeInput(input: string): string {
   const dangerousPatterns = [
@@ -260,6 +264,8 @@ export async function POST(request: NextRequest) {
   const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown';
 
   // Check rate limit FIRST
+  // TEMP: Disabled rate limiting check
+  /*
   const ratelimit = getRatelimit();
   if (!ratelimit) {
     console.error('[SECURITY] Upstash rate limiting is not configured');
@@ -286,6 +292,7 @@ export async function POST(request: NextRequest) {
       }
     );
   }
+  */
 
   try {
     // Validate request body
