@@ -18,11 +18,6 @@ export default function Home() {
 
       <WeatherOpportunitySection />
 
-      <FishStoryPreview />
-
-      <TravelIntelligenceHub />
-
-      <BoatGalleryPlaceholder />
       <TourShowcasePlaceholder />
 
       {/* Experiences Section (Placeholder for now) */}
@@ -38,6 +33,12 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      <BoatGalleryPlaceholder />
+
+      <TravelIntelligenceHub />
+
+      <FishStoryPreview />
 
       {/* Lia AI Chat Widget */}
       <LiaChatWidget
