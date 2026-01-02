@@ -1,8 +1,73 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { tours, getFeaturedTours } from '@/data/tours';
+import validator from 'validator';
+import xss from 'xss';
+import { z } from 'zod';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
 export const runtime = 'nodejs';
+
+function getRatelimit() {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+
+  const redis = new Redis({ url, token });
+  return new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, '1 m'),
+    analytics: true
+  });
+}
+
+function sanitizeInput(input: string): string {
+  const dangerousPatterns = [
+    /ignore\s+(previous|above|all)\s+instructions?/gi,
+    /system\s*:?/gi,
+    /you\s+are\s+now/gi,
+    /new\s+instructions?/gi,
+    /override/gi,
+    /disregard/gi
+  ];
+
+  let sanitized = input;
+  dangerousPatterns.forEach((pattern) => {
+    sanitized = sanitized.replace(pattern, '[REDACTED]');
+  });
+
+  sanitized = xss(sanitized);
+  sanitized = validator.trim(sanitized);
+  sanitized = sanitized.substring(0, 2000);
+
+  return sanitized;
+}
+
+const RequestSchema = z
+  .object({
+    message: z.string().min(1).max(2000).optional(),
+    messages: z
+      .array(
+        z.object({
+          role: z.enum(['user', 'assistant']),
+          content: z.string().max(2000)
+        })
+      )
+      .optional()
+      .default([]),
+    context: z.unknown().optional()
+  })
+  .superRefine((val, ctx) => {
+    const hasMessage = typeof val.message === 'string' && val.message.trim().length > 0;
+    const hasMessages = Array.isArray(val.messages) && val.messages.length > 0;
+    if (!hasMessage && !hasMessages) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Either message or messages is required'
+      });
+    }
+  });
 
 function getOpenAIClient(apiKey: string) {
   return new OpenAI({
@@ -189,43 +254,89 @@ NON-NEGOTIABLE
 - You must always end with either a booking step or a follow-up question that advances the booking.`;
 
 export async function POST(request: NextRequest) {
-  console.log('[Lia Chat] API endpoint hit');
+  const req = request;
+
+  // Get IP for rate limiting
+  const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown';
+
+  // Check rate limit FIRST
+  const ratelimit = getRatelimit();
+  if (!ratelimit) {
+    console.error('[SECURITY] Upstash rate limiting is not configured');
+    return NextResponse.json({ error: 'API configuration error' }, { status: 500 });
+  }
+
+  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return NextResponse.json(
+      {
+        error: 'Too many requests. Please try again in a moment.',
+        limit,
+        remaining: 0,
+        reset: new Date(reset).toISOString()
+      },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': reset.toString()
+        }
+      }
+    );
+  }
 
   try {
-    const body = await request.json().catch(() => null);
-    console.log('[Lia Chat] Request body:', JSON.stringify(body, null, 2));
+    // Validate request body
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    }
 
-    if (!body || typeof body !== 'object') {
-      console.error('[Lia Chat] Invalid JSON body');
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    const parsed = RequestSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request format', details: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { message, messages } = parsed.data;
+
+    const fallbackMessage =
+      messages
+        .slice()
+        .reverse()
+        .find((m) => m.role === 'user')?.content ||
+      '';
+
+    const effectiveMessage = message ?? fallbackMessage;
+
+    if (!effectiveMessage) {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
+    // Sanitize user message
+    const sanitizedMessage = sanitizeInput(effectiveMessage);
+
+    // Log suspicious activity
+    if (sanitizedMessage.includes('[REDACTED]')) {
+      console.warn('[SECURITY] Prompt injection attempt from IP:', ip, 'Original:', effectiveMessage);
     }
 
     const apiKey = process.env.OPENAI_API_KEY;
-    console.log('[Lia Chat] API key exists:', !!apiKey);
 
     if (!apiKey) {
-      console.error('[Lia Chat] OpenAI API key is missing');
       return NextResponse.json({ error: 'API configuration error' }, { status: 500 });
     }
 
     const openai = getOpenAIClient(apiKey);
 
     const context = (body as any).context;
-
-    // Support both payload shapes:
-    // - { message: string, tourId?: string, context?: any }
-    // - { messages: Array<{role, content}>, context?: any }
-    let messages = (body as any).messages;
-    const incomingMessage = (body as any).message;
-
-    if ((!messages || !Array.isArray(messages)) && typeof incomingMessage === 'string') {
-      messages = [{ role: 'user', content: incomingMessage }];
-    }
-
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      console.error('[Lia Chat] No messages provided');
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
-    }
 
     const tourContext = `Available Tours:
 ${tours
@@ -253,13 +364,20 @@ Featured Tours: ${getFeaturedTours()
       }
     }
 
+    const sanitizedMessages = [
+      ...messages.map((m) => ({
+        role: m.role,
+        content: m.role === 'user' ? sanitizeInput(m.content) : validator.trim(m.content).substring(0, 2000)
+      })),
+      { role: 'user' as const, content: sanitizedMessage }
+    ];
+
     // Format messages for OpenAI
     const formattedMessages = [
       { role: 'system', content: contextString },
-      ...messages.slice(-10), // Keep last 10 messages for context
+      ...sanitizedMessages.slice(-10) // Keep last 10 messages for context
     ];
 
-    console.log('[Lia Chat] Calling OpenAI API...');
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: formattedMessages as any,
@@ -267,20 +385,20 @@ Featured Tours: ${getFeaturedTours()
       max_tokens: 300
     });
 
-    console.log('[Lia Chat] OpenAI response received');
-
     const aiMessage =
       completion.choices[0]?.message?.content ||
       'I apologize, but I encountered an error. Please try again.';
 
     return NextResponse.json({ message: aiMessage });
-  } catch (error) {
-    console.error('[Lia Chat] Unexpected error:', error);
+  } catch (error: any) {
+    console.error('OpenAI API error:', {
+      message: error?.message,
+      type: error?.type,
+      ip
+    });
     return NextResponse.json(
       {
-        error: 'Failed to get AI response',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        message: "I apologize, but I'm having trouble right now. Please try again in a moment!"
+        error: "I apologize, but I'm having trouble right now. Please try again in a moment!"
       },
       { status: 500 }
     );
