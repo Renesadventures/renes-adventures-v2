@@ -770,6 +770,15 @@ export default async function TourDetailPage({
                       <div className="text-white font-semibold">{tour.duration}</div>
                     </div>
                   </div>
+
+                  {slug === 'sunset-cruise' && (
+                    <p className="mt-4 text-white/80 text-sm">
+                      ⏰ Departure Time Note: Standard departure is between 6:00-7:00 PM. Exact departure time may vary
+                      based on sunset time throughout the year to ensure optimal viewing. Final departure time will be
+                      confirmed within 24 hours of your tour date for guest safety and the best possible experience.
+                    </p>
+                  )}
+
                   <div className="mt-5">
                     <TourActions title={tour.title} />
                   </div>

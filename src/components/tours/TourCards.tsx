@@ -27,7 +27,7 @@ export default function TourCards() {
 
         {/* Tour Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {tours.map((tour, i) => (
+          {tours.map((tour) => (
             <article
               key={tour.id}
               style={{
@@ -116,15 +116,19 @@ export default function TourCards() {
                   </div>
                   <div className="text-right text-sm text-gray-700">
                     <div className="font-medium">Up to {tour.includedGuests} guests</div>
-                    <div className="text-gray-600">+ {formatMoney(tour.additionalGuestPrice)} per additional</div>
+                    <div className="text-gray-600">
+                      + {formatMoney(tour.additionalGuestPrice)} per additional, max {tour.maxGuests}
+                    </div>
                   </div>
                 </div>
 
-                {/* Max Guests */}
-                <p className="text-sm text-gray-700 mb-6 flex items-center gap-2">
-                  <span className="text-lg">👥</span>
-                  <span className="font-medium">Maximum {tour.maxGuests} guests</span>
-                </p>
+                {tour.slug === 'sunset-cruise' && (
+                  <p className="text-sm text-gray-700 mb-4">
+                    ⏰ Departure Time Note: Standard departure is between 6:00-7:00 PM. Exact departure time may vary
+                    based on sunset time throughout the year to ensure optimal viewing. Final departure time will be
+                    confirmed within 24 hours of your tour date for guest safety and the best possible experience.
+                  </p>
+                )}
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
