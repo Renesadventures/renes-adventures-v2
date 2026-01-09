@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { buildWhatsAppTourLink } from '@/lib/utils/whatsapp-link';
+import { buildWhatsAppTourLink, getWhatsAppLink } from '@/lib/utils/whatsapp-link';
 import type { TourAddOn } from '@/data/tours';
 
 type BookingEngineProps = {
@@ -173,7 +173,7 @@ export default function BookingEngine({
                 <button
                   type="button"
                   onClick={() => {
-                    const url = buildWhatsAppTourLink({ tourName });
+                    const url = getWhatsAppLink(`Hi René,\n\nCan we book the ${tourName}?\n\nThank you!`);
                     window.open(url, '_blank', 'noopener,noreferrer');
                   }}
                   className="mt-6 w-full rounded-xl bg-[#D4AF37] text-slate-950 font-extrabold px-6 py-4 border border-white/10 hover:brightness-110 transition"
