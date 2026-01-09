@@ -1,13 +1,16 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 
 export default function TourMediaCarousel({
   images,
-  alt
+  alt,
+  posterUrl
 }: {
   images: string[];
   alt: string;
+  posterUrl: string;
 }) {
   const slides = useMemo(() => {
     const cleaned = images.filter(Boolean);
@@ -15,49 +18,150 @@ export default function TourMediaCarousel({
   }, [images]);
 
   const [index, setIndex] = useState(0);
+  const [mediaHidden, setMediaHidden] = useState(false);
+  const [transitionActive, setTransitionActive] = useState(false);
+  const [transitionPoster, setTransitionPoster] = useState<string | null>(null);
+  const canPlayGateRef = useRef(false);
+  const minDelayGateRef = useRef(false);
+  const finishTransition = useRef<(() => void) | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    finishTransition.current = () => {
+      if (!transitionActive) return;
+      if (!canPlayGateRef.current) return;
+      if (!minDelayGateRef.current) return;
+
+      setMediaHidden(false);
+      setTransitionActive(false);
+    };
+  }, [transitionActive]);
+
+  const switchTo = (next: number) => {
+    if (slides.length <= 1) return;
+    const nextIndex = (next + slides.length) % slides.length;
+    if (nextIndex === index) return;
+
+    const nextSrc = slides[nextIndex];
+    const nextIsVideo = typeof nextSrc === 'string' && nextSrc.toLowerCase().endsWith('.mp4');
+    setTransitionPoster(nextIsVideo ? posterUrl : nextSrc || posterUrl);
+    setTransitionActive(true);
+    setMediaHidden(true);
+
+    canPlayGateRef.current = false;
+    minDelayGateRef.current = false;
+
+    window.setTimeout(() => {
+      minDelayGateRef.current = true;
+      finishTransition.current?.();
+    }, 200);
+
+    window.setTimeout(() => {
+      try {
+        const v = videoRef.current;
+        v?.pause();
+        v?.removeAttribute('src');
+        v?.load();
+      } catch {
+        // no-op
+      }
+      setIndex(nextIndex);
+    }, 200);
+  };
   const current = slides[index] || slides[0];
+  const isVideo = typeof current === 'string' && current.toLowerCase().endsWith('.mp4');
 
   return (
     <div className="relative w-full h-full">
-      {current ? (
-        <img src={current} alt={alt} className="w-full h-full object-cover" />
-      ) : (
-        <div className="w-full h-full bg-gray-900" />
+      <div className={`absolute inset-0 transition-opacity duration-200 ${mediaHidden ? 'opacity-0' : 'opacity-100'}`}>
+        {current ? (
+          isVideo ? (
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster={posterUrl}
+              className="w-full h-full object-cover"
+              src={current}
+              onCanPlay={() => {
+                canPlayGateRef.current = true;
+                finishTransition.current?.();
+              }}
+              onLoadedMetadata={(e) => {
+                e.currentTarget.playbackRate = 0.5;
+              }}
+              onError={() => {
+                canPlayGateRef.current = true;
+                finishTransition.current?.();
+              }}
+            >
+              <source src={current} type="video/mp4" />
+            </video>
+          ) : (
+            <Image
+              src={current}
+              alt={alt}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              onLoadingComplete={() => {
+                canPlayGateRef.current = true;
+                finishTransition.current?.();
+              }}
+            />
+          )
+        ) : (
+          <div className="w-full h-full bg-slate-950" />
+        )}
+      </div>
+
+      {transitionPoster && (
+        <div className={`absolute inset-0 z-[2] ${transitionActive ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}>
+          <div className="absolute inset-0 bg-black" />
+          <Image
+            src={transitionPoster}
+            alt="Tour media transition"
+            fill
+            className="object-cover opacity-20"
+            sizes="100vw"
+          />
+        </div>
       )}
 
       {slides.length > 1 && (
-        <>
-          <button
-            type="button"
-            aria-label="Previous"
-            onClick={() => setIndex((prev) => (prev - 1 + slides.length) % slides.length)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white flex items-center justify-center"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            aria-label="Next"
-            onClick={() => setIndex((prev) => (prev + 1) % slides.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white flex items-center justify-center"
-          >
-            ›
-          </button>
+        <div className="absolute left-0 right-0 bottom-0 z-[3] bg-black/30 backdrop-blur-md border-t border-white/10">
+          <div className="mx-auto w-full px-4 py-3">
+            <div className="flex gap-3 overflow-x-auto">
+              {slides.slice(0, 12).map((src, i) => {
+                const active = i === index;
+                const isThumbVideo = typeof src === 'string' && src.toLowerCase().endsWith('.mp4');
+                const thumb = isThumbVideo ? posterUrl : src;
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => setIndex(i)}
-                className={`h-2.5 w-2.5 rounded-full border border-white/50 transition ${
-                  i === index ? 'bg-white' : 'bg-white/30 hover:bg-white/50'
-                }`}
-              />
-            ))}
+                return (
+                  <button
+                    key={`${src}-${i}`}
+                    type="button"
+                    aria-label={`Select media ${i + 1}`}
+                    onClick={() => switchTo(i)}
+                    className={`relative h-20 w-36 shrink-0 overflow-hidden rounded-xl border transition ${
+                      active
+                        ? 'border-[#D4AF37]/70 ring-2 ring-[#D4AF37]/30'
+                        : 'border-white/15 hover:border-white/30'
+                    }`}
+                  >
+                    {thumb ? (
+                      <Image src={thumb} alt="" fill className="object-cover object-top" sizes="200px" />
+                    ) : (
+                      <div className="absolute inset-0 bg-slate-900" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

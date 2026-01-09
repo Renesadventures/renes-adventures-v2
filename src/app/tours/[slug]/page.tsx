@@ -1,9 +1,13 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { tours, getTourBySlug } from '@/data/tours';
-import TourActions from './TourActions';
+import assetManifest from '@/data/asset-manifest.json';
 import TourMediaCarousel from './TourMediaCarousel';
 import AskLiaLink from './AskLiaLink';
+import CustomAdventureActivities from './CustomAdventureActivities';
+import BrochureCta from './BrochureCta';
+import BookingEngine from '@/components/booking/BookingEngine';
 
 type Difficulty = 'Easy' | 'Moderate' | 'Advanced';
 
@@ -50,6 +54,84 @@ function clampRating(rating: number) {
 function renderStars(rating: number) {
   const full = Math.round(clampRating(rating));
   return Array.from({ length: 5 }, (_, i) => (i < full ? '★' : '☆')).join('');
+}
+
+const FLEXIBLE_START_COPY = 'Flexible Start (Morning or Afternoon Ritual - Finalized by Captain 24h prior)';
+
+function getGalleryFromManifest(slug: string, fallbackImageUrl: string) {
+  const images = Array.isArray(assetManifest.images)
+    ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
+    : [];
+  const videos = Array.isArray(assetManifest.videos)
+    ? (assetManifest.videos.filter((s) => typeof s === 'string') as string[])
+    : [];
+
+  const pool = [...videos, ...images].filter((src) => typeof src === 'string');
+  const renes = pool.filter((src) => src.includes('/images/renes-activities/') || src.includes('/videos/'));
+
+  const s = slug.toLowerCase();
+  const matchAny = (src: string, keywords: string[]) => {
+    const t = src.toLowerCase();
+    return keywords.some((k) => t.includes(k));
+  };
+
+  let filtered = renes;
+  if (s === 'deep-sea-fishing') {
+    filtered = renes.filter((src) =>
+      matchAny(src, ['deep', 'offshore', 'bluewater', 'wahoo', 'marlin', 'sailfish', 'tuna', 'mahi', 'dorado'])
+    );
+  } else if (s === 'reef-fishing') {
+    filtered = renes.filter((src) => matchAny(src, ['reef', 'snapper', 'grouper', 'barracuda', 'shallow']));
+  } else if (s === 'sunset-cruise') {
+    filtered = renes.filter((src) => matchAny(src, ['sunset', 'golden', 'champagne', 'cruise']));
+  } else if (s === 'secret-beach') {
+    filtered = renes.filter((src) => matchAny(src, ['beach', 'secret', 'turquoise', 'island']));
+  } else if (s === 'blue-hole-adventure') {
+    filtered = renes.filter((src) => matchAny(src, ['blue-hole', 'bluehole', 'snorkel', 'dive', 'reef']));
+  } else if (s === 'custom-adventure-bbq') {
+    filtered = renes.filter((src) => matchAny(src, ['bbq', 'lobster', 'conch', 'ceviche', 'adventure', 'hol-chan']));
+  }
+
+  const finalPool = filtered.length ? filtered : renes.length ? renes : [fallbackImageUrl];
+  const isAction = (src: string) => {
+    const t = src.toLowerCase();
+    return (
+      t.includes('action') ||
+      t.includes('caught') ||
+      t.includes('catch') ||
+      t.includes('fight') ||
+      t.includes('reel') ||
+      t.includes('rod') ||
+      t.includes('wahoo') ||
+      t.includes('marlin') ||
+      t.includes('sailfish') ||
+      t.includes('tuna') ||
+      t.includes('mahi') ||
+      t.includes('dorado') ||
+      t.includes('snapper') ||
+      t.includes('grouper') ||
+      t.includes('barracuda')
+    );
+  };
+
+  const actionPool = finalPool.filter(isAction);
+  const selectionPool = actionPool.length ? actionPool : finalPool;
+  const scored = finalPool.map((src) => {
+    const seed = `${slug}|${src}`;
+    let h = 0;
+    for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    return { src, score: h };
+  });
+  scored.sort((a, b) => a.score - b.score);
+  const scoredAction = selectionPool.map((src) => {
+    const seed = `action|${slug}|${src}`;
+    let h = 0;
+    for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    return { src, score: h };
+  });
+  scoredAction.sort((a, b) => a.score - b.score);
+  const selected = scoredAction.slice(0, 12).map((x) => x.src);
+  return selected.length ? selected : [fallbackImageUrl];
 }
 
 const DEFAULT_WHAT_TO_BRING = [
@@ -139,7 +221,7 @@ const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
         text: 'Easy pickup, smooth ride out, and we landed fish we never thought we’d see in real life. 10/10.'
       }
     ],
-    galleryImages: ['/images/tours/deep-sea-fishing.jpg']
+    galleryImages: ['/images/tours/deep-sea-fishing.jpg', '/videos/hero/deep-sea-fishing.mp4']
   },
   'reef-fishing': {
     tagline: 'Discover the vibrant world beneath the Caribbean waves',
@@ -329,7 +411,7 @@ const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
         text: 'Solo traveler here—this was the highlight of my trip. Met lovely people, incredible views, and felt so relaxed. Worth every penny!'
       }
     ],
-    galleryImages: ['/images/tours/sunset-cruise.jpg']
+    galleryImages: ['/videos/hero/sunset-ritual.mp4', '/images/tours/sunset-cruise.jpg']
   },
   'blue-hole-adventure': {
     tagline: 'Dive into a world wonder—bucket list adventure awaits',
@@ -614,13 +696,13 @@ const TOUR_EXTRAS_BY_SLUG: Record<string, TourExtras> = {
       },
       {
         rating: 5,
-        author: 'Miguel & Sofia',
-        location: 'Mexico',
+        author: 'Miguel & Ana',
+        location: 'Mexico City',
         date: 'October 2024',
         text: 'Perfecto! Every part of the day was amazing. My wife was nervous about the sharks but loved it. The tarpon feeding was crazy! Best tour in Belize hands down.'
       }
     ],
-    galleryImages: ['/images/tours/full-day-ultimate.jpg']
+    galleryImages: ['/videos/hero/full-day-ultimate.mp4', '/images/tours/full-day-ultimate.jpg']
   }
 };
 
@@ -714,17 +796,19 @@ export default async function TourDetailPage({
 
   const relatedTours = tours.filter((t) => t.id !== tour.id).slice(0, 3);
   const extras = getTourExtras(slug, tour.imageUrl);
+  const gallery = getGalleryFromManifest(slug, tour.imageUrl);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0F172A]">
       <section className="relative min-h-screen">
         <div className="absolute inset-0">
-          <TourMediaCarousel images={extras.galleryImages} alt={tour.title} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+          <div className="w-full h-full max-h-[850px] overflow-hidden">
+            <TourMediaCarousel images={gallery} alt={tour.title} posterUrl={tour.imageUrl} />
+          </div>
         </div>
 
         <div className="relative z-10 h-full">
-          <div className="container mx-auto px-4 pt-8">
+          <div className="mx-auto w-full max-w-screen-2xl px-4 pt-8">
             <nav className="text-white/80 text-sm">
               <Link href="/" className="hover:text-white">Home</Link>
               <span className="mx-2">›</span>
@@ -734,17 +818,17 @@ export default async function TourDetailPage({
             </nav>
           </div>
 
-          <div className="container mx-auto px-4 pt-16 pb-10 md:pb-16">
+          <div className="mx-auto w-full max-w-screen-2xl px-4 pt-16 pb-10 md:pb-16">
             <div className="grid lg:grid-cols-12 gap-10 items-end">
               <div className="lg:col-span-7">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 mb-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-black/25 backdrop-blur-md border border-[#D4AF37]/20 px-4 py-2 mb-6">
                   <span className="text-yellow-300">{renderStars(extras.rating)}</span>
                   <span className="text-white font-semibold">{extras.rating.toFixed(1)}</span>
                   <span className="text-white/70">({extras.reviewCount} reviews)</span>
                 </div>
 
-                <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">{tour.title}</h1>
-                <p className="text-white/90 text-xl md:text-2xl mt-5 max-w-2xl">{extras.tagline}</p>
+                <h1 className="text-5xl md:text-6xl font-bold text-[#D4AF37] leading-tight">{tour.title}</h1>
+                <p className="text-[#F8FAFC] text-xl md:text-2xl mt-5 max-w-2xl">{extras.tagline}</p>
 
                 <div className="mt-8 flex flex-wrap gap-3">
                   {extras.includedHighlights.map((item) => (
@@ -759,28 +843,38 @@ export default async function TourDetailPage({
               </div>
 
               <div className="lg:col-span-5 hidden lg:block">
-                <div className="rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 shadow-2xl">
+                <div className="rounded-3xl bg-[#1E293B] border border-[#D4AF37]/25 p-6 shadow-2xl">
                   <div className="flex items-baseline justify-between">
                     <div>
-                      <div className="text-white/80 text-sm">From</div>
-                      <div className="text-4xl font-bold text-white">{formatMoney(tour.price)}</div>
+                      <div className="text-[#F8FAFC]/70 text-sm">From</div>
+                      <div className="text-4xl font-extrabold text-[#D4AF37]">{formatMoney(tour.price)}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-white/80 text-sm">Duration</div>
-                      <div className="text-white font-semibold">{tour.duration}</div>
+                      <div className="text-[#F8FAFC]/70 text-sm">Timing</div>
+                      <div className="text-[#F8FAFC] font-semibold">{FLEXIBLE_START_COPY}</div>
                     </div>
                   </div>
 
-                  {slug === 'sunset-cruise' && (
-                    <p className="mt-4 text-white/80 text-sm">
-                      ⏰ Departure Time Note: Standard departure is between 6:00-7:00 PM. Exact departure time may vary
-                      based on sunset time throughout the year to ensure optimal viewing. Final departure time will be
-                      confirmed within 24 hours of your tour date for guest safety and the best possible experience.
-                    </p>
-                  )}
-
                   <div className="mt-5">
-                    <TourActions title={tour.title} />
+                    <BookingEngine
+                      tourName={tour.title}
+                      basePrice={tour.price}
+                      baseGuests={tour.baseGuests}
+                      maxGuests={tour.maxGuests}
+                      extraGuestFee={tour.extraGuestFee}
+                      addOns={tour.addOns}
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <BrochureCta tourSlug={tour.slug} tourTitle={tour.title} />
+                  </div>
+
+                  <div className="mt-5 rounded-2xl border border-[#D4AF37]/20 bg-black/20 p-4">
+                    <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Captain&apos;s Log</div>
+                    <div className="mt-2 text-sm text-[#F8FAFC]/80 leading-relaxed">
+                      Local captain expertise + conditions-based decisions. Your final departure ritual is confirmed 24h prior.
+                    </div>
                   </div>
                   <div className="mt-5 pt-5 border-t border-white/15 text-white/80 text-sm">
                     <div className="flex justify-between">
@@ -799,80 +893,84 @@ export default async function TourDetailPage({
         </div>
       </section>
 
-      <section className="border-y border-gray-200 bg-white sticky top-0 z-20">
-        <div className="container mx-auto px-4">
+      <section className="border-y border-[#D4AF37]/15 bg-[#0F172A] sticky top-0 z-20">
+        <div className="mx-auto w-full max-w-screen-2xl px-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-4">
             <div className="flex items-center gap-3">
               <span className="text-xl">🕐</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Duration</div>
-                <div className="font-semibold text-gray-900">{tour.duration}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Timing</div>
+                <div className="font-semibold text-[#F8FAFC]">{FLEXIBLE_START_COPY}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xl">👥</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Group Size</div>
-                <div className="font-semibold text-gray-900">Max {tour.maxGuests}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Group Size</div>
+                <div className="font-semibold text-[#F8FAFC]">Max {tour.maxGuests}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xl">⭐</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Difficulty</div>
-                <div className="font-semibold text-gray-900">{extras.difficulty}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Difficulty</div>
+                <div className="font-semibold text-[#F8FAFC]">{extras.difficulty}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xl">✓</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Included</div>
-                <div className="font-semibold text-gray-900">{extras.includedHighlights.slice(0, 2).join(', ')}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Included</div>
+                <div className="font-semibold text-[#F8FAFC]">{extras.includedHighlights.slice(0, 2).join(', ')}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xl">📍</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Pickup</div>
-                <div className="font-semibold text-gray-900">{extras.pickup}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Pickup</div>
+                <div className="font-semibold text-[#F8FAFC]">{extras.pickup}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xl">🗣️</span>
               <div>
-                <div className="text-xs uppercase tracking-wide text-gray-500">Languages</div>
-                <div className="font-semibold text-gray-900">{extras.languages.join(', ')}</div>
+                <div className="text-xs uppercase tracking-wide text-[#D4AF37]/80">Languages</div>
+                <div className="font-semibold text-[#F8FAFC]">{extras.languages.join(', ')}</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-[#0F172A]">
+        <div className="mx-auto w-full max-w-screen-2xl px-4">
           <div className="grid lg:grid-cols-12 gap-12">
             <div className="lg:col-span-8">
-              <h2 className="text-4xl font-bold text-gray-900">Why This Tour is Unforgettable</h2>
-              <p className="mt-6 text-lg text-gray-700 leading-relaxed whitespace-pre-line">{extras.whyUnforgettable}</p>
+              <h2 className="text-4xl font-bold text-[#D4AF37]">Why This Tour is Unforgettable</h2>
+              <p className="mt-6 text-lg text-[#F8FAFC]/80 leading-relaxed whitespace-pre-line">{extras.whyUnforgettable}</p>
 
-              <div className="mt-12 rounded-3xl border border-gray-200 bg-gray-50 p-8">
+              {tour.activities && tour.activities.length > 0 && (
+                <CustomAdventureActivities activities={tour.activities} />
+              )}
+
+              <div className="mt-12 rounded-3xl border border-[#D4AF37]/20 bg-[#1E293B] p-8">
                 <div className="flex items-start justify-between gap-6">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">Featured Fish Story</h3>
-                    <p className="mt-2 text-gray-700">
+                    <h3 className="text-2xl font-bold text-[#D4AF37]">Featured Fish Story</h3>
+                    <p className="mt-2 text-[#F8FAFC]/80">
                       See how a guest landed the catch of a lifetime on this exact tour.
                     </p>
-                    <p className="mt-4 text-sm text-gray-500">Coming soon</p>
+                    <p className="mt-4 text-sm text-[#F8FAFC]/60">Coming soon</p>
                   </div>
-                  <div className="hidden md:block w-40 h-24 rounded-2xl overflow-hidden border border-gray-200 bg-white">
-                    <img src={tour.imageUrl} alt={tour.title} className="w-full h-full object-cover" />
+                  <div className="hidden md:block w-40 h-24 rounded-2xl overflow-hidden border border-[#D4AF37]/20 bg-black/20 relative">
+                    <Image src={tour.imageUrl} alt={tour.title} fill className="object-cover" sizes="160px" />
                   </div>
                 </div>
                 <div className="mt-6">
                   <button
                     type="button"
                     disabled
-                    className="px-6 py-3 rounded-xl bg-gray-200 text-gray-500 font-semibold cursor-not-allowed"
+                    className="px-6 py-3 rounded-xl bg-white/10 text-white/50 font-semibold cursor-not-allowed border border-white/10"
                   >
                     Read Full Story
                   </button>
@@ -880,40 +978,40 @@ export default async function TourDetailPage({
               </div>
 
               <div className="mt-16" id="itinerary">
-                <h2 className="text-4xl font-bold text-gray-900 mb-8">Hour-by-Hour Breakdown</h2>
+                <h2 className="text-4xl font-bold text-[#D4AF37] mb-8">Hour-by-Hour Breakdown</h2>
                 <div className="space-y-4">
                   {extras.itinerary.map((item) => (
-                    <div key={`${item.time}-${item.title}`} className="rounded-2xl border border-gray-200 p-6">
+                    <div key={`${item.time}-${item.title}`} className="rounded-2xl border border-[#D4AF37]/20 bg-[#1E293B] p-6">
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                        <div className="text-tropical-coral font-bold text-lg">{item.time}</div>
-                        <div className="text-gray-900 font-semibold text-lg md:text-right">{item.title}</div>
+                        <div className="text-[#D4AF37] font-bold text-sm uppercase tracking-[0.25em]">{FLEXIBLE_START_COPY}</div>
+                        <div className="text-[#F8FAFC] font-semibold text-lg md:text-right">{item.title}</div>
                       </div>
-                      <p className="mt-3 text-gray-700">{item.description}</p>
+                      <p className="mt-3 text-[#F8FAFC]/80">{item.description}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mt-16" id="included">
-                <h2 className="text-4xl font-bold text-gray-900 mb-8">What&apos;s Included</h2>
+                <h2 className="text-4xl font-bold text-[#D4AF37] mb-8">What&apos;s Included</h2>
                 <div className="grid md:grid-cols-2 gap-8">
-                  <div className="rounded-2xl border border-gray-200 p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Included</h3>
+                  <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#1E293B] p-6">
+                    <h3 className="text-xl font-bold text-[#D4AF37] mb-4">Included</h3>
                     <ul className="space-y-3">
                       {extras.included.map((item) => (
-                        <li key={item} className="flex items-start gap-3 text-gray-700">
-                          <span className="text-tropical-coral text-xl mt-0.5">✓</span>
+                        <li key={item} className="flex items-start gap-3 text-[#F8FAFC]/80">
+                          <span className="text-[#D4AF37] text-xl mt-0.5">✓</span>
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-2xl border border-gray-200 p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Not Included</h3>
+                  <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#1E293B] p-6">
+                    <h3 className="text-xl font-bold text-[#D4AF37] mb-4">Not Included</h3>
                     <ul className="space-y-3">
                       {extras.notIncluded.map((item) => (
-                        <li key={item} className="flex items-start gap-3 text-gray-700">
-                          <span className="text-gray-500 text-xl mt-0.5">✗</span>
+                        <li key={item} className="flex items-start gap-3 text-[#F8FAFC]/80">
+                          <span className="text-[#F8FAFC]/50 text-xl mt-0.5">✗</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -923,11 +1021,11 @@ export default async function TourDetailPage({
               </div>
 
               <div className="mt-16" id="bring">
-                <h2 className="text-4xl font-bold text-gray-900 mb-8">What to Bring</h2>
-                <div className="rounded-2xl border border-gray-200 p-6">
+                <h2 className="text-4xl font-bold text-[#D4AF37] mb-8">What to Bring</h2>
+                <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#1E293B] p-6">
                   <ul className="grid md:grid-cols-2 gap-4">
                     {extras.whatToBring.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-gray-700">
+                      <li key={item} className="flex items-start gap-3 text-[#F8FAFC]/80">
                         <span className="text-lg">□</span>
                         <span>{item}</span>
                       </li>
@@ -939,16 +1037,16 @@ export default async function TourDetailPage({
               <div className="mt-16" id="reviews">
                 <div className="flex items-end justify-between gap-6 flex-wrap">
                   <div>
-                    <h2 className="text-4xl font-bold text-gray-900">Reviews & Testimonials</h2>
-                    <div className="mt-3 text-gray-700">
+                    <h2 className="text-4xl font-bold text-[#D4AF37]">Reviews & Testimonials</h2>
+                    <div className="mt-3 text-[#F8FAFC]/80">
                       <span className="text-yellow-500 font-bold">{renderStars(extras.rating)}</span>
                       <span className="ml-2 font-semibold">{extras.rating.toFixed(1)}</span>
-                      <span className="text-gray-500"> ({extras.reviewCount} reviews)</span>
+                      <span className="text-[#F8FAFC]/60"> ({extras.reviewCount} reviews)</span>
                     </div>
                   </div>
                   <AskLiaLink
                     message={`Share reviews for ${tour.title}`}
-                    className="text-tropical-turquoise font-semibold hover:underline"
+                    className="text-[#D4AF37] font-semibold hover:underline"
                   />
                 </div>
 
@@ -956,45 +1054,49 @@ export default async function TourDetailPage({
                   {extras.reviews.map((review) => (
                     <div
                       key={review.author || review.name || review.text}
-                      className="rounded-2xl border border-gray-200 p-6 bg-white"
+                      className="rounded-2xl border border-[#D4AF37]/20 p-6 bg-[#1E293B]"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="font-semibold text-gray-900">{review.author || review.name}</div>
+                          <div className="font-semibold text-[#F8FAFC]">{review.author || review.name}</div>
                           {(review.location || review.date) && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-[#F8FAFC]/60">
                               {[review.location, review.date].filter(Boolean).join(' • ')}
                             </div>
                           )}
                         </div>
                         <div className="text-yellow-500">{renderStars(review.rating)}</div>
                       </div>
-                      <p className="mt-4 text-gray-700 leading-relaxed">{review.text}</p>
+                      <p className="mt-4 text-[#F8FAFC]/80 leading-relaxed">{review.text}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mt-16">
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">You Might Also Like</h2>
+                <h2 className="text-3xl font-bold text-[#D4AF37] mb-8">You Might Also Like</h2>
                 <div className="grid md:grid-cols-3 gap-6">
                   {relatedTours.map((relatedTour) => (
                     <Link
                       key={relatedTour.id}
                       href={`/tours/${relatedTour.slug}`}
-                      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-gray-100"
+                      className="bg-[#1E293B] rounded-2xl overflow-hidden shadow-2xl transition-all border border-[#D4AF37]/20 hover:border-[#D4AF37]/35"
                     >
-                      <img
-                        src={relatedTour.imageUrl}
-                        alt={relatedTour.title}
-                        className="w-full h-44 object-cover"
-                      />
+                      <div className="relative w-full h-44">
+                        <Image
+                          src={relatedTour.imageUrl}
+                          alt={relatedTour.title}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 768px) 33vw, 100vw"
+                        />
+                      </div>
                       <div className="p-5">
-                        <h3 className="font-bold text-lg text-gray-900 mb-2">{relatedTour.title}</h3>
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedTour.description}</p>
+                        <h3 className="font-bold text-lg text-[#F8FAFC] mb-2">{relatedTour.title}</h3>
+                        <p className="text-sm text-[#F8FAFC]/70 mb-3 line-clamp-2">{relatedTour.description}</p>
                         <div className="flex justify-between items-center">
-                          <span className="text-tropical-coral font-bold">{formatMoney(relatedTour.price)}</span>
-                          <span className="text-sm text-gray-500">{relatedTour.duration}</span>
+                          <span className="text-[#D4AF37] font-extrabold">{formatMoney(relatedTour.price)}</span>
+                          <span className="text-xs text-[#F8FAFC]/60">{FLEXIBLE_START_COPY}</span>
                         </div>
                       </div>
                     </Link>
@@ -1004,53 +1106,75 @@ export default async function TourDetailPage({
             </div>
 
             <div className="lg:col-span-4">
-              <div className="lg:hidden rounded-2xl border border-gray-200 bg-gray-50 p-6">
+              <div className="lg:hidden rounded-2xl border border-[#D4AF37]/20 bg-[#1E293B] p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-gray-500 text-sm">From</div>
-                    <div className="text-3xl font-bold text-gray-900">{formatMoney(tour.price)}</div>
+                    <div className="text-[#F8FAFC]/70 text-sm">From</div>
+                    <div className="text-3xl font-extrabold text-[#D4AF37]">{formatMoney(tour.price)}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-gray-500 text-sm">Duration</div>
-                    <div className="font-semibold text-gray-900">{tour.duration}</div>
+                    <div className="text-[#F8FAFC]/70 text-sm">Timing</div>
+                    <div className="font-semibold text-[#F8FAFC]">{FLEXIBLE_START_COPY}</div>
                   </div>
                 </div>
                 <div className="mt-5">
-                  <TourActions title={tour.title} />
+                  <BookingEngine
+                    tourName={tour.title}
+                    basePrice={tour.price}
+                    baseGuests={tour.baseGuests}
+                    maxGuests={tour.maxGuests}
+                    extraGuestFee={tour.extraGuestFee}
+                    addOns={tour.addOns}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <BrochureCta tourSlug={tour.slug} tourTitle={tour.title} />
                 </div>
               </div>
 
               <div className="hidden lg:block sticky top-24">
-                <div className="rounded-3xl border border-gray-200 bg-white shadow-xl p-8">
+                <div className="rounded-3xl border border-[#D4AF37]/20 bg-[#1E293B] shadow-2xl p-8">
                   <div className="flex items-start justify-between gap-6">
                     <div>
-                      <div className="text-gray-500 text-sm">From</div>
-                      <div className="text-4xl font-bold text-gray-900">{formatMoney(tour.price)}</div>
-                      <div className="mt-2 text-sm text-gray-600">Up to {tour.includedGuests} guests included</div>
-                      <div className="text-sm text-gray-600">+{formatMoney(tour.additionalGuestPrice)} per additional</div>
-                      <div className="mt-2 text-sm text-gray-500">Maximum {tour.maxGuests} guests</div>
+                      <div className="text-[#F8FAFC]/70 text-sm">From</div>
+                      <div className="text-4xl font-extrabold text-[#D4AF37]">{formatMoney(tour.price)}</div>
+                      <div className="mt-2 text-sm text-[#F8FAFC]/80">Up to {tour.baseGuests} guests included</div>
+                      <div className="text-sm text-[#F8FAFC]/70">+{formatMoney(tour.extraGuestFee)} per guest (5–8)</div>
+                      <div className="mt-2 text-sm text-[#F8FAFC]/60">Maximum {tour.maxGuests} guests</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-gray-500 text-sm">Rating</div>
-                      <div className="text-yellow-500 font-bold">{renderStars(extras.rating)}</div>
-                      <div className="text-sm text-gray-600">{extras.reviewCount} reviews</div>
+                      <div className="text-[#F8FAFC]/70 text-sm">Rating</div>
+                      <div className="text-yellow-400 font-bold">{renderStars(extras.rating)}</div>
+                      <div className="text-sm text-[#F8FAFC]/70">{extras.reviewCount} reviews</div>
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <TourActions title={tour.title} />
+                    <BookingEngine
+                      tourName={tour.title}
+                      basePrice={tour.price}
+                      baseGuests={tour.baseGuests}
+                      maxGuests={tour.maxGuests}
+                      extraGuestFee={tour.extraGuestFee}
+                      addOns={tour.addOns}
+                    />
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-gray-200">
-                    <div className="text-sm text-gray-700 flex items-center justify-between">
+                  <div className="mt-4">
+                    <BrochureCta tourSlug={tour.slug} tourTitle={tour.title} />
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-white/10">
+                    <div className="text-sm text-[#F8FAFC]/80 flex items-center justify-between">
                       <span className="font-semibold">Duration</span>
-                      <span>{tour.duration}</span>
+                      <span>{FLEXIBLE_START_COPY}</span>
                     </div>
-                    <div className="mt-2 text-sm text-gray-700 flex items-center justify-between">
+                    <div className="mt-2 text-sm text-[#F8FAFC]/80 flex items-center justify-between">
                       <span className="font-semibold">Pickup</span>
                       <span>{extras.pickup}</span>
                     </div>
-                    <div className="mt-2 text-sm text-gray-700 flex items-center justify-between">
+                    <div className="mt-2 text-sm text-[#F8FAFC]/80 flex items-center justify-between">
                       <span className="font-semibold">Languages</span>
                       <span>{extras.languages.join(', ')}</span>
                     </div>
@@ -1062,11 +1186,11 @@ export default async function TourDetailPage({
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-10 bg-[#0F172A]">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 text-center">
           <Link
             href="/#tours"
-            className="inline-block px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-tropical-coral hover:text-tropical-coral transition-all"
+            className="inline-block px-8 py-3 border border-[#D4AF37]/35 text-[#F8FAFC]/80 font-semibold rounded-xl hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all"
           >
             ← View All Tours
           </Link>
