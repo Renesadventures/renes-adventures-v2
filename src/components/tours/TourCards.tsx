@@ -1,7 +1,9 @@
 'use client';
 
-import Link from 'next/link';
+import Image from 'next/image';
 import { tours } from '@/data/tours';
+import { useSound } from '@/components/audio/SoundProvider';
+import { buildWhatsAppTourLink } from '@/lib/utils/whatsapp-link';
 
 function formatMoney(amount: number) {
   return `$${amount.toLocaleString('en-US')}`;
@@ -12,16 +14,19 @@ function getAltText(title: string) {
 }
 
 export default function TourCards() {
+  const { playSfx } = useSound();
+
   return (
-    <section id="tours" className="py-24 bg-white">
+    <section id="tours" className="py-24 bg-[#0F172A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 via-orange-400 to-cyan-500 bg-clip-text text-transparent">
-            Choose Your Belizean Adventure
+          <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Experiences</div>
+          <h2 className="mt-4 text-4xl md:text-6xl font-light text-white tracking-tight">
+            Choose Your
+            <span className="block font-serif italic text-[#D4AF37]">Belize Adventure</span>
           </h2>
-          <p className="text-xl text-gray-800 max-w-3xl mx-auto">
-            Authentic fishing, snorkeling, and island experiences with Captain Rene
+          <p className="mt-4 text-lg text-white/70 max-w-3xl mx-auto font-light">
+            Offshore to reef to sunset—premium days on the water with Captain René.
           </p>
         </div>
 
@@ -30,115 +35,60 @@ export default function TourCards() {
           {tours.map((tour) => (
             <article
               key={tour.id}
-              style={{
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                border: '2px solid #f3f4f6',
-                transition: 'all 0.3s',
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%'
+              onMouseEnter={() => {
+                if (tour.slug === 'deep-sea-fishing' || tour.slug === 'reef-fishing') playSfx('reel_click');
+                else if (tour.slug === 'sunset-cruise') playSfx('champagne_pop');
+                else playSfx('wind');
               }}
-              className="transform hover:scale-[1.02] hover:shadow-2xl hover:border-orange-500"
+              className="group rounded-3xl overflow-hidden border border-white/15 bg-white/5 shadow-2xl hover:border-[#D4AF37]/35 transition-all"
             >
-              {/* Image Section */}
-              <div
-                className="relative overflow-hidden"
-                style={{
-                  width: '100%',
-                  height: '250px',
-                  position: 'relative',
-                  borderTopLeftRadius: '16px',
-                  borderTopRightRadius: '16px'
-                }}
-              >
-                <img
+              <div className="relative overflow-hidden aspect-[16/9]">
+                <Image
                   src={tour.imageUrl}
                   alt={getAltText(tour.title)}
-                  crossOrigin="anonymous"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block'
-                  }}
-                  loading="lazy"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  priority={false}
                 />
 
-                {/* Duration Badge with inline styles */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    backgroundColor: '#FF6B35',
-                    color: 'white',
-                    padding: '8px 16px',
-                    borderRadius: '9999px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  <span>🕐</span>
-                  <span>{tour.duration}</span>
+                <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-black/45 border border-white/15 text-white/85 text-xs uppercase tracking-[0.25em]">
+                  {tour.duration}
                 </div>
               </div>
 
-              {/* Content Section */}
-              <div className="p-6">
-                {/* Title */}
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  {tour.title}
-                </h3>
+              <div className="p-7">
+                <h3 className="text-2xl font-semibold text-white mb-3 tracking-tight">{tour.title}</h3>
 
-                {/* Description */}
-                <p className="text-base text-gray-700 leading-relaxed mb-4">
-                  {tour.description}
-                </p>
+                <p className="text-base text-white/70 leading-relaxed mb-5">{tour.description}</p>
 
                 {/* Pricing Section */}
-                <div className="flex justify-between items-start mb-4 pb-4 border-b border-gray-200">
+                <div className="flex justify-between items-start mb-5 pb-5 border-b border-white/10">
                   <div>
-                    <div className="text-3xl font-bold text-orange-500">
-                      {formatMoney(tour.price)}
-                    </div>
+                    <div className="text-3xl font-extrabold text-[#D4AF37]">{formatMoney(tour.price)}</div>
                     {tour.priceFullDay && (
-                      <div className="text-sm text-gray-700 mt-1">
+                      <div className="text-sm text-white/70 mt-1">
                         Full Day: {formatMoney(tour.priceFullDay)}
                       </div>
                     )}
                   </div>
-                  <div className="text-right text-sm text-gray-700">
-                    <div className="font-medium">Up to {tour.includedGuests} guests</div>
-                    <div className="text-gray-600">
-                      + {formatMoney(tour.additionalGuestPrice)} per additional, max {tour.maxGuests}
-                    </div>
+                  <div className="text-right text-sm text-white/70">
+                    <div className="font-medium text-white/80">Up to {tour.includedGuests ?? tour.baseGuests} guests</div>
+                    <div className="text-white/60">+ {formatMoney(tour.additionalGuestPrice ?? tour.extraGuestFee)} / guest (5–8)</div>
                   </div>
                 </div>
 
-                {tour.slug === 'sunset-cruise' && (
-                  <p className="text-sm text-gray-700 mb-4">
-                    ⏰ Departure Time Note: Standard departure is between 6:00-7:00 PM. Exact departure time may vary
-                    based on sunset time throughout the year to ensure optimal viewing. Final departure time will be
-                    confirmed within 24 hours of your tour date for guest safety and the best possible experience.
-                  </p>
-                )}
-
-                {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    href={`/tours/${tour.slug}`}
-                    prefetch={false}
-                    className="flex-1 text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = buildWhatsAppTourLink({ tourName: tour.title });
+                      window.open(url, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="flex-1 text-center bg-[#D4AF37] text-slate-950 font-extrabold px-6 py-3 rounded-xl border border-white/10 hover:brightness-110 transition"
                   >
                     Book This Adventure
-                  </Link>
+                  </button>
 
                   <button
                     type="button"
@@ -149,7 +99,7 @@ export default function TourCards() {
                         })
                       );
                     }}
-                    className="flex-1 border-2 border-cyan-500 text-cyan-600 font-semibold px-6 py-3 rounded-xl hover:bg-cyan-500 hover:text-white transition-all duration-300"
+                    className="flex-1 border border-white/20 bg-white/10 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/15 transition"
                   >
                     Learn More
                   </button>

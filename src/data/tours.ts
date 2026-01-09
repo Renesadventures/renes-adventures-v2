@@ -42,6 +42,8 @@ export interface Tour {
   baseGuests: number;
   maxGuests: number;
   extraGuestFee: number;
+  includedGuests?: number;
+  additionalGuestPrice?: number;
   addOns: TourAddOn[];
   imageUrl: string;
   features: string[];
@@ -69,6 +71,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/full-day-ultimate.jpg",
     features: [
@@ -180,6 +184,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/deep-sea-fishing.jpg",
     features: [
@@ -216,6 +222,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/reef-fishing.jpg",
     features: [
@@ -250,6 +258,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/sunset-cruise.jpg",
     features: [
@@ -284,6 +294,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/hol-chan-snorkel.jpg",
     features: [
@@ -319,6 +331,8 @@ export const tours: Tour[] = [
     baseGuests: 4,
     maxGuests: 8,
     extraGuestFee: 75,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
     addOns: DEFAULT_ADDONS,
     imageUrl: "/images/tours/beach-bbq.jpg",
     features: [
