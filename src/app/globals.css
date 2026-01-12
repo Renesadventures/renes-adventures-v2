@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hide scrollbar for channel switcher */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.gold-foil-card {
+  border: 1px solid rgba(212, 175, 55, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.45),
+    0 18px 46px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(212, 175, 55, 0.18);
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.18) 0%,
+    rgba(0, 0, 0, 0.25) 45%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+}
+
+.border-gold {
+  border: 1px solid rgba(212, 175, 55, 0.95);
+}
+
+.shadow-gold {
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.45),
+    0 18px 46px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(212, 175, 55, 0.18);
+}
+
+.gold-foil-inner {
+  border-radius: 22px;
+  background: rgba(11, 18, 32, 0.82);
+  backdrop-filter: blur(10px);
+}
