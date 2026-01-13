@@ -34,6 +34,8 @@ dist
 # large public media folders (adjust as needed)
 /public/videos/
 /public/images/renes-activities/
+/public/images/renes-activities-2/
+/public/images/renes-activities-3/
 
 # misc
 .DS_Store
@@ -62,3 +64,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+git add .gitignore
+git commit -m "chore: remove large images from git tracking"
+git push
+@
