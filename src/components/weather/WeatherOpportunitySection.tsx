@@ -54,14 +54,14 @@ export function WeatherOpportunitySection() {
   const [forceFallbackVideo, setForceFallbackVideo] = useState(false);
   const [activeMedia, setActiveMedia] = useState<{ type: 'video' | 'image'; src: string; poster?: string }>({
     type: 'video',
-    src: '/videos/hero/renes-custom-adventures.mp4',
+    src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`,
   });
 
   const stageVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const { playSfx, ensureUnlocked } = useSound();
 
-  const FALLBACK_VIDEO_SRC = '/videos/hero/renes-custom-adventures.mp4';
+  const FALLBACK_VIDEO_SRC = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
 
   useEffect(() => {
     setBaseDate(new Date());
@@ -90,7 +90,7 @@ export function WeatherOpportunitySection() {
   useEffect(() => {
     setForceFallbackVideo(false);
     setActiveMedia({ type: 'video', src: FALLBACK_VIDEO_SRC });
-  }, [selectedDay]);
+  }, [FALLBACK_VIDEO_SRC, selectedDay]);
 
   const intelligence = useMemo(() => {
     const day = forecast[selectedDay];
@@ -174,9 +174,9 @@ export function WeatherOpportunitySection() {
   const captainAdvice = intelligence.captainAdvice;
 
   const captainsChoiceVideoUrl = useMemo(() => {
-    if (intelligence.speciesKey === 'snook') return '/videos/luxury/deep-sea-fishing.mp4';
-    if (intelligence.speciesKey === 'wahoo') return '/videos/luxury/deep-sea-fishing.mp4';
-    if (intelligence.speciesKey === 'tarpon') return '/videos/luxury/deep-sea-fishing.mp4';
+    if (intelligence.speciesKey === 'snook') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'wahoo') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'tarpon') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
     return FALLBACK_VIDEO_SRC;
   }, [FALLBACK_VIDEO_SRC, intelligence.speciesKey]);
 

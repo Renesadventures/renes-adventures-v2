@@ -56,7 +56,7 @@ export default function VesselSpecs3D() {
     []
   );
 
-  const heroVideoSrc = '/videos/hero/renes-custom-adventures.mp4';
+  const heroVideoSrc = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
   const heroImageSrc = '/images/tours/full-day-ultimate.jpg';
 
   return (

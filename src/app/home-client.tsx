@@ -49,7 +49,7 @@ export default function HomeClient() {
               e.currentTarget.playbackRate = 0.6;
             }}
           >
-            <source src="/videos/hero/sunset-ritual.mp4" type="video/mp4" />
+            <source src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/sunset-ritual.mp4`} type="video/mp4" />
           </video>
         </div>
 

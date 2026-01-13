@@ -61,7 +61,7 @@ export function BoatGalleryPlaceholder() {
                   items={[
                     {
                       type: 'video',
-                      src: '/videos/luxury/25-foot-center-console.mp4',
+                      src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/25-foot-center-console.mp4`,
                       fallbackSrc: '/images/tours/full-day-ultimate.jpg',
                       alt: 'Meet Your Vessel - B-roll',
                     },

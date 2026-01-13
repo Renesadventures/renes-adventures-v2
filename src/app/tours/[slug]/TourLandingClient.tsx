@@ -33,7 +33,7 @@ type AddOnUiItem =
     };
 
 function pickInitialVideo(videos: VideoItem[]) {
-  return videos[0]?.src || '/videos/hero/renes-custom-adventures.mp4';
+  return videos[0]?.src || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
 }
 
 function formatMoney(amount: number) {
@@ -59,16 +59,16 @@ export default function TourLandingClient({
 
   const customAdventureCards = useMemo<VideoItem[]>(
     () => [
-      { id: 'reef-fishing', label: 'Reef Fishing', src: '/videos/hero/reef-fishing.mp4' },
-      { id: 'spearfishing', label: 'Spearfishing', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'lobster', label: 'Lobster', src: '/videos/luxury/Lobster Fishing 1.mp4' },
-      { id: 'conch', label: 'Conch', src: '/videos/luxury/Conch Fishing 1.mp4' },
-      { id: 'snorkel', label: 'Snorkel', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'hol-chan', label: 'Hol Chan', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'shark-ray-alley', label: 'Shark Ray Alley', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'coral-gardens', label: 'Coral Gardens', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'caye-caulker', label: 'Caye Caulker', src: '/videos/hero/renes-custom-adventures.mp4' },
-      { id: 'beach-bbq', label: 'Beach BBQ', src: '/videos/hero/beach-bbq.mp4' }
+      { id: 'reef-fishing', label: 'Reef Fishing', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/reef-fishing.mp4` },
+      { id: 'spearfishing', label: 'Spearfishing', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'lobster', label: 'Lobster', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/Lobster Fishing 1.mp4` },
+      { id: 'conch', label: 'Conch', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/Conch Fishing 1.mp4` },
+      { id: 'snorkel', label: 'Snorkel', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'hol-chan', label: 'Hol Chan', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'shark-ray-alley', label: 'Shark Ray Alley', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'coral-gardens', label: 'Coral Gardens', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'caye-caulker', label: 'Caye Caulker', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'beach-bbq', label: 'Beach BBQ', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/beach-bbq.mp4` }
     ],
     []
   );

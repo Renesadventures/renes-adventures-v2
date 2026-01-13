@@ -6,7 +6,7 @@ interface VideoFrameProps {
 }
 
 const VideoFrame: React.FC<VideoFrameProps> = ({ 
-  videoUrl = "/videos/hero/renes-custom-adventures.mp4",
+  videoUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`,
   posterUrl 
 }) => {
   return (
