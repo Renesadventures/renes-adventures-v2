@@ -79,7 +79,12 @@ export default function TourLandingClient({
   }, [customAdventureCards, heroVideos, isCustomCharter]);
 
   const quickClips = useMemo(() => {
-    const fallbackThumbs = ['/images/tours/full-day-ultimate.jpg', '/images/tours/deep-sea-fishing.jpg', '/images/tours/reef-fishing.jpg', '/images/tours/beach-bbq.jpg'];
+    const fallbackThumbs = [
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
+    ];
     const clips = videos.slice(0, 4);
     return clips.map((v, idx) => ({ ...v, thumb: fallbackThumbs[idx] || tour.imageUrl }));
   }, [tour.imageUrl, videos]);
@@ -90,19 +95,19 @@ export default function TourLandingClient({
         id: 'theme-fishing',
         label: 'Fishing',
         keywords: ['fish', 'fishing', 'spearfish', 'spearfishing', 'deep', 'reef'],
-        thumb: '/images/tours/deep-sea-fishing.jpg',
+        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
       },
       {
         id: 'theme-snorkeling',
         label: 'Snorkeling',
         keywords: ['snorkel', 'reef', 'hol', 'chan', 'shark', 'ray'],
-        thumb: '/images/tours/hol-chan-snorkel.jpg',
+        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`,
       },
       {
         id: 'theme-beach',
         label: 'Beach',
         keywords: ['beach', 'bbq', 'island', 'caye'],
-        thumb: '/images/tours/beach-bbq.jpg',
+        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
       },
       {
         id: 'theme-vessel',
@@ -423,7 +428,7 @@ export default function TourLandingClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src="/images/tours/reef-fishing.jpg" alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Action</div>
@@ -431,7 +436,7 @@ export default function TourLandingClient({
                       </div>
                     </div>
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src="/images/tours/beach-bbq.jpg" alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Reset</div>
@@ -463,7 +468,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src="/images/tours/deep-sea-fishing.jpg" alt="" fill className="object-cover opacity-35" sizes="100vw" />
+            <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`} alt="" fill className="object-cover opacity-35" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/70" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Featured Fish Story</div>
@@ -482,7 +487,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src="/images/tours/reef-fishing.jpg" alt="" fill className="object-cover opacity-30" sizes="100vw" />
+            <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover opacity-30" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-black/80" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Islander Time</div>

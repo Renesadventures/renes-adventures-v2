@@ -179,7 +179,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src="/images/tours/deep-sea-fishing.jpg"
+                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`}
                 alt="The One That Got Away"
                 fill
                 className="object-cover"
@@ -208,7 +208,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src="/images/tours/hol-chan-snorkel.jpg"
+                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`}
                 alt="Swimming with Giants"
                 fill
                 className="object-cover"
@@ -237,7 +237,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src="/images/tours/sunset-cruise.jpg"
+                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`}
                 alt="Your Perfect Moment"
                 fill
                 className="object-cover"

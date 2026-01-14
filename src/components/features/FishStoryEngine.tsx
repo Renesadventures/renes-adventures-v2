@@ -71,19 +71,19 @@ export default function FishStoryEngine() {
 
   const items = useMemo<StoryWallItem[]>(() => {
     const fallback = [
-      '/images/tours/deep-sea-fishing.jpg',
-      '/images/tours/reef-fishing.jpg',
-      '/images/tours/full-day-ultimate.jpg',
-      '/images/tours/hol-chan-snorkel.jpg',
-      '/images/tours/beach-bbq.jpg',
-      '/images/tours/sunset-cruise.jpg',
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
+      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`,
     ];
 
     const fromManifest = Array.isArray(assetManifest.images)
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const renesActivitiesOnly = fromManifest.filter((src) => src.includes('/images/renes-activities/'));
+    const renesActivitiesOnly = fromManifest.filter((src) => src.includes(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/renes-activities/`));
     const isCatchShot = (src: string) => {
       const s = src.toLowerCase();
       return (

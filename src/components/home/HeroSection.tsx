@@ -11,7 +11,7 @@ const CHANNELS = [
     title: 'Deep Sea Fishing',
     tagline: 'Big game fishing beyond the reef—where the ocean turns electric.',
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/deep-sea-fIshing.mp4`,
-    fallbackImageUrl: '/images/tours/deep-sea-fishing.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/deep-sea-fishing'
   },
@@ -20,7 +20,7 @@ const CHANNELS = [
     title: 'Reef Fishing',
     tagline: 'Cast your line in paradise—snappers, groupers, and pure Caribbean bliss.',
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/reef-fishing.mp4`,
-    fallbackImageUrl: '/images/tours/reef-fishing.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/reef-fishing'
   },
@@ -29,7 +29,7 @@ const CHANNELS = [
     title: 'Sunset Ritual',
     tagline: 'Watch the sky ignite as the Caribbean melts into gold.',
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/sunset-ritual.mp4`,
-    fallbackImageUrl: '/images/tours/sunset-cruise.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/sunset-cruise'
   },
@@ -38,7 +38,7 @@ const CHANNELS = [
     title: 'Blue Hole Adventure',
     tagline: 'Dive into the icon—snorkel the Great Blue Hole and surrounding reefs.',
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/blue-hole.mp4`,
-    fallbackImageUrl: '/images/tours/hol-chan-snorkel.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/blue-hole-adventure'
   },
@@ -47,7 +47,7 @@ const CHANNELS = [
     title: 'Secret Beach',
     tagline: "The island's most vibrant beach party destination.",
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/secret-beach.mp4`,
-    fallbackImageUrl: '/images/tours/beach-bbq.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/secret-beach'
   },
@@ -56,7 +56,7 @@ const CHANNELS = [
     title: "Rene's Custom Adventures",
     tagline: 'The ultimate Belize experience—fish, snorkel, explore, and feast.',
     videoUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`,
-    fallbackImageUrl: '/images/tours/full-day-ultimate.jpg',
+    fallbackImageUrl: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
     ctaText: 'Book This Adventure',
     ctaLink: '/tours/custom-charter'
   }

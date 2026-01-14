@@ -185,7 +185,7 @@ export function WeatherOpportunitySection() {
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const pool = list.filter((src) => src.includes('/images/renes-activities/'));
+    const pool = list.filter((src) => src.includes(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/renes-activities/`));
     const seen = new Set<string>();
     const out: string[] = [];
     for (const src of pool) {
@@ -201,7 +201,7 @@ export function WeatherOpportunitySection() {
 
   const curatedThumbnails = useMemo(() => {
     const images = manifestThumbnails.filter(Boolean);
-    const poster = images[0] || '/images/tours/deep-sea-fishing.jpg';
+    const poster = images[0] || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`;
     const uniqueImages: string[] = [];
     const seen = new Set<string>();
     for (const src of images) {

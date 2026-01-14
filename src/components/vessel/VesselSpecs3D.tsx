@@ -57,7 +57,7 @@ export default function VesselSpecs3D() {
   );
 
   const heroVideoSrc = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
-  const heroImageSrc = '/images/tours/full-day-ultimate.jpg';
+  const heroImageSrc = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`;
 
   return (
     <section id="vessel" className="py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">

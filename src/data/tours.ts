@@ -119,7 +119,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/full-day-ultimate.jpg",
+    imageUrl: '/images/tours/full-day-ultimate.jpg',
     features: [
       "Speargun or rod and reel fishing",
       "Snorkel the Belize Barrier Reef",
@@ -146,7 +146,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/deep-sea-fishing.jpg",
+    imageUrl: '/images/tours/deep-sea-fishing.jpg',
     features: [
       "Experienced crew with all equipment",
       "Target big game fish species",
@@ -164,7 +164,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/reef-fishing.jpg",
+    imageUrl: '/images/tours/reef-fishing.jpg',
     features: [
       "Target reef fish species",
       "Snapper, grouper, barracuda",
@@ -182,7 +182,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/sunset-cruise.jpg",
+    imageUrl: '/images/tours/sunset-cruise.jpg',
     features: [
       "Departure between 6-7 PM",
       "Perfect for couples and friends",
@@ -200,7 +200,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/hol-chan-snorkel.jpg",
+    imageUrl: '/images/tours/hol-chan-snorkel.jpg',
     features: [
       "Visit the iconic Blue Hole",
       "Snorkel world-class site",
@@ -219,7 +219,7 @@ export const tours: Tour[] = [
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
-    imageUrl: "/images/tours/beach-bbq.jpg",
+    imageUrl: '/images/tours/beach-bbq.jpg',
     features: [
       "Visit the famous Secret Beach",
       "Crystal-clear turquoise waters",

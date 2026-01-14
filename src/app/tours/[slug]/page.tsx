@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Sun, Waves, Anchor, Luggage, Info, CheckCircle2, Star } from 'lucide-react';
+import { Anchor, Luggage, CheckCircle2 } from 'lucide-react';
 
 export default function TourPage() {
   const [activeVideo, setActiveVideo] = useState(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`);
