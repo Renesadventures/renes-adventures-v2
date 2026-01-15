@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Phone, MessageCircle } from 'lucide-react';
 
 export default function SunsetRitualCTA() {
-  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
 
   return (
     <section className="relative w-full overflow-hidden">

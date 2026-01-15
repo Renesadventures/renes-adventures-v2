@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 
 export default function BelizeLifestyle() {
-  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
 
   const cards = useMemo(
     () => [

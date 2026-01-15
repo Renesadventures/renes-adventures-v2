@@ -10,45 +10,47 @@ type Channel = {
 };
 
 export default function HeroNetflix() {
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
   const channels = useMemo<Channel[]>(
     () => [
       {
         id: 'deep-sea',
         label: 'Deep Sea',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/deep-sea-fIshing.mp4`,
+        src: `${base}/hero/deep-sea-fIshing.mp4`,
       },
       {
         id: 'beach-bbq',
         label: 'Beach BBQ',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/beach-bbq.mp4`,
+        src: `${base}/hero/beach-bbq.mp4`,
       },
       {
         id: 'blue-hole',
         label: 'Blue Hole',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/blue-hole.mp4`,
+        src: `${base}/hero/blue-hole.mp4`,
       },
       {
         id: 'custom',
         label: 'Custom',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/renes-custom-adventures.mp4`,
+        src: `${base}/hero/renes-custom-adventures.mp4`,
       },
       {
         id: 'reef',
         label: 'Reef',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/Reef Fishing.mp4`,
+        src: `${base}/hero/Reef Fishing.mp4`,
       },
       {
         id: 'secret-beach',
         label: 'Secret Beach',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/secret-beach.mp4`,
+        src: `${base}/hero/secret-beach.mp4`,
       },
       {
         id: 'sunset',
         label: 'Sunset',
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/hero/sunset-ritual.mp4`,
+        src: `${base}/hero/sunset-ritual.mp4`,
       },
     ],
-    []
+    [base]
   );
 
   const [activeIndex, setActiveIndex] = useState(0);

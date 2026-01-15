@@ -11,6 +11,8 @@ import { financialAddOnsBySlug, tours } from '@/data/tours';
 import BookingEngine from '@/components/booking/BookingEngine';
 import BrochureCta from './BrochureCta';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 type VideoItem = {
   id: string;
   label: string;
@@ -33,7 +35,7 @@ type AddOnUiItem =
     };
 
 function pickInitialVideo(videos: VideoItem[]) {
-  return videos[0]?.src || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
+  return videos[0]?.src || `${base}/videos/hero/renes-custom-adventures.mp4`;
 }
 
 function formatMoney(amount: number) {
@@ -59,16 +61,16 @@ export default function TourLandingClient({
 
   const customAdventureCards = useMemo<VideoItem[]>(
     () => [
-      { id: 'reef-fishing', label: 'Reef Fishing', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/reef-fishing.mp4` },
-      { id: 'spearfishing', label: 'Spearfishing', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'lobster', label: 'Lobster', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/Lobster Fishing 1.mp4` },
-      { id: 'conch', label: 'Conch', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/Conch Fishing 1.mp4` },
-      { id: 'snorkel', label: 'Snorkel', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'hol-chan', label: 'Hol Chan', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'shark-ray-alley', label: 'Shark Ray Alley', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'coral-gardens', label: 'Coral Gardens', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'caye-caulker', label: 'Caye Caulker', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'beach-bbq', label: 'Beach BBQ', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/beach-bbq.mp4` }
+      { id: 'reef-fishing', label: 'Reef Fishing', src: `${base}/videos/hero/reef-fishing.mp4` },
+      { id: 'spearfishing', label: 'Spearfishing', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'lobster', label: 'Lobster', src: `${base}/videos/luxury/Lobster Fishing 1.mp4` },
+      { id: 'conch', label: 'Conch', src: `${base}/videos/luxury/Conch Fishing 1.mp4` },
+      { id: 'snorkel', label: 'Snorkel', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'hol-chan', label: 'Hol Chan', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'shark-ray-alley', label: 'Shark Ray Alley', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'coral-gardens', label: 'Coral Gardens', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'caye-caulker', label: 'Caye Caulker', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
+      { id: 'beach-bbq', label: 'Beach BBQ', src: `${base}/videos/hero/beach-bbq.mp4` }
     ],
     []
   );
@@ -80,10 +82,10 @@ export default function TourLandingClient({
 
   const quickClips = useMemo(() => {
     const fallbackThumbs = [
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
+      `${base}/images/tours/full-day-ultimate.jpg`,
+      `${base}/images/tours/deep-sea-fishing.jpg`,
+      `${base}/images/tours/reef-fishing.jpg`,
+      `${base}/images/tours/beach-bbq.jpg`,
     ];
     const clips = videos.slice(0, 4);
     return clips.map((v, idx) => ({ ...v, thumb: fallbackThumbs[idx] || tour.imageUrl }));
@@ -95,19 +97,19 @@ export default function TourLandingClient({
         id: 'theme-fishing',
         label: 'Fishing',
         keywords: ['fish', 'fishing', 'spearfish', 'spearfishing', 'deep', 'reef'],
-        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
+        thumb: `${base}/images/tours/deep-sea-fishing.jpg`,
       },
       {
         id: 'theme-snorkeling',
         label: 'Snorkeling',
         keywords: ['snorkel', 'reef', 'hol', 'chan', 'shark', 'ray'],
-        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`,
+        thumb: `${base}/images/tours/hol-chan-snorkel.jpg`,
       },
       {
         id: 'theme-beach',
         label: 'Beach',
         keywords: ['beach', 'bbq', 'island', 'caye'],
-        thumb: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
+        thumb: `${base}/images/tours/beach-bbq.jpg`,
       },
       {
         id: 'theme-vessel',
@@ -428,7 +430,7 @@ export default function TourLandingClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={`${base}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Action</div>
@@ -436,7 +438,7 @@ export default function TourLandingClient({
                       </div>
                     </div>
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={`${base}/images/tours/beach-bbq.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Reset</div>
@@ -468,7 +470,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`} alt="" fill className="object-cover opacity-35" sizes="100vw" />
+            <Image src={`${base}/images/tours/deep-sea-fishing.jpg`} alt="" fill className="object-cover opacity-35" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/70" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Featured Fish Story</div>
@@ -487,7 +489,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover opacity-30" sizes="100vw" />
+            <Image src={`${base}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover opacity-30" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-black/80" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Islander Time</div>

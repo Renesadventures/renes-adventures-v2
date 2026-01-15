@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Anchor, Luggage, CheckCircle2 } from 'lucide-react';
 
 export default function TourPage() {
-  const [activeVideo, setActiveVideo] = useState(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`);
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+  const [activeVideo, setActiveVideo] = useState(`${base}/videos/hero/renes-custom-adventures.mp4`);
   const [guests, setGuests] = useState(4);
   const [addonQtys, setAddonQtys] = useState<{ [key: string]: number }>({});
 
@@ -33,10 +34,10 @@ export default function TourPage() {
   const grandTotal = basePrice + extraPassengerPrice + addonsTotal + (basePrice + extraPassengerPrice + addonsTotal) * 0.185;
 
   const activities = [
-    { name: "PROMO", vid: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1544551763-47a016066e53?w=400" },
-    { name: "FISHING", vid: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/reef-fishing.mp4`, thumb: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400" },
-    { name: "SNORKEL", vid: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" },
-    { name: "BEACH BBQ", vid: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/beach-bbq.mp4`, thumb: "https://images.unsplash.com/photo-1583212292354-0837cc556eb2?w=400" }
+    { name: "PROMO", vid: `${base}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1544551763-47a016066e53?w=400" },
+    { name: "FISHING", vid: `${base}/videos/hero/reef-fishing.mp4`, thumb: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400" },
+    { name: "SNORKEL", vid: `${base}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" },
+    { name: "BEACH BBQ", vid: `${base}/videos/hero/beach-bbq.mp4`, thumb: "https://images.unsplash.com/photo-1583212292354-0837cc556eb2?w=400" }
   ];
 
   return (

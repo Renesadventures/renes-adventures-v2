@@ -8,6 +8,8 @@ import { useSound } from '@/components/audio/SoundProvider';
 import Image from 'next/image';
 import Link from 'next/link';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 interface WeatherDay {
   date: string;
   dayLabel: string;
@@ -54,14 +56,14 @@ export function WeatherOpportunitySection() {
   const [forceFallbackVideo, setForceFallbackVideo] = useState(false);
   const [activeMedia, setActiveMedia] = useState<{ type: 'video' | 'image'; src: string; poster?: string }>({
     type: 'video',
-    src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`,
+    src: `${base}/videos/hero/renes-custom-adventures.mp4`,
   });
 
   const stageVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const { playSfx, ensureUnlocked } = useSound();
 
-  const FALLBACK_VIDEO_SRC = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
+  const FALLBACK_VIDEO_SRC = `${base}/videos/hero/renes-custom-adventures.mp4`;
 
   useEffect(() => {
     setBaseDate(new Date());
@@ -174,9 +176,9 @@ export function WeatherOpportunitySection() {
   const captainAdvice = intelligence.captainAdvice;
 
   const captainsChoiceVideoUrl = useMemo(() => {
-    if (intelligence.speciesKey === 'snook') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
-    if (intelligence.speciesKey === 'wahoo') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
-    if (intelligence.speciesKey === 'tarpon') return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'snook') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'wahoo') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'tarpon') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
     return FALLBACK_VIDEO_SRC;
   }, [FALLBACK_VIDEO_SRC, intelligence.speciesKey]);
 
@@ -185,7 +187,7 @@ export function WeatherOpportunitySection() {
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const pool = list.filter((src) => src.includes(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/renes-activities/`));
+    const pool = list.filter((src) => src.includes(`${base}/images/renes-activities/`));
     const seen = new Set<string>();
     const out: string[] = [];
     for (const src of pool) {
@@ -201,7 +203,7 @@ export function WeatherOpportunitySection() {
 
   const curatedThumbnails = useMemo(() => {
     const images = manifestThumbnails.filter(Boolean);
-    const poster = images[0] || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`;
+    const poster = images[0] || `${base}/images/tours/deep-sea-fishing.jpg`;
     const uniqueImages: string[] = [];
     const seen = new Set<string>();
     for (const src of images) {

@@ -14,6 +14,7 @@ import { useWeather } from '@/hooks/useWeather';
 import { buildWhatsAppTourLink } from '@/lib/utils/whatsapp-link';
 
 export default function HomeClient() {
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
   const { weather } = useWeather();
   const eliteCtaLink = buildWhatsAppTourLink({ tourName: 'Sunset Cruise' });
 
@@ -49,7 +50,7 @@ export default function HomeClient() {
               e.currentTarget.playbackRate = 0.6;
             }}
           >
-            <source src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/sunset-ritual.mp4`} type="video/mp4" />
+            <source src={`${base}/videos/hero/sunset-ritual.mp4`} type="video/mp4" />
           </video>
         </div>
 

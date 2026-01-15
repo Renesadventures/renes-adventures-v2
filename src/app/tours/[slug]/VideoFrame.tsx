@@ -1,12 +1,14 @@
 import React from 'react';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 interface VideoFrameProps {
   videoUrl?: string;
   posterUrl?: string;
 }
 
 const VideoFrame: React.FC<VideoFrameProps> = ({ 
-  videoUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`,
+  videoUrl = `${base}/videos/hero/renes-custom-adventures.mp4`,
   posterUrl 
 }) => {
   return (

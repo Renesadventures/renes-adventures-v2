@@ -5,6 +5,8 @@ import Image from 'next/image';
 import type { TourActivity } from '@/data/tours';
 import assetManifest from '@/data/asset-manifest.json';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 type MediaSet = {
   images: string[];
   videoUrl: string;
@@ -42,7 +44,7 @@ function pickMediaForActivity(activity: TourActivity): MediaSet {
 
   const keywords = (activity.keywords || []).map((k) => k.toLowerCase());
 
-  const renesOnly = allImages.filter((src) => src.includes(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/renes-activities/`));
+  const renesOnly = allImages.filter((src) => src.includes(`${base}/images/renes-activities/`));
 
   const matches = (src: string) => {
     const s = src.toLowerCase();
@@ -60,7 +62,7 @@ function pickMediaForActivity(activity: TourActivity): MediaSet {
   const selected = sorted.slice(0, 5);
 
   return {
-    images: selected.length ? selected : [`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`],
+    images: selected.length ? selected : [`${base}/images/tours/full-day-ultimate.jpg`],
     videoUrl: activity.videoUrl,
   };
 }
@@ -106,7 +108,7 @@ export default function CustomAdventureActivities({ activities }: { activities: 
             {visibleActivities.map((activity) => {
               const active = activity.id === selectedId;
               const media = mediaById.get(activity.id);
-              const thumb = media?.images?.[0] || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`;
+              const thumb = media?.images?.[0] || `${base}/images/tours/full-day-ultimate.jpg`;
               const seasonLabel = activity.season
                 ? getSeasonLabel(activity.id, activity.season.startMonthDay, activity.season.endMonthDay)
                 : undefined;
@@ -167,7 +169,7 @@ export default function CustomAdventureActivities({ activities }: { activities: 
                       <source src={selectedMedia.videoUrl} type="video/mp4" />
                     </video>
                   ) : (
-                    <Image src={selectedMedia?.images[0] || `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`} alt={selectedActivity.title} fill className="object-cover" sizes="(min-width: 1024px) 60vw, 100vw" />
+                    <Image src={selectedMedia?.images[0] || `${base}/images/tours/full-day-ultimate.jpg`} alt={selectedActivity.title} fill className="object-cover" sizes="(min-width: 1024px) 60vw, 100vw" />
                   )}
                 </div>
 

@@ -78,7 +78,7 @@ export default function FishStoryCreator() {
     return story;
   }, [story]);
 
-  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
   const placeholderPreviewSrc = `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
 
   const handleFile = (f: File | null) => {

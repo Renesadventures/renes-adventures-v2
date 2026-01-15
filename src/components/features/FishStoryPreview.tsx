@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 export function FishStoryPreview() {
   const [email, setEmail] = useState('');
   const [tourType, setTourType] = useState('');
@@ -179,7 +181,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`}
+                src={`${base}/images/tours/deep-sea-fishing.jpg`}
                 alt="The One That Got Away"
                 fill
                 className="object-cover"
@@ -208,7 +210,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`}
+                src={`${base}/images/tours/hol-chan-snorkel.jpg`}
                 alt="Swimming with Giants"
                 fill
                 className="object-cover"
@@ -237,7 +239,7 @@ export function FishStoryPreview() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-xl">
               <Image
-                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`}
+                src={`${base}/images/tours/sunset-cruise.jpg`}
                 alt="Your Perfect Moment"
                 fill
                 className="object-cover"

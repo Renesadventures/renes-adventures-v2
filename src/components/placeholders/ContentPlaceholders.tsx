@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import TourCards from '@/components/tours/TourCards';
 import LuxuryGallery from '@/components/ui/luxury-gallery';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 export function BoatGalleryPlaceholder() {
   return (
     <section className="py-24 bg-slate-50">
@@ -61,13 +63,13 @@ export function BoatGalleryPlaceholder() {
                   items={[
                     {
                       type: 'video',
-                      src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/luxury/25-foot-center-console.mp4`,
-                      fallbackSrc: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
+                      src: `${base}/videos/luxury/25-foot-center-console.mp4`,
+                      fallbackSrc: `${base}/images/tours/full-day-ultimate.jpg`,
                       alt: 'Meet Your Vessel - B-roll',
                     },
-                    { type: 'image', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`, alt: 'Center-console exterior - offshore ready' },
-                    { type: 'image', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`, alt: 'Center-console deck space - reef days' },
-                    { type: 'image', src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`, alt: 'Premium comfort on the water' },
+                    { type: 'image', src: `${base}/images/tours/deep-sea-fishing.jpg`, alt: 'Center-console exterior - offshore ready' },
+                    { type: 'image', src: `${base}/images/tours/reef-fishing.jpg`, alt: 'Center-console deck space - reef days' },
+                    { type: 'image', src: `${base}/images/tours/sunset-cruise.jpg`, alt: 'Premium comfort on the water' },
                   ]}
                 />
               </div>

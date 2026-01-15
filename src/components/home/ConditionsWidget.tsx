@@ -95,7 +95,7 @@ function ForecastIcon({ kind }: { kind: ForecastDay['icon'] }) {
 }
 
 export default function ConditionsWidget() {
-  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
 
   const forecast: ForecastDay[] = [
     { id: 'mon', day: 'Mon', icon: 'partly', highF: 82, windMph: 12, windDir: 'ENE', wavesFt: '2–3 ft' },

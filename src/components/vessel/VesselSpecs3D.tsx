@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 type HotspotId = 'garmin' | 'refit' | 'trim' | 'layout';
 
 type Hotspot = {
@@ -56,8 +58,8 @@ export default function VesselSpecs3D() {
     []
   );
 
-  const heroVideoSrc = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/videos/hero/renes-custom-adventures.mp4`;
-  const heroImageSrc = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`;
+  const heroVideoSrc = `${base}/videos/hero/renes-custom-adventures.mp4`;
+  const heroImageSrc = `${base}/images/tours/full-day-ultimate.jpg`;
 
   return (
     <section id="vessel" className="py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">

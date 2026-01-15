@@ -7,6 +7,8 @@ import assetManifest from '@/data/asset-manifest.json';
 import { buildLiasTaleForAsset } from '@/lib/utils/lia-tales';
 import { useSound } from '@/components/audio/SoundProvider';
 
+const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '600'] });
 
 type StoryWallItem = {
@@ -71,19 +73,19 @@ export default function FishStoryEngine() {
 
   const items = useMemo<StoryWallItem[]>(() => {
     const fallback = [
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/deep-sea-fishing.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/reef-fishing.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/full-day-ultimate.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/hol-chan-snorkel.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/beach-bbq.jpg`,
-      `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/tours/sunset-cruise.jpg`,
+      `${base}/images/tours/deep-sea-fishing.jpg`,
+      `${base}/images/tours/reef-fishing.jpg`,
+      `${base}/images/tours/full-day-ultimate.jpg`,
+      `${base}/images/tours/hol-chan-snorkel.jpg`,
+      `${base}/images/tours/beach-bbq.jpg`,
+      `${base}/images/tours/sunset-cruise.jpg`,
     ];
 
     const fromManifest = Array.isArray(assetManifest.images)
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const renesActivitiesOnly = fromManifest.filter((src) => src.includes(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/images/renes-activities/`));
+    const renesActivitiesOnly = fromManifest.filter((src) => src.includes(`${base}/images/renes-activities/`));
     const isCatchShot = (src: string) => {
       const s = src.toLowerCase();
       return (
