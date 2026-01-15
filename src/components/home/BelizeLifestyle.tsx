@@ -3,85 +3,66 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Compass } from 'lucide-react';
-
-type LifestyleCard = {
-  id: string;
-  title: string;
-  description: string;
-  href: string;
-  imageSrc: string;
-  videoSrc: string;
-  sourceName: string;
-  sourceHref: string;
-};
+import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 
 export default function BelizeLifestyle() {
   const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
 
-  const cards = useMemo<LifestyleCard[]>(
+  const cards = useMemo(
     () => [
       {
         id: 'maya',
-        title: 'Ancient Maya Civilization',
-        description: 'Stone cities, ritual temples, and stories written in the jungle canopy.',
+        title: 'Maya Mysteries Unveiled',
+        description:
+          "Step into temples where ancient priests once whispered to the gods. Stone pyramids rise from the jungle canopy—Xunantunich, Caracol, Lamanai. The Maya didn't disappear; their descendants still speak the old languages here.",
         href: '/blog?category=maya',
-        imageSrc: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
+        imageSrc: `${base}/images/renes-activities/adventure-in-the-yucatan-2024-09-13-23-43-13-utc.jpg`,
         videoSrc: `${base}/hero/renes-custom-adventures.mp4`,
-        sourceName: 'BBC Earth',
-        sourceHref: 'https://www.bbcearth.com/',
       },
       {
         id: 'reef',
-        title: 'Barrier Reef Ecosystem',
-        description: 'UNESCO-scale color: coral gardens, rays, sharks, and reef life in 4K.',
+        title: 'The Barrier Reef: A Living Masterpiece',
+        description:
+          "The second-largest barrier reef on Earth thrives just offshore. Swim with nurse sharks in crystal shallows. Dive the Great Blue Hole—a portal to the planet's past. This is Jacques Cousteau's ‘one of the world's greatest natural wonders.’",
         href: '/blog?category=reef',
-        imageSrc: `${base}/images/renes-activities/Blue-Hole-Iconic.jpeg`,
+        imageSrc: `${base}/images/renes-activities/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
         videoSrc: `${base}/hero/blue-hole.mp4`,
-        sourceName: 'UNESCO',
-        sourceHref: 'https://whc.unesco.org/',
       },
       {
         id: 'garifuna',
-        title: 'Garifuna Culture',
-        description: 'Drum, dance, and living heritage—Belize’s soul in rhythm.',
+        title: 'Garifuna Soul: The Rhythm of Resilience',
+        description:
+          "Drums echo through coastal villages. The Garifuna people—descendants of African, Caribbean, and indigenous heritage—keep centuries-old traditions alive through dance, music, and cassava bread. Feel the punta rhythm in your bones.",
         href: '/blog?category=garifuna',
-        imageSrc:
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg',
+        imageSrc: `${base}/images/renes-activities/group-of-young-people-celebrating-with-music-at-th-2025-02-16-03-45-43-utc.jpg`,
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        sourceName: 'National Geographic',
-        sourceHref: 'https://www.nationalgeographic.com/',
       },
       {
-        id: 'wildlife',
-        title: 'Jungle Wildlife',
-        description: 'Jaguars, toucans, howler monkeys—raw jungle energy just inland.',
-        href: '/blog?category=wildlife',
-        imageSrc: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
+        id: 'jungle',
+        title: 'Jungle Cathedral: Where Nature Rules',
+        description:
+          'Howler monkeys wake you at dawn. Jaguars prowl the night. Toucans flash neon beaks through emerald canopy. Belize protects more jungle per capita than almost any nation—this is wilderness on its own terms.',
+        href: '/blog?category=jungle',
+        imageSrc: `${base}/images/renes-activities/nature-2024-12-19-14-44-54-utc.jpg`,
         videoSrc: `${base}/hero/secret-beach.mp4`,
-        sourceName: 'Nat Geo Wild',
-        sourceHref: 'https://www.nationalgeographic.com/tv/',
       },
       {
         id: 'caves',
-        title: 'Cave Tubing Adventure',
-        description: 'Action footage through limestone caverns—an only-in-Belize classic.',
-        href: '/blog?category=cave-tubing',
-        imageSrc: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
+        title: 'Cave of Crystals: The Underworld Awaits',
+        description:
+          'Float through underground rivers where Mayan priests performed sacred rituals. Stalactites glitter like diamonds. Ancient pottery still rests where it was placed 1,000 years ago. The Actun Tunichil Muknal cave is Indiana Jones made real.',
+        href: '/blog?category=caves',
+        imageSrc: `${base}/images/renes-activities/silhouette-of-scuba-diver-diving-in-dark-cave-2025-03-09-09-29-23-utc.jpg`,
         videoSrc: `${base}/hero/renes-custom-adventures.mp4`,
-        sourceName: 'Discovery',
-        sourceHref: 'https://www.discovery.com/',
       },
       {
-        id: 'festivals',
-        title: 'Local Festivals',
-        description: 'September celebrations, Lobster Fest, and community nights that feel like family.',
-        href: '/blog?category=festivals',
-        imageSrc:
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg',
+        id: 'islands',
+        title: 'Island Time, Belizean Style',
+        description:
+          "No shoes, no shirt, no problem. Caye Caulker's mantra is 'Go Slow.' Hammocks sway over turquoise water. Lobster festivals. Full-moon parties. Rum punch at sunset. This is Caribbean culture—unpretentious, unhurried, unforgettable.",
+        href: '/blog?category=islands',
+        imageSrc: `${base}/images/renes-activities/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        sourceName: 'Belize Tourism',
-        sourceHref: 'https://www.travelbelize.org/',
       },
     ],
     [base]
@@ -161,92 +142,123 @@ export default function BelizeLifestyle() {
   return (
     <section className="w-full bg-white">
       <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white">
-              <Compass className="h-4 w-4 text-amber-300" />
-              Belize Lifestyle
-            </div>
-            <h2 className="mt-5 text-3xl sm:text-4xl font-serif tracking-tight text-slate-950">
-              Beyond the Boat
-            </h2>
-            <p className="mt-2 text-sm sm:text-base text-slate-700">
-              Discovery-channel vibes: what to do, see, and feel once you step off the dock.
-            </p>
+        <div className="rounded-3xl bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 px-6 py-12 sm:px-10 sm:py-14 overflow-hidden ring-1 ring-slate-200 shadow-[0_22px_80px_rgba(15,23,42,0.14)]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white ring-1 ring-white/15">
+            <Sparkles className="h-4 w-4 text-amber-300" />
+            Belize Lifestyle
           </div>
-        </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {cards.map((c) => (
-            <article
-              key={c.id}
-              className="group overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200 shadow-[0_18px_60px_rgba(15,23,42,0.10)] transition-all duration-300 hover:shadow-[0_22px_70px_rgba(245,158,11,0.18)]"
-              onMouseEnter={() => playPreview(c.id)}
-              onMouseLeave={() => stopPreview(c.id)}
-            >
-              <div className="relative aspect-[4/5]">
-                <Image
-                  src={c.imageSrc}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 33vw, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
-                />
+          <h2 className="mt-5 text-3xl sm:text-5xl font-serif tracking-tight text-white">
+            Belize: Where Legends Come Alive
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm sm:text-base text-white/80">
+            Ancient civilizations. Living coral kingdoms. Jungle mysteries. This is more than a destination—it&apos;s a living story.
+          </p>
 
-                <video
-                  ref={(el) => {
-                    videoRefs.current[c.id] = el;
-                  }}
-                  muted
-                  playsInline
-                  preload="metadata"
-                  poster={c.imageSrc}
-                  onCanPlay={() => markPreviewReady(c.id)}
-                  onError={() => markPreviewFailed(c.id)}
-                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-                    failedPreviewIds[c.id] || !readyPreviewIds[c.id]
-                      ? 'opacity-0'
-                      : 'opacity-0 group-hover:opacity-100'
-                  }`}
-                >
-                  <source src={c.videoSrc} type="video/mp4" />
-                </video>
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div className="rounded-2xl bg-white/10 p-5 ring-1 ring-white/15">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
+                <BookOpen className="h-4 w-4 text-amber-300" />
+                Britannica Highlights
+              </div>
+              <div className="mt-3 text-sm leading-relaxed text-white/80">
+                Belize is often thought of as a Caribbean country in Central America because it has a history similar to that of English-speaking Caribbean nations—its institutions and <span className="font-semibold text-amber-300">official language reflect its history as a British colony</span>.
+              </div>
+            </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+            <div className="rounded-2xl bg-white/10 p-5 ring-1 ring-white/15">
+              <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Natural Wonder</div>
+              <div className="mt-3 text-sm leading-relaxed text-white/80">
+                Along the coast is the <span className="font-semibold text-amber-300">Belize Barrier Reef</span>, the <span className="font-semibold text-amber-300">second largest barrier reef in the world</span>, fringed by dozens of small islands called cays.
+              </div>
+            </div>
 
-                <div className="absolute left-6 right-6 bottom-6">
-                  <div className="text-white">
-                    <div className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/90">
-                      Documentary Cut
+            <div className="rounded-2xl bg-white/10 p-5 ring-1 ring-white/15">
+              <div className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Coastline & Heritage</div>
+              <div className="mt-3 text-sm leading-relaxed text-white/80">
+                A <span className="font-semibold text-amber-300">174-mile (280-km) coastline</span> meets mangroves, reef cuts, and jungle—while Belize’s reef reserve system was designated a <span className="font-semibold text-amber-300">UNESCO World Heritage site (1996)</span>.
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {cards.map((c) => (
+              <article
+                key={c.id}
+                className="group overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/15 shadow-[0_18px_60px_rgba(0,0,0,0.35)] transition-all duration-300 hover:shadow-[0_22px_70px_rgba(245,158,11,0.20)]"
+                onMouseEnter={() => playPreview(c.id)}
+                onMouseLeave={() => stopPreview(c.id)}
+              >
+                <div className="relative min-h-[360px]">
+                  <div className="absolute inset-0">
+                    <Image
+                      src={c.imageSrc}
+                      alt=""
+                      fill
+                      unoptimized
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  {c.videoSrc ? (
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[c.id] = el;
+                      }}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      poster={c.imageSrc}
+                      onCanPlay={() => markPreviewReady(c.id)}
+                      onError={() => markPreviewFailed(c.id)}
+                      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                        failedPreviewIds[c.id] || !readyPreviewIds[c.id]
+                          ? 'opacity-0'
+                          : 'opacity-0 group-hover:opacity-100'
+                      }`}
+                    >
+                      <source src={c.videoSrc} type="video/mp4" />
+                    </video>
+                  ) : null}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
+
+                  <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
+                    <div className="text-white">
+                      <div className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/90">
+                        Documentary Feature
+                      </div>
+                      <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">{c.title}</div>
+                      <div className="mt-3 text-sm sm:text-base leading-relaxed text-white/85">{c.description}</div>
                     </div>
-                    <div className="mt-2 text-xl font-extrabold tracking-tight">{c.title}</div>
-                    <div className="mt-2 text-sm text-white/85">{c.description}</div>
-                  </div>
 
-                  <div className="mt-5">
-                    <Link
-                      href={c.href}
-                      className="inline-flex w-full items-center justify-center rounded-full bg-white/10 px-5 py-3 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur transition-all duration-300 hover:bg-amber-500 hover:text-black hover:ring-amber-500"
-                    >
-                      Learn More
-                    </Link>
-                  </div>
+                    <div className="mt-6">
+                      <Link
+                        href={c.href}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 px-5 py-3 text-sm font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400"
+                      >
+                        Experience This
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
 
-                  <div className="mt-3 text-[11px] font-semibold text-white/70">
-                    Source:{' '}
-                    <a
-                      href={c.sourceHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline decoration-white/40 underline-offset-4 hover:decoration-white/80"
-                    >
-                      {c.sourceName}
-                    </a>
+                    <div className="mt-4 text-[11px] font-semibold text-white/70">
+                      Source:{' '}
+                      <a
+                        href="https://www.britannica.com/place/Belize"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-white/40 underline-offset-4 hover:decoration-white/80"
+                      >
+                        Encyclopedia Britannica
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

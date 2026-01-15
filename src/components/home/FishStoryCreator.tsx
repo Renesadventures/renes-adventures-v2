@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import type { DragEvent, ChangeEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, Facebook, Instagram, MessageCircle } from 'lucide-react';
 
 type GeneratedStory = {
   title: string;
@@ -77,6 +77,9 @@ export default function FishStoryCreator() {
     if (!story) return null;
     return story;
   }, [story]);
+
+  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+  const placeholderPreviewSrc = `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
 
   const handleFile = (f: File | null) => {
     if (!f) return;
@@ -239,16 +242,20 @@ export default function FishStoryCreator() {
     ctx.fillText("RENE'S ADVENTURES", pad + 22, 66);
 
     ctx.save();
-    ctx.translate(W - pad - 150, 92);
-    ctx.rotate(-0.12);
-    ctx.fillStyle = 'rgba(245,158,11,0.18)';
-    ctx.fillRect(0, 0, 150, 56);
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = 'rgba(245,158,11,0.75)';
-    ctx.strokeRect(0, 0, 150, 56);
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.font = '800 28px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
-    ctx.fillText('BELIZE 2026', 14, 38);
+    ctx.translate(W - pad - 220, imgTop + imgH - 64);
+    ctx.rotate(-0.08);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(0, 0, 210, 64);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+    ctx.strokeRect(0, 0, 210, 64);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(255,255,255,0.85)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+    ctx.font = '900 30px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
+    ctx.fillText('BELIZE 2026', 18, 41);
     ctx.restore();
 
     ctx.fillStyle = '#ffffff';
@@ -378,6 +385,55 @@ export default function FishStoryCreator() {
                     Voice: Captain René
                   </div>
                 </div>
+
+                <div className="rounded-3xl bg-white/70 p-5 ring-1 ring-amber-500/25">
+                  <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
+                    Share Your Story
+                  </div>
+                  <div className="mt-2 text-sm text-slate-700">Your adventure deserves an audience</div>
+
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // placeholder
+                      }}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                    >
+                      <Instagram className="h-4 w-4 text-amber-600" />
+                      Instagram
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // placeholder
+                      }}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                    >
+                      <Facebook className="h-4 w-4 text-amber-600" />
+                      Facebook
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // placeholder
+                      }}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                    >
+                      <MessageCircle className="h-4 w-4 text-amber-600" />
+                      WhatsApp
+                    </button>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-amber-500/10 p-4 ring-1 ring-amber-500/20">
+                    <div className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-800">
+                      Coming Soon
+                    </div>
+                    <div className="mt-2 text-sm text-slate-700">
+                      We&apos;ll auto-generate a caption + hashtags and share-ready story formats.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -399,15 +455,25 @@ export default function FishStoryCreator() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-slate-100 via-white to-amber-50">
-                        <div className="text-center">
-                          <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-white ring-1 ring-black/10">
-                            <Camera className="h-6 w-6 text-amber-600" />
+                      <>
+                        <Image
+                          src={placeholderPreviewSrc}
+                          alt="Angler holding large mahi-mahi on boat deck, turquoise water, golden hour"
+                          fill
+                          unoptimized
+                          sizes="(min-width: 1024px) 45vw, 100vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 grid place-items-center bg-black/35">
+                          <div className="text-center">
+                            <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-white/90 ring-1 ring-white/60">
+                              <Camera className="h-6 w-6 text-amber-600" />
+                            </div>
+                            <div className="mt-3 text-sm font-semibold text-white">Upload a photo to begin</div>
+                            <div className="mt-1 text-xs text-white/80">Poster preview will appear here</div>
                           </div>
-                          <div className="mt-3 text-sm font-semibold text-slate-900">Upload a photo to begin</div>
-                          <div className="mt-1 text-xs text-slate-600">Poster preview will appear here</div>
                         </div>
-                      </div>
+                      </>
                     )}
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -422,11 +488,14 @@ export default function FishStoryCreator() {
                       Rene&apos;s Adventures
                     </div>
 
-                    <div className="absolute right-5 top-5 -rotate-6 rounded-xl bg-amber-500/20 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-amber-400/40 backdrop-blur">
+                    <div
+                      className="absolute right-5 bottom-5 -rotate-6 rounded-xl bg-amber-500 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-white/50"
+                      style={{ textShadow: '0 2px 0 rgba(255,255,255,0.65)' }}
+                    >
                       Belize 2026
                     </div>
 
-                    <div className="absolute inset-x-5 bottom-5">
+                    <div className="absolute inset-x-5 bottom-24">
                       <div className="rounded-2xl bg-black/55 p-4 ring-1 ring-white/15 backdrop-blur-sm">
                         <div className="text-xs font-semibold uppercase tracking-[0.26em] text-amber-200">
                           {poster ? poster.tagline : 'Belize • Your Date • Your Style'}
