@@ -1,5 +1,12 @@
 import type { Metadata } from 'next';
-import HomeClient from './home-client';
+import HeroNetflix from '@/components/home/HeroNetflix';
+import ConditionsWidget from '@/components/home/ConditionsWidget';
+import AdventureGrid from '@/components/home/AdventureGrid';
+import BelizeIntelligence from '@/components/home/BelizeIntelligence';
+import FishStoryCreator from '@/components/home/FishStoryCreator';
+import VesselShowcase from '@/components/home/VesselShowcase';
+import BelizeLifestyle from '@/components/home/BelizeLifestyle';
+import SunsetRitualCTA from '@/components/home/SunsetRitualCTA';
 
 export const metadata: Metadata = {
   title: "Rene's Adventures | Luxury Charters in Belize",
@@ -30,5 +37,16 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <HomeClient />;
+  return (
+    <>
+      <HeroNetflix />
+      <ConditionsWidget />
+      <AdventureGrid />
+      <BelizeIntelligence />
+      <FishStoryCreator />
+      <VesselShowcase />
+      <BelizeLifestyle />
+      <SunsetRitualCTA />
+    </>
+  );
 }
