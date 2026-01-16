@@ -1,19 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Heart, Share2, X, Volume2, VolumeX } from 'lucide-react';
 
 type StoryItem = {
-  id: string;
-  title: string;
-  subtitle?: string;
+  id: number;
   caption: string;
-  media: {
-    type: 'video' | 'image';
-    src: string;
-    poster?: string;
-  };
+  avatar: string;
+  videoSrc: string;
 };
 
 const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
@@ -26,89 +20,59 @@ export default function StoryWall() {
   const stories = useMemo<StoryItem[]>(
     () => [
       {
-        id: 'moment-it-hit',
-        title: 'The moment it hit',
+        id: 1,
+        videoSrc: `${base}/luxury/Deep Sea Fishing 5.mp4`,
         caption: 'The moment it hit',
-        media: {
-          type: 'video',
-          src: `${base}/videos/luxury/deep-sea-fishing.mp4`,
-          poster: `${base}/images/tours/deep-sea-fishing.jpg`,
-        },
+        avatar: '🎣',
       },
       {
-        id: 'golden-hour',
-        title: 'Golden hour magic',
+        id: 2,
+        videoSrc: `${base}/luxury/Secrete Beach 5.mp4`,
         caption: 'Golden hour magic',
-        media: {
-          type: 'video',
-          src: `${base}/videos/hero/sunset-ritual.mp4`,
-          poster: `${base}/images/tours/sunset-cruise.jpg`,
-        },
+        avatar: '🌅',
       },
       {
-        id: 'feast-mode',
-        title: 'Feast mode activated',
+        id: 3,
+        videoSrc: `${base}/luxury/Lobster Fishing 1.mp4`,
         caption: 'Feast mode activated',
-        media: {
-          type: 'image',
-          src: `${base}/images/tours/beach-bbq.jpg`,
-        },
+        avatar: '🦞',
       },
       {
-        id: 'into-the-blue',
-        title: 'Into the blue',
+        id: 4,
+        videoSrc: `${base}/luxury/Reef Fishing 6.mp4`,
         caption: 'Into the blue',
-        media: {
-          type: 'image',
-          src: `${base}/images/tours/hol-chan-snorkel.jpg`,
-        },
+        avatar: '🐠',
       },
       {
-        id: 'captains-call',
-        title: "Captain's call",
-        caption: "Captain's call",
-        media: {
-          type: 'video',
-          src: `${base}/videos/hero/renes-custom-adventures.mp4`,
-          poster: `${base}/images/tours/full-day-ultimate.jpg`,
-        },
-      },
-      {
-        id: 'beach-vibes',
-        title: 'Beach vibes only',
+        id: 5,
+        videoSrc: `${base}/hero/beach-bbq.mp4`,
         caption: 'Beach vibes only',
-        media: {
-          type: 'image',
-          src: `${base}/images/tours/beach-bbq.jpg`,
-        },
+        avatar: '🏖️',
       },
       {
-        id: 'lobster-season',
-        title: 'Lobster season',
-        caption: 'Lobster season',
-        media: {
-          type: 'video',
-          src: `${base}/videos/luxury/Lobster Fishing 1.mp4`,
-          poster: `${base}/images/tours/reef-fishing.jpg`,
-        },
+        id: 6,
+        videoSrc: `${base}/hero/sunset-ritual.mp4`,
+        caption: "Captain's call",
+        avatar: '⚓',
       },
       {
-        id: 'pure-belize',
-        title: 'Pure Belize',
+        id: 7,
+        videoSrc: `${base}/hero/blue-hole.mp4`,
         caption: 'Pure Belize',
-        media: {
-          type: 'video',
-          src: `${base}/videos/luxury/Conch Fishing 1.mp4`,
-          poster: `${base}/images/tours/reef-fishing.jpg`,
-        },
+        avatar: '💎',
+      },
+      {
+        id: 8,
+        videoSrc: `${base}/luxury/deep-sea-fishing.mp4`,
+        caption: 'Trophy time',
+        avatar: '🏆',
       },
     ],
     []
   );
 
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
   const [modalMuted, setModalMuted] = useState(true);
-  const [modalHasVideo, setModalHasVideo] = useState(false);
 
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
@@ -119,13 +83,11 @@ export default function StoryWall() {
   const openModal = useCallback((story: StoryItem) => {
     setActiveId(story.id);
     setModalMuted(true);
-    setModalHasVideo(story.media.type === 'video');
   }, []);
 
   const closeModal = useCallback(() => {
     setActiveId(null);
     setModalMuted(true);
-    setModalHasVideo(false);
   }, []);
 
   useEffect(() => {
@@ -183,7 +145,7 @@ export default function StoryWall() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
     };
-    if (!activeId) return;
+    if (activeId === null) return;
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [activeId, closeModal]);
@@ -205,7 +167,7 @@ export default function StoryWall() {
 
         <div className="[column-gap:1.5rem] columns-1 md:columns-2 lg:columns-3">
           {stories.map((story, idx) => {
-            const isVideo = story.media.type === 'video';
+            const storyKey = String(story.id);
 
             return (
               <div
@@ -213,7 +175,7 @@ export default function StoryWall() {
                 ref={(el) => {
                   cardRefs.current[idx] = el;
                 }}
-                data-story-id={story.id}
+                data-story-id={storyKey}
                 className="mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl cursor-pointer group"
                 onClick={() => openModal(story)}
                 role="button"
@@ -223,28 +185,17 @@ export default function StoryWall() {
                 }}
               >
                 <div className="relative w-full aspect-[9/16] bg-black">
-                  {isVideo ? (
-                    <video
-                      ref={(el) => {
-                        videoRefs.current[story.id] = el;
-                      }}
-                      muted
-                      loop
-                      playsInline
-                      preload="none"
-                      poster={story.media.poster}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      data-src={story.media.src}
-                    />
-                  ) : (
-                    <Image
-                      src={story.media.src}
-                      alt={story.title}
-                      fill
-                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    />
-                  )}
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[storyKey] = el;
+                    }}
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    data-src={story.videoSrc}
+                  />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -257,7 +208,9 @@ export default function StoryWall() {
                   <div className="absolute left-0 right-0 bottom-0 p-4">
                     <div className="flex items-end justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15" />
+                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-base">
+                          {story.avatar}
+                        </div>
                         <div className="min-w-0">
                           <div className="text-white/90 text-sm font-semibold leading-tight line-clamp-2">{story.caption}</div>
                         </div>
@@ -306,20 +259,15 @@ export default function StoryWall() {
               className="relative w-full max-w-[420px] md:max-w-[520px] aspect-[9/16] rounded-3xl overflow-hidden border border-white/15 bg-black"
               onClick={(e) => e.stopPropagation()}
             >
-              {activeStory.media.type === 'video' ? (
-                <video
-                  key={activeStory.id}
-                  src={activeStory.media.src}
-                  poster={activeStory.media.poster}
-                  autoPlay
-                  loop
-                  playsInline
-                  muted={modalMuted}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <Image src={activeStory.media.src} alt={activeStory.title} fill className="object-cover" sizes="520px" />
-              )}
+              <video
+                key={activeStory.id}
+                src={activeStory.videoSrc}
+                autoPlay
+                loop
+                playsInline
+                muted={modalMuted}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
 
@@ -329,16 +277,14 @@ export default function StoryWall() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {modalHasVideo && (
-                    <button
-                      type="button"
-                      className="h-10 w-10 rounded-full bg-black/45 border border-white/15 hover:border-white/30 transition flex items-center justify-center text-white"
-                      onClick={() => setModalMuted((m) => !m)}
-                      aria-label={modalMuted ? 'Unmute' : 'Mute'}
-                    >
-                      {modalMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="h-10 w-10 rounded-full bg-black/45 border border-white/15 hover:border-white/30 transition flex items-center justify-center text-white"
+                    onClick={() => setModalMuted((m) => !m)}
+                    aria-label={modalMuted ? 'Unmute' : 'Mute'}
+                  >
+                    {modalMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  </button>
                   <button
                     type="button"
                     className="h-10 w-10 rounded-full bg-black/45 border border-white/15 hover:border-white/30 transition flex items-center justify-center text-white"
@@ -353,9 +299,11 @@ export default function StoryWall() {
               <div className="absolute left-0 right-0 bottom-0 p-5">
                 <div className="flex items-end justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15" />
+                    <div className="h-9 w-9 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-lg">
+                      {activeStory.avatar}
+                    </div>
                     <div>
-                      <div className="text-white text-base font-semibold">{activeStory.title}</div>
+                      <div className="text-white text-base font-semibold">{activeStory.caption}</div>
                       <div className="mt-1 text-white/70 text-sm">{activeStory.caption}</div>
                     </div>
                   </div>
