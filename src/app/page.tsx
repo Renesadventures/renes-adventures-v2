@@ -4,6 +4,7 @@ import ConditionsWidget from '@/components/home/ConditionsWidget';
 import AdventureGrid from '@/components/home/AdventureGrid';
 import BelizeIntelligence from '@/components/home/BelizeIntelligence';
 import FishStoryCreator from '@/components/home/FishStoryCreator';
+import StoryWall from '@/components/home/StoryWall';
 import VesselShowcase from '@/components/home/VesselShowcase';
 import BelizeLifestyle from '@/components/home/BelizeLifestyle';
 import SunsetRitualCTA from '@/components/home/SunsetRitualCTA';
@@ -44,6 +45,7 @@ export default function Home() {
       <AdventureGrid />
       <BelizeIntelligence />
       <FishStoryCreator />
+      <StoryWall />
       <VesselShowcase />
       <BelizeLifestyle />
       <SunsetRitualCTA />
