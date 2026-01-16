@@ -39,8 +39,7 @@ export default function VesselShowcase() {
       {
         id: 'sunset',
         label: 'Sunset View',
-        src:
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg',
+        src: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
       },
     ],
     [base]

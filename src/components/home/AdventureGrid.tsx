@@ -35,8 +35,7 @@ export default function AdventureGrid() {
         tagline: 'Golden hour with champagne',
         price: 350,
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        imageSrc:
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg',
+        imageSrc: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
         href: '/tours/sunset-cruise',
       },
       {
