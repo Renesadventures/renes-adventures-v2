@@ -7,6 +7,7 @@ type Channel = {
   id: string;
   label: string;
   src: string;
+  href: string;
 };
 
 export default function HeroNetflix() {
@@ -18,36 +19,43 @@ export default function HeroNetflix() {
         id: 'deep-sea',
         label: 'Deep Sea',
         src: `${base}/hero/deep-sea-fIshing.mp4`,
+        href: '/tours/deep-sea-fishing',
       },
       {
         id: 'beach-bbq',
         label: 'Beach BBQ',
         src: `${base}/hero/beach-bbq.mp4`,
+        href: '/tours/custom-charter',
       },
       {
         id: 'blue-hole',
         label: 'Blue Hole',
         src: `${base}/hero/blue-hole.mp4`,
+        href: '/tours/blue-hole-adventure',
       },
       {
         id: 'custom',
         label: 'Custom',
         src: `${base}/hero/renes-custom-adventures.mp4`,
+        href: '/tours/custom-charter',
       },
       {
         id: 'reef',
         label: 'Reef',
         src: `${base}/hero/Reef Fishing.mp4`,
+        href: '/tours/reef-fishing',
       },
       {
         id: 'secret-beach',
         label: 'Secret Beach',
         src: `${base}/hero/secret-beach.mp4`,
+        href: '/tours/secret-beach',
       },
       {
         id: 'sunset',
         label: 'Sunset',
         src: `${base}/hero/sunset-ritual.mp4`,
+        href: '/tours/sunset-cruise',
       },
     ],
     [base]
@@ -123,7 +131,7 @@ export default function HeroNetflix() {
               Rene&apos;s Adventures
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-sky-200/90 tracking-wide">
-              Belize Custom Charter Co.
+              Pure Belize. Pure You.
             </p>
 
             <div className="mt-7 flex items-center justify-center gap-4">
@@ -149,10 +157,11 @@ export default function HeroNetflix() {
                 {channels.map((c, idx) => {
                   const active = idx === activeIndex;
                   return (
-                    <button
+                    <Link
                       key={c.id}
-                      type="button"
-                      onClick={() => handlePick(idx)}
+                      href={c.href}
+                      onMouseEnter={() => handlePick(idx)}
+                      onFocus={() => handlePick(idx)}
                       className="group shrink-0 flex flex-col items-center gap-2"
                       aria-label={`Switch to ${c.label}`}
                     >
@@ -183,7 +192,7 @@ export default function HeroNetflix() {
                       >
                         {c.label}
                       </span>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>

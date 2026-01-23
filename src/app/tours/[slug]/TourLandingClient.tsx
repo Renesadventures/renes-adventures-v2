@@ -34,6 +34,38 @@ type AddOnUiItem =
       tiered: { baseAmount: number; includedGuests: number; extraAmountPerGuest: number };
     };
 
+function getWhyBookContent(tourSlug: string) {
+  const content = {
+    'deep-sea-fishing': {
+      title: 'Big Game. Big Experience.',
+      description:
+        "25 years hunting mahi off Belize's drop-offs. Captain René doesn't just fish—he reads the water, the wind, the birds. When you hook a 40-pounder, you'll understand why Belizean captains are legendary.",
+    },
+    'reef-fishing': {
+      title: 'Reef Masters Since 1998',
+      description:
+        "René grew up fishing these reefs. He knows every coral head, every channel, every secret spot. Light tackle, big action, and the kind of local knowledge you can't buy—only earn.",
+    },
+    'sunset-cruise': {
+      title: 'Tek Yuh Time. Live Yuh Day.',
+      description:
+        "Some tours rush. We don't. This is your time to exhale, watch the light change, and remember why you came to Belize. No agenda. Just vibes.",
+    },
+    'blue-hole-adventure': {
+      title: 'World Wonder. Local Guide.',
+      description:
+        "René has taken thousands to the Blue Hole. He knows the tides, the seasons, when visibility is pristine. This isn't just a tour—it's a pilgrimage to one of Earth's natural wonders, with a captain who respects it.",
+    },
+    'secret-beach': {
+      title: 'Hidden Paradise. No Crowds.',
+      description:
+        "Secret Beach isn't on the cruise ship routes. René keeps it that way. You get the real Belize—quiet, turquoise, perfect. This is the beach locals escape to.",
+    },
+  };
+
+  return content[tourSlug as keyof typeof content] || content['deep-sea-fishing'];
+}
+
 function pickInitialVideo(videos: VideoItem[]) {
   return videos[0]?.src || `${base}/videos/hero/renes-custom-adventures.mp4`;
 }
@@ -51,6 +83,12 @@ export default function TourLandingClient({
 }) {
   const isCustomCharter = tour.slug === 'custom-charter';
   const hasFullDay = typeof tour.priceFullDay === 'number' && Number.isFinite(tour.priceFullDay) && tour.priceFullDay > 0;
+
+  const heroImage = `${base}${tour.imageUrl}`;
+  const gallery = useMemo(() => {
+    return [1, 2, 3, 4, 5, 6].map((num) => `${base}/images/tours/${tour.slug}-gallery-${num}.jpg`);
+  }, [tour.slug]);
+  const whyBook = useMemo(() => getWhyBookContent(tour.slug), [tour.slug]);
 
   const [duration, setDuration] = useState<'half' | 'full' | null>(hasFullDay ? null : 'half');
   const [guests, setGuests] = useState(() => Math.max(1, Math.min(8, tour.includedGuests || 1)));
@@ -219,7 +257,7 @@ export default function TourLandingClient({
                 muted
                 loop
                 preload="metadata"
-                poster={tour.imageUrl}
+                poster={heroImage}
               />
 
               <div className="absolute left-0 right-0 bottom-0 p-5 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
@@ -415,11 +453,12 @@ export default function TourLandingClient({
           <section className="rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
             <div className="p-8">
               <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Why This Tour is Unforgettable</div>
-              <h2 className="mt-3 text-3xl md:text-4xl font-serif font-semibold text-white">Island Time, designed like a luxury day.</h2>
+              <h2 className="mt-3 text-3xl md:text-4xl font-serif font-semibold text-white">{whyBook.title}</h2>
+              <div className="mt-4 text-white/75 leading-relaxed max-w-3xl">{whyBook.description}</div>
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-2 grid gap-4">
                   <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[180px]">
-                    <Image src={tour.imageUrl} alt="" fill className="object-cover" sizes="(min-width: 1024px) 66vw, 100vw" />
+                    <Image src={heroImage} alt="" fill className="object-cover" sizes="(min-width: 1024px) 66vw, 100vw" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute left-6 right-6 bottom-6">
                       <div className="text-[11px] uppercase tracking-[0.35em] text-white/70">Private Charter</div>
@@ -430,7 +469,7 @@ export default function TourLandingClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src={`${base}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={gallery[0]} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Action</div>
@@ -438,7 +477,7 @@ export default function TourLandingClient({
                       </div>
                     </div>
                     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 min-h-[160px]">
-                      <Image src={`${base}/images/tours/beach-bbq.jpg`} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
+                      <Image src={gallery[1]} alt="" fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
                       <div className="absolute inset-0 bg-black/45" />
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
                         <div className="text-[11px] uppercase tracking-[0.35em] text-[#D4AF37]/90">Reset</div>
@@ -470,7 +509,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src={`${base}/images/tours/deep-sea-fishing.jpg`} alt="" fill className="object-cover opacity-35" sizes="100vw" />
+            <Image src={heroImage} alt="" fill className="object-cover opacity-35" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/70" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Featured Fish Story</div>
@@ -489,7 +528,7 @@ export default function TourLandingClient({
           </section>
 
           <section className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden">
-            <Image src={`${base}/images/tours/reef-fishing.jpg`} alt="" fill className="object-cover opacity-30" sizes="100vw" />
+            <Image src={gallery[2]} alt="" fill className="object-cover opacity-30" sizes="100vw" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-black/80" />
             <div className="relative p-8">
             <div className="text-xs uppercase tracking-[0.35em] text-[#D4AF37]/80">Islander Time</div>

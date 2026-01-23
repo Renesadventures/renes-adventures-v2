@@ -15,7 +15,7 @@ export default function BelizeLifestyle() {
         title: 'Maya Mysteries Unveiled',
         description:
           "Step into temples where ancient priests once whispered to the gods. Stone pyramids rise from the jungle canopy—Xunantunich, Caracol, Lamanai. The Maya didn't disappear; their descendants still speak the old languages here.",
-        href: '/blog?category=maya',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/adventure-in-the-yucatan-2024-09-13-23-43-13-utc.jpg`,
         videoSrc: `${base}/hero/renes-custom-adventures.mp4`,
       },
@@ -24,7 +24,7 @@ export default function BelizeLifestyle() {
         title: 'The Barrier Reef: A Living Masterpiece',
         description:
           "The second-largest barrier reef on Earth thrives just offshore. Swim with nurse sharks in crystal shallows. Dive the Great Blue Hole—a portal to the planet's past. This is Jacques Cousteau's ‘one of the world's greatest natural wonders.’",
-        href: '/blog?category=reef',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
         videoSrc: `${base}/hero/blue-hole.mp4`,
       },
@@ -33,7 +33,7 @@ export default function BelizeLifestyle() {
         title: 'Garifuna Soul: The Rhythm of Resilience',
         description:
           "Drums echo through coastal villages. The Garifuna people—descendants of African, Caribbean, and indigenous heritage—keep centuries-old traditions alive through dance, music, and cassava bread. Feel the punta rhythm in your bones.",
-        href: '/blog?category=garifuna',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/group-of-young-people-celebrating-with-music-at-th-2025-02-16-03-45-43-utc.jpg`,
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
       },
@@ -42,7 +42,7 @@ export default function BelizeLifestyle() {
         title: 'Jungle Cathedral: Where Nature Rules',
         description:
           'Howler monkeys wake you at dawn. Jaguars prowl the night. Toucans flash neon beaks through emerald canopy. Belize protects more jungle per capita than almost any nation—this is wilderness on its own terms.',
-        href: '/blog?category=jungle',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/nature-2024-12-19-14-44-54-utc.jpg`,
         videoSrc: `${base}/hero/secret-beach.mp4`,
       },
@@ -51,7 +51,7 @@ export default function BelizeLifestyle() {
         title: 'Cave of Crystals: The Underworld Awaits',
         description:
           'Float through underground rivers where Mayan priests performed sacred rituals. Stalactites glitter like diamonds. Ancient pottery still rests where it was placed 1,000 years ago. The Actun Tunichil Muknal cave is Indiana Jones made real.',
-        href: '/blog?category=caves',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/silhouette-of-scuba-diver-diving-in-dark-cave-2025-03-09-09-29-23-utc.jpg`,
         videoSrc: `${base}/hero/renes-custom-adventures.mp4`,
       },
@@ -60,7 +60,7 @@ export default function BelizeLifestyle() {
         title: 'Island Time, Belizean Style',
         description:
           "No shoes, no shirt, no problem. Caye Caulker's mantra is 'Go Slow.' Hammocks sway over turquoise water. Lobster festivals. Full-moon parties. Rum punch at sunset. This is Caribbean culture—unpretentious, unhurried, unforgettable.",
-        href: '/blog?category=islands',
+        href: '/discover-belize',
         imageSrc: `${base}/images/renes-activities/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
       },

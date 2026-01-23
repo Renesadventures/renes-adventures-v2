@@ -36,10 +36,10 @@ export default function SunsetRitualCTA() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/tours/custom-charter"
+                href="/tours/sunset-cruise"
                 className="inline-flex items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-base font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400"
               >
-                Book Your Belize Adventure
+                Book Your Sunset Cruise
               </Link>
 
               <a

@@ -135,7 +135,7 @@ export default function BelizeIntelligence() {
     setIsSubmitting(true);
 
     try {
-      router.push('/belize-guide');
+      router.push('/discover-belize');
     } finally {
       setIsSubmitting(false);
     }

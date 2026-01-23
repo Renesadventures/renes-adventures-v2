@@ -45,7 +45,7 @@ export default function AdventureGrid() {
         tagline: 'UNESCO diving legend',
         videoSrc: `${base}/hero/blue-hole.mp4`,
         imageSrc: `${base}/images/renes-activities/Blue-Hole-Iconic.jpeg`,
-        href: '/tours/blue-hole',
+        href: '/tours/blue-hole-adventure',
       },
       {
         id: 'secret-beach',
