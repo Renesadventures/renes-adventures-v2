@@ -30,7 +30,8 @@
     "tailwind-merge": "^3.4.0",
     "validator": "^13.15.26",
     "xss": "^1.0.15",
-    "zod": "^4.3.4"
+    "zod": "^4.3.4",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
