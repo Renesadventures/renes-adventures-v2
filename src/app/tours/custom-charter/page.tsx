@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Anchor,
   Camera,
@@ -18,12 +19,12 @@ import {
   Snail,
   Sun,
   Sunset,
-  UserPlus,
   Waves,
 } from 'lucide-react';
 
 import { buildWhatsAppTourLink, getWhatsAppLink } from '@/lib/utils/whatsapp-link';
-import { getTourBySlug, tours } from '@/data/tours';
+import { financialAddOnsBySlug, getTourBySlug, tours } from '@/data/tours';
+import { useCartStore } from '@/lib/store/cart-store';
 
 const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
 
@@ -50,15 +51,40 @@ type Activity = {
   description: string;
 };
 
-type AddOnKey = 'bbq-upgrade' | 'extra-guest' | 'snorkel-premium' | 'underwater-camera';
-
 type AddOn = {
-  id: AddOnKey;
+  id: string;
   title: string;
   price: number;
   icon: ReactNode;
   blurb: string;
 };
+
+function getIconForAddOn(id: string) {
+  if (id === 'beach-bbq-up-to-4') return <Flame className="h-5 w-5" />;
+  if (id === 'beach-bbq-additional-guest') return <Flame className="h-5 w-5" />;
+  if (id === 'snorkel-gear-rental') return <Waves className="h-5 w-5" />;
+  if (id === 'hol-chan-marine-reserve-fee') return <Anchor className="h-5 w-5" />;
+  if (id === 'tshirt-adult-s-xl') return <CheckCircle2 className="h-5 w-5" />;
+  if (id === 'tshirt-xxl-xxxl') return <CheckCircle2 className="h-5 w-5" />;
+  if (id === 'tshirt-youth-small') return <CheckCircle2 className="h-5 w-5" />;
+  if (id === 'snapback-standard') return <Sun className="h-5 w-5" />;
+  if (id === 'snapback-leather-patch') return <Sun className="h-5 w-5" />;
+  return <CheckCircle2 className="h-5 w-5" />;
+}
+
+function getBlurbForAddOn(id: string) {
+  if (id === 'beach-bbq-up-to-4')
+    return 'Fresh-catch, lobster and conch chimi in season. Ceviche, potatoes, vegetables, rice';
+  if (id === 'beach-bbq-additional-guest') return 'Per guest beyond 4';
+  if (id === 'snorkel-gear-rental') return 'Full package for bring your own';
+  if (id === 'hol-chan-marine-reserve-fee') return '$15 fee paid directly to ranger on-site entry';
+  if (id === 'tshirt-adult-s-xl') return 'Fits sizes S-XL';
+  if (id === 'tshirt-xxl-xxxl') return 'Extended sizes';
+  if (id === 'tshirt-youth-small') return 'Kids sizes';
+  if (id === 'snapback-standard') return 'Classic snapback';
+  if (id === 'snapback-leather-patch') return 'Premium leather patch design';
+  return 'Upgrade your day.';
+}
 
 function formatMoney(amount: number) {
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -82,6 +108,11 @@ function getTimelineColor(idx: number) {
 
 export default function CustomCharterPage() {
   const tour = getTourBySlug('custom-charter');
+
+  const router = useRouter();
+
+  const addToCart = useCartStore((state) => state.addItem);
+  const removeFromCart = useCartStore((state) => state.removeItem);
 
   const activities = useMemo<Activity[]>(
     () => [
@@ -194,39 +225,29 @@ export default function CustomCharterPage() {
     []
   );
 
-  const addOns = useMemo<AddOn[]>(
-    () => [
-      {
-        id: 'bbq-upgrade',
-        title: 'Beach BBQ Upgrade',
-        price: 75,
-        icon: <Flame className="h-5 w-5" />,
-        blurb: 'Lobster. Grilled fish. Beach vibes.',
-      },
-      {
-        id: 'extra-guest',
-        title: 'Extra Guest',
-        price: 75,
-        icon: <UserPlus className="h-5 w-5" />,
-        blurb: 'Bring the crew. Up to 8 total.',
-      },
-      {
-        id: 'snorkel-premium',
-        title: 'Snorkel Gear Premium',
-        price: 25,
-        icon: <Waves className="h-5 w-5" />,
-        blurb: 'GoPro-ready mask. Prescription available.',
-      },
-      {
-        id: 'underwater-camera',
-        title: 'Underwater Camera',
-        price: 50,
-        icon: <Camera className="h-5 w-5" />,
-        blurb: 'Capture it all. 4K waterproof.',
-      },
-    ],
-    []
-  );
+  const addOns = useMemo<AddOn[]>(() => {
+    const master = financialAddOnsBySlug['custom-charter'] || [];
+
+    return master.map((a) => {
+      const pricing = a.pricing;
+      const price =
+        pricing.type === 'tiered_per_guest'
+          ? pricing.baseAmount
+          : pricing.type === 'per_guest'
+            ? pricing.amountPerGuest
+            : pricing.type === 'merch_unit'
+              ? pricing.unitAmount
+              : pricing.amount;
+
+      return {
+        id: a.id,
+        title: a.name,
+        price,
+        icon: getIconForAddOn(a.id),
+        blurb: getBlurbForAddOn(a.id),
+      };
+    });
+  }, []);
 
   const heroClips = useMemo(() => {
     return activities.map((a) => ({ id: a.id, label: a.title, thumb: a.image, src: a.video }));
@@ -255,12 +276,8 @@ export default function CustomCharterPage() {
   const [duration, setDuration] = useState<'half' | 'full'>('half');
   const [guests, setGuests] = useState(4);
 
-  const [addOnQty, setAddOnQty] = useState<Record<AddOnKey, number>>({
-    'bbq-upgrade': 0,
-    'extra-guest': 0,
-    'snorkel-premium': 0,
-    'underwater-camera': 0,
-  });
+  const [addOnQty, setAddOnQty] = useState<Record<string, number>>({});
+  const [addOnSelections, setAddOnSelections] = useState<Record<string, string>>({});
 
   const activityCount = useMemo(() => {
     return (Object.keys(selectedActivities) as ActivityKey[]).reduce((sum, k) => sum + (selectedActivities[k] ? 1 : 0), 0);
@@ -274,9 +291,36 @@ export default function CustomCharterPage() {
 
   const basePrice = useMemo(() => (duration === 'full' ? baseFullDay : baseHalfDay), [baseFullDay, baseHalfDay, duration]);
 
-  const effectiveGuests = useMemo(() => clamp(guests + (addOnQty['extra-guest'] || 0), 1, 8), [addOnQty, guests]);
+  const effectiveGuests = useMemo(() => clamp(guests, 1, 8), [guests]);
   const overageGuests = useMemo(() => Math.max(0, effectiveGuests - includedGuests), [effectiveGuests, includedGuests]);
   const overageCost = useMemo(() => overageGuests * 75, [overageGuests]);
+
+  const [selectedItems, setSelectedItems] = useState<{
+    activities: Record<ActivityKey, boolean>;
+    addOns: Record<string, number>;
+  }>({
+    activities: selectedActivities,
+    addOns: {},
+  });
+
+  const liveBookingTotal = useMemo(() => {
+    let total = basePrice + overageCost;
+
+    Object.entries(selectedItems.addOns).forEach(([addonId, qty]) => {
+      const addon = addOns.find((a) => a.id === addonId);
+      if (addon) total += addon.price * qty;
+    });
+
+    return total;
+  }, [addOns, basePrice, overageCost, selectedItems.addOns]);
+
+  const selectedActivityCount = useMemo(() => {
+    return Object.values(selectedItems.activities).filter(Boolean).length;
+  }, [selectedItems.activities]);
+
+  const addOnItemCount = useMemo(() => {
+    return Object.values(selectedItems.addOns).reduce((sum, qty) => sum + qty, 0);
+  }, [selectedItems.addOns]);
 
   const addOnsTotal = useMemo(() => {
     return addOns.reduce((sum, a) => sum + (addOnQty[a.id] || 0) * a.price, 0);
@@ -287,13 +331,13 @@ export default function CustomCharterPage() {
     return subtotal;
   }, [addOnsTotal, basePrice, overageCost]);
 
-  const [stickyVisible, setStickyVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [cardExpanded, setCardExpanded] = useState(true);
 
   useEffect(() => {
     const onScroll = () => {
-      setStickyVisible(window.scrollY > 520);
+      setScrolled(window.scrollY > 600);
     };
-
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -351,6 +395,9 @@ export default function CustomCharterPage() {
               </h1>
               <p className="mt-4 text-lg md:text-2xl text-white/90 max-w-2xl">
                 One boat. Ten adventures. Pure Belize magic.
+              </p>
+              <p className="mt-2 text-base md:text-lg text-white/85 italic max-w-2xl">
+                Tek Yuh Time. Live Yuh Day. <span className="text-white/70">(Take it easy. Live your day.)</span>
               </p>
 
               <div className="mt-6 rounded-3xl border border-white/20 bg-white/10 backdrop-blur-md overflow-hidden">
@@ -465,7 +512,7 @@ export default function CustomCharterPage() {
                 <div className="mt-5 grid gap-3">
                   <button
                     type="button"
-                    onClick={onOpenWhatsApp}
+                    onClick={() => router.push('/checkout')}
                     className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition"
                   >
                     Book Your Perfect Day
@@ -538,7 +585,7 @@ export default function CustomCharterPage() {
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {activities.map((a) => {
-            const checked = selectedActivities[a.id];
+            const checked = selectedItems.activities[a.id];
             return (
               <article key={a.id} className="group rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                 <div className="relative h-48">
@@ -560,13 +607,21 @@ export default function CustomCharterPage() {
                     <button
                       type="button"
                       onClick={() => {
+                        if (!cardExpanded) setCardExpanded(true);
+                        setSelectedItems((prev) => ({
+                          ...prev,
+                          activities: {
+                            ...prev.activities,
+                            [a.id]: !prev.activities[a.id],
+                          },
+                        }));
                         setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }));
                       }}
-                      className={`h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs transition border ${
-                        checked ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
+                      className={`h-12 px-6 rounded-2xl font-black transition ${
+                        checked ? 'bg-emerald-500 text-white' : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
                       }`}
                     >
-                      {checked ? 'Added' : 'Add This'}
+                      {checked ? 'Added ✓' : 'Add to Day'}
                     </button>
                     <button
                       type="button"
@@ -655,7 +710,7 @@ export default function CustomCharterPage() {
             <div className="lg:col-span-7">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {activities.map((a) => {
-                  const checked = selectedActivities[a.id];
+                  const checked = selectedItems.activities[a.id];
                   return (
                     <label
                       key={a.id}
@@ -666,7 +721,17 @@ export default function CustomCharterPage() {
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={() => setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }))}
+                        onChange={() => {
+                          if (!cardExpanded) setCardExpanded(true);
+                          setSelectedItems((prev) => ({
+                            ...prev,
+                            activities: {
+                              ...prev.activities,
+                              [a.id]: !prev.activities[a.id],
+                            },
+                          }));
+                          setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }));
+                        }}
                         className="mt-1.5 h-5 w-5"
                       />
                       <div className="min-w-0">
@@ -726,7 +791,20 @@ export default function CustomCharterPage() {
         <div className="mt-8 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:thin]">
           <div className="flex gap-4 min-w-max">
             {addOns.map((a) => {
-              const q = addOnQty[a.id] || 0;
+              const q = selectedItems.addOns[a.id] || 0;
+              const selectOptions =
+                a.id === 'snorkel-gear-rental'
+                  ? ['6', '7', '8', '9', '10', '11', '12', '13']
+                  : a.id === 'tshirt-adult-s-xl'
+                    ? ['S', 'M', 'L', 'XL']
+                    : a.id === 'tshirt-xxl-xxxl'
+                      ? ['XXL', 'XXXL']
+                      : a.id === 'tshirt-youth-small'
+                        ? ['XS', 'S', 'M', 'L']
+                        : null;
+
+              const selectionLabel = a.id === 'snorkel-gear-rental' ? 'Shoe size' : selectOptions ? 'Size' : null;
+
               return (
                 <div key={a.id} className="w-[320px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="flex items-start justify-between gap-4">
@@ -738,9 +816,36 @@ export default function CustomCharterPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
+                      {selectOptions && (
+                        <div className="flex items-center gap-2">
+                          <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">{selectionLabel}</div>
+                          <select
+                            value={addOnSelections[a.id] || ''}
+                            onChange={(e) => setAddOnSelections((prev) => ({ ...prev, [a.id]: e.target.value }))}
+                            className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-900"
+                          >
+                            <option value="" disabled>
+                              Select
+                            </option>
+                            {selectOptions.map((opt) => (
+                              <option key={opt} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
                       <button
                         type="button"
-                        onClick={() => setAddOnQty((prev) => ({ ...prev, [a.id]: Math.max(0, (prev[a.id] || 0) - 1) }))}
+                        onClick={() => {
+                          if (!cardExpanded) setCardExpanded(true);
+                          const newQty = Math.max(0, q - 1);
+                          setSelectedItems((prev) => ({
+                            ...prev,
+                            addOns: { ...prev.addOns, [a.id]: newQty },
+                          }));
+                          setAddOnQty((prev) => ({ ...prev, [a.id]: newQty }));
+                        }}
                         disabled={q <= 0}
                         className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition disabled:opacity-40"
                       >
@@ -749,7 +854,15 @@ export default function CustomCharterPage() {
                       <div className="min-w-[28px] text-center font-extrabold text-slate-900">{q}</div>
                       <button
                         type="button"
-                        onClick={() => setAddOnQty((prev) => ({ ...prev, [a.id]: (prev[a.id] || 0) + 1 }))}
+                        onClick={() => {
+                          if (!cardExpanded) setCardExpanded(true);
+                          const newQty = q === 0 ? effectiveGuests : q + 1;
+                          setSelectedItems((prev) => ({
+                            ...prev,
+                            addOns: { ...prev.addOns, [a.id]: newQty },
+                          }));
+                          setAddOnQty((prev) => ({ ...prev, [a.id]: newQty }));
+                        }}
                         className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
                       >
                         +
@@ -758,12 +871,75 @@ export default function CustomCharterPage() {
                   </div>
 
                   <div className="mt-4 text-slate-700 leading-relaxed">{a.blurb}</div>
+
+                  {q === 0 && (
+                    <p className="mt-2 text-xs text-slate-500 italic">
+                      Click + to add (defaults to {effectiveGuests} for {effectiveGuests} guests)
+                    </p>
+                  )}
                 </div>
               );
             })}
           </div>
         </div>
       </section>
+
+      {/* Fine Print */}
+      <div className="mt-12 rounded-3xl border border-amber-200 bg-amber-50/50 p-6">
+        <h3 className="text-sm font-extrabold uppercase tracking-[0.25em] text-amber-900">
+          Important Information
+        </h3>
+        
+        <div className="mt-4 space-y-3 text-sm text-slate-800">
+          <div className="flex items-start gap-3">
+            <div className="h-5 w-5 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">
+              1
+            </div>
+            <div>
+              <strong>Cancellations & Rescheduling:</strong> No charge for rescheduling with 48+ hours notice. 
+              Full refund for cancellations with 48+ hours notice.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="h-5 w-5 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">
+              2
+            </div>
+            <div>
+              <strong>Weather Policy:</strong> If Captain Rene cancels due to weather, you get a full refund or can reschedule.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="h-5 w-5 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">
+              3
+            </div>
+            <div>
+              <strong>Payment:</strong> 50% deposit required to secure booking. Balance due 24 hours before departure.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="h-5 w-5 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">
+              4
+            </div>
+            <div>
+              <strong>{"What's Included:"}</strong> Captain & crew, all fishing gear, snorkel equipment, cooler with ice, 
+              bottled water, Bluetooth speaker, shade cover, safety equipment.
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="h-5 w-5 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">
+              5
+            </div>
+            <div>
+              <strong>What to Bring:</strong> Sunscreen (reef-safe), towels, camera, any preferred snacks/drinks, 
+              motion sickness medication if needed.
+            </div>
+          </div>
+        </div>
+      </div>
 
       <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
         <div className="max-w-3xl">
@@ -934,39 +1110,223 @@ export default function CustomCharterPage() {
 
       <div
         className={`fixed left-0 right-0 bottom-0 z-50 transition-transform duration-300 ${
-          stickyVisible ? 'translate-y-0' : 'translate-y-full'
+          scrolled ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         <div className="mx-auto w-full max-w-screen-2xl px-4 pb-4">
-          <div className="rounded-3xl border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg px-5 py-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="h-11 w-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">
-                  <Sunset className="h-5 w-5" />
-                </div>
+          <div className="rounded-3xl border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg px-6 py-4">
+            <div className="flex items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
                 <div>
-                  <div className="text-sm font-extrabold text-slate-900">Custom Charter</div>
-                  <div className="text-sm text-slate-600">{activityCount} activities selected</div>
+                  <div className="text-sm font-extrabold text-slate-900">Your Charter</div>
+                  <div className="text-xs text-slate-600">Live Total: {formatMoney(liveTotal)}</div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-4">
-                <div className="text-right">
-                  <div className="text-[11px] uppercase tracking-[0.35em] text-slate-500">Live total</div>
-                  <div className="text-xl font-extrabold text-slate-900">{formatMoney(liveTotal)}</div>
-                </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    /* Lia integration */
+                  }}
+                  className="h-12 px-6 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition font-extrabold text-sm uppercase tracking-[0.18em] text-slate-900"
+                >
+                  Talk to Lia
+                </button>
 
                 <button
                   type="button"
                   onClick={onOpenWhatsApp}
-                  className="h-12 px-6 rounded-2xl bg-amber-500 text-slate-950 font-black border border-black/10 hover:brightness-105 transition"
+                  className="h-12 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 transition font-black text-slate-950 border border-black/10"
                 >
-                  Book Your Perfect Day
+                  Book on WhatsApp
                 </button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="fixed right-6 bottom-6 z-50">
+        {cardExpanded && (
+          <div className="w-96 rounded-3xl border border-amber-300 bg-gradient-to-br from-amber-50 to-white shadow-2xl animate-slide-in-from-right">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-extrabold text-slate-900">Your Day</h3>
+                <button
+                  onClick={() => setCardExpanded(false)}
+                  className="h-8 w-8 rounded-full bg-amber-100 hover:bg-amber-200 flex items-center justify-center transition group"
+                  aria-label="Minimize booking summary"
+                  type="button"
+                >
+                  <span className="text-slate-700 group-hover:text-slate-900 transition">→</span>
+                </button>
+              </div>
+
+              {selectedActivityCount > 0 && (
+                <div className="mb-4">
+                  <div className="text-xs uppercase tracking-[0.25em] text-slate-600 mb-2">Activities ({selectedActivityCount})</div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto [scrollbar-width:thin]">
+                    {activities
+                      .filter((a) => selectedItems.activities[a.id])
+                      .map((a) => (
+                        <div key={a.id} className="flex items-start gap-2 text-sm">
+                          <div className="h-5 w-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <span className="text-white text-xs font-bold">✓</span>
+                          </div>
+                          <span className="text-slate-800 leading-tight">{a.title}</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {addOnItemCount > 0 && (
+                <div className="mb-4">
+                  <div className="text-xs uppercase tracking-[0.25em] text-slate-600 mb-2">Add-Ons ({addOnItemCount})</div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto [scrollbar-width:thin]">
+                    {Object.entries(selectedItems.addOns)
+                      .filter(([, qty]) => qty > 0)
+                      .map(([addonId, qty]) => {
+                        const addon = addOns.find((a) => a.id === addonId);
+                        if (!addon) return null;
+                        return (
+                          <div key={addonId} className="flex items-center justify-between text-sm">
+                            <span className="text-slate-800">
+                              {addon.title} × {qty}
+                            </span>
+                            <span className="font-bold text-slate-900">{formatMoney(addon.price * qty)}</span>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-amber-200 pt-4 mb-4 space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">Duration</span>
+                  <span className="font-bold text-slate-900">{duration === 'full' ? 'Full Day' : 'Half Day'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">Guests</span>
+                  <span className="font-bold text-slate-900">{effectiveGuests}</span>
+                </div>
+                {overageGuests > 0 && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-600">Extra guests</span>
+                    <span className="font-semibold text-slate-800">+{formatMoney(overageCost)}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-amber-200 pt-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-extrabold text-slate-900">Live Total</span>
+                  <span className="text-2xl font-extrabold text-amber-600">{formatMoney(liveBookingTotal)}</span>
+                </div>
+                <p className="mt-1 text-xs text-slate-600">50% deposit due at booking</p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  removeFromCart('tour-custom-charter');
+                  addToCart({
+                    id: 'tour-custom-charter',
+                    type: 'tour',
+                    name: `Custom Charter (${duration === 'full' ? 'Full Day' : 'Half Day'})`,
+                    price: basePrice + overageCost,
+                    metadata: { guests: effectiveGuests, duration: duration === 'full' ? 'Full Day' : 'Half Day' },
+                  });
+
+                  activities
+                    .filter((a) => selectedItems.activities[a.id])
+                    .forEach((activity) => {
+                      addToCart({
+                        id: `activity-${activity.id}`,
+                        type: 'activity',
+                        name: activity.title,
+                        price: 0,
+                        metadata: { duration: `${activity.minutes} min` },
+                      });
+                    });
+
+                  Object.entries(selectedItems.addOns)
+                    .filter(([, qty]) => qty > 0)
+                    .forEach(([addonId, qty]) => {
+                      const addon = addOns.find((a) => a.id === addonId);
+                      if (!addon) return;
+
+                      const selection = addOnSelections[addonId] || '';
+                      const cartId = `addon-${addonId}${selection ? `-${selection}` : ''}`;
+
+                      for (let i = 0; i < qty; i++) {
+                        addToCart({
+                          id: cartId,
+                          type: 'addon',
+                          name: addon.title,
+                          price: addon.price,
+                          metadata:
+                            addonId === 'snorkel-gear-rental'
+                              ? { shoeSize: selection }
+                              : selection
+                                ? { size: selection }
+                                : {},
+                        });
+                      }
+                    });
+
+                  router.push('/checkout');
+                }}
+                disabled={selectedActivityCount === 0 && addOnItemCount === 0}
+                className="w-full h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg transition disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
+              >
+                Book Now
+              </button>
+
+              {selectedActivityCount === 0 && addOnItemCount === 0 && (
+                <p className="mt-3 text-xs text-center text-slate-600">Select activities or add-ons to book</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {!cardExpanded && (
+          <button
+            onClick={() => setCardExpanded(true)}
+            className="group relative h-16 w-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 hover:scale-110 animate-zoom-in"
+            aria-label="Open booking summary"
+            type="button"
+          >
+            {(selectedActivityCount > 0 || addOnItemCount > 0) && (
+              <div className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-lg">
+                <span className="text-white text-xs font-extrabold">{selectedActivityCount + addOnItemCount}</span>
+              </div>
+            )}
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+              <svg className="h-7 w-7 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              <span className="text-[9px] font-bold leading-none">{formatMoney(liveBookingTotal).replace('$', '')}</span>
+            </div>
+
+            <div className="absolute inset-0 rounded-full bg-amber-500 animate-ping opacity-20" />
+          </button>
+        )}
+
+        {!cardExpanded && (selectedActivityCount > 0 || addOnItemCount > 0) && (
+          <div className="absolute bottom-20 right-0 mb-2 px-4 py-2 rounded-2xl bg-slate-900 text-white text-sm font-semibold shadow-xl whitespace-nowrap animate-slide-in-from-bottom-2">
+            {selectedActivityCount + addOnItemCount} item{selectedActivityCount + addOnItemCount !== 1 ? 's' : ''} • Click to review
+            <div className="absolute bottom-0 right-6 transform translate-y-1/2 rotate-45 h-3 w-3 bg-slate-900" />
+          </div>
+        )}
       </div>
     </main>
   );
