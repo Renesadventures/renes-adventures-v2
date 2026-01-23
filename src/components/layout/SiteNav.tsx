@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import CartIcon from '@/components/CartIcon';
 
 export default function SiteNav() {
   const armAudio = () => {
@@ -34,20 +35,23 @@ export default function SiteNav() {
             </a>
           </nav>
 
-          <button
-            type="button"
-            onClick={() => {
-              const el = document.getElementById('booking-engine');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                return;
-              }
-              window.location.href = '/tours/custom-charter#booking-engine';
-            }}
-            className="inline-flex items-center justify-center rounded-full bg-[#d4af37] text-slate-950 font-extrabold px-5 py-2 border border-white/10 hover:brightness-110 transition"
-          >
-            Book
-          </button>
+          <div className="flex items-center gap-3">
+            <CartIcon />
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('booking-engine');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  return;
+                }
+                window.location.href = '/tours/custom-charter#booking-engine';
+              }}
+              className="inline-flex items-center justify-center rounded-full bg-[#d4af37] text-slate-950 font-extrabold px-5 py-2 border border-white/10 hover:brightness-110 transition"
+            >
+              Book
+            </button>
+          </div>
         </div>
       </div>
     </div>
