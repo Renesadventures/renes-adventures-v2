@@ -360,5 +360,94 @@ export const tours: Tour[] = [
   },
 ];
 
+// Financial add-ons organized by tour slug
+export type FinancialAddOn = {
+  id: string;
+  title: string;
+  price: number;
+  isPerGuest: boolean;
+  isIncluded: boolean;
+  requiresSize?: boolean;
+  requiresShoeSize?: boolean;
+  sizeOptions?: string[];
+  shoeSizeOptions?: string[];
+};
+
+export const financialAddOnsBySlug: Record<string, FinancialAddOn[]> = {
+  'custom-charter': [
+    {
+      id: 'beach-bbq-base',
+      title: 'Beach BBQ (up to 4 guests)',
+      price: 75,
+      isPerGuest: false,
+      isIncluded: false,
+    },
+    {
+      id: 'beach-bbq-extra',
+      title: 'Beach BBQ - Additional Guest',
+      price: 25,
+      isPerGuest: true,
+      isIncluded: false,
+    },
+    {
+      id: 'snorkel-gear',
+      title: 'Snorkel Gear Rental',
+      price: 15,
+      isPerGuest: true,
+      isIncluded: false,
+      requiresShoeSize: true,
+      shoeSizeOptions: ['6', '7', '8', '9', '10', '11', '12', '13'],
+    },
+    {
+      id: 'hol-chan-fee',
+      title: 'Hol Chan Marine Reserve Fee',
+      price: 15,
+      isPerGuest: true,
+      isIncluded: false,
+    },
+    {
+      id: 'tshirt-adult',
+      title: 'T-Shirt - Adult',
+      price: 25,
+      isPerGuest: false,
+      isIncluded: false,
+      requiresSize: true,
+      sizeOptions: ['S', 'M', 'L', 'XL'],
+    },
+    {
+      id: 'tshirt-xxl',
+      title: 'T-Shirt - XXL/XXXL',
+      price: 30,
+      isPerGuest: false,
+      isIncluded: false,
+      requiresSize: true,
+      sizeOptions: ['XXL', 'XXXL'],
+    },
+    {
+      id: 'tshirt-youth',
+      title: 'T-Shirt - Youth (SMALL)',
+      price: 20,
+      isPerGuest: false,
+      isIncluded: false,
+      requiresSize: true,
+      sizeOptions: ['XS', 'S', 'M', 'L'],
+    },
+    {
+      id: 'snapback-standard',
+      title: 'Snapback Hat - Standard',
+      price: 30,
+      isPerGuest: false,
+      isIncluded: false,
+    },
+    {
+      id: 'snapback-leather',
+      title: 'Snapback Hat - Leather Patch',
+      price: 35,
+      isPerGuest: false,
+      isIncluded: false,
+    },
+  ],
+};
+
 export const getFeaturedTours = () => tours.slice(0, 3);
 export const getTourBySlug = (slug: string) => tours.find((tour) => tour.slug === slug);
