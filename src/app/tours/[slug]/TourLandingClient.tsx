@@ -25,13 +25,6 @@ type AddOnUiItem =
       label: string;
       unit: number;
       type: 'flat' | 'per_guest_toggle';
-    }
-  | {
-      id: string;
-      label: string;
-      unit: number;
-      type: 'tiered_per_guest_toggle';
-      tiered: { baseAmount: number; includedGuests: number; extraAmountPerGuest: number };
     };
 
 function pickInitialVideo(videos: VideoItem[]) {
@@ -166,28 +159,12 @@ export default function TourLandingClient({
   const addOns = useMemo<AddOnUiItem[]>(() => {
     const master = financialAddOnsBySlug[tour.slug] || financialAddOnsBySlug['custom-charter'] || [];
 
-    return master.map((a) => {
-      const pricing = a.pricing;
-      if (pricing.type === 'per_guest') {
-        return { id: a.id, label: a.name, unit: pricing.amountPerGuest, type: 'per_guest_toggle' as const };
-      }
-
-      if (pricing.type === 'flat') {
-        return { id: a.id, label: a.name, unit: pricing.amount, type: 'flat' as const };
-      }
-
-      if (pricing.type === 'merch_unit') {
-        return { id: a.id, label: a.name, unit: pricing.unitAmount, type: 'flat' as const };
-      }
-
-      return {
-        id: a.id,
-        label: a.name,
-        unit: pricing.baseAmount,
-        type: 'tiered_per_guest_toggle' as const,
-        tiered: pricing,
-      };
-    });
+    return master.map((a) => ({
+      id: a.id,
+      label: a.title,
+      unit: a.price,
+      type: a.isPerGuest ? 'per_guest_toggle' : 'flat',
+    }));
   }, [tour.slug]);
 
   const getQty = useCallback((id: string) => Math.max(0, qty[id] || 0), [qty]);
@@ -285,12 +262,7 @@ export default function TourLandingClient({
               <div className="mt-4 max-h-[300px] overflow-y-auto pr-4 space-y-3">
                 {addOns.map((a) => {
                   const q = getQty(a.id);
-                  const subtitle =
-                    a.type === 'per_guest_toggle'
-                      ? `${formatMoney(a.unit)} per guest`
-                      : a.type === 'tiered_per_guest_toggle'
-                        ? `${formatMoney(a.tiered.baseAmount)} (includes ${a.tiered.includedGuests}) + ${formatMoney(a.tiered.extraAmountPerGuest)} / extra guest`
-                        : `${formatMoney(a.unit)} each`;
+                  const subtitle = a.type === 'per_guest_toggle' ? `${formatMoney(a.unit)} per guest` : `${formatMoney(a.unit)} each`;
 
                   return (
                     <div key={a.id} className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
