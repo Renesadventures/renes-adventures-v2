@@ -159,12 +159,28 @@ export default function TourLandingClient({
   const addOns = useMemo<AddOnUiItem[]>(() => {
     const master = financialAddOnsBySlug[tour.slug] || financialAddOnsBySlug['custom-charter'] || [];
 
-    return master.map((a) => ({
-      id: a.id,
-      label: a.title,
-      unit: a.price,
-      type: a.isPerGuest ? 'per_guest_toggle' : 'flat',
-    }));
+    return master.map((a) => {
+      const pricing = a.pricing;
+      if (pricing.type === 'per_guest') {
+        return { id: a.id, label: a.name, unit: pricing.amountPerGuest, type: 'per_guest_toggle' as const };
+      }
+      
+      if (pricing.type === 'flat') {
+        return { id: a.id, label: a.name, unit: pricing.amount, type: 'flat' as const };
+      }
+      
+      if (pricing.type === 'merch_unit') {
+        return { id: a.id, label: a.name, unit: pricing.unitAmount, type: 'flat' as const };
+      }
+      
+      return {
+        id: a.id,
+        label: a.name,
+        unit: pricing.baseAmount,
+        type: 'tiered_per_guest_toggle' as const,
+        tiered: pricing,
+      };
+    });
   }, [tour.slug]);
 
   const getQty = useCallback((id: string) => Math.max(0, qty[id] || 0), [qty]);
