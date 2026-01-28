@@ -42,7 +42,8 @@ type AddOnUiItem =
       unit: number;
       isPerGuest: boolean;
       selected: number;
-      tiered: Array<{ minGuests: number; maxGuests: number; pricePerGuest: number }>;
+      includedGuests: number;
+      extraAmountPerGuest: number;
     };
 
 function pickInitialVideo(videos: VideoItem[]) {
@@ -177,27 +178,51 @@ export default function TourLandingClient({
   const addOns = useMemo<AddOnUiItem[]>(() => {
     const master = financialAddOnsBySlug[tour.slug] || financialAddOnsBySlug['custom-charter'] || [];
 
-    return master.map((a) => {
-      const base = {
-        id: a.id,
-        label: a.title,
-        unit: a.price,
-        selected: 0,
-      };
-
-      if (a.isPerGuest) {
+    const items: AddOnUiItem[] = master.map((a) => {
+      if (a.pricing.type === 'flat') {
         return {
-          ...base,
+          type: 'flat' as const,
+          id: a.id,
+          label: a.name,
+          unit: a.pricing.amount,
+          selected: 0,
+        };
+      }
+
+      if (a.pricing.type === 'per_guest') {
+        return {
           type: 'per_guest_toggle' as const,
+          id: a.id,
+          label: a.name,
+          unit: a.pricing.amountPerGuest,
           isPerGuest: true,
+          selected: 0,
+        };
+      }
+
+      if (a.pricing.type === 'tiered_per_guest') {
+        return {
+          type: 'tiered_per_guest_toggle' as const,
+          id: a.id,
+          label: a.name,
+          unit: a.pricing.baseAmount,
+          isPerGuest: true,
+          selected: 0,
+          includedGuests: a.pricing.includedGuests,
+          extraAmountPerGuest: a.pricing.extraAmountPerGuest,
         };
       }
 
       return {
-        ...base,
         type: 'flat' as const,
+        id: a.id,
+        label: a.name,
+        unit: a.pricing.unitAmount,
+        selected: 0,
       };
     });
+
+    return items;
   }, [tour.slug]);
 
   const getQty = useCallback((id: string) => Math.max(0, qty[id] || 0), [qty]);
@@ -295,7 +320,12 @@ export default function TourLandingClient({
               <div className="mt-4 max-h-[300px] overflow-y-auto pr-4 space-y-3">
                 {addOns.map((a) => {
                   const q = getQty(a.id);
-                  const subtitle = a.type === 'per_guest_toggle' ? `${formatMoney(a.unit)} per guest` : `${formatMoney(a.unit)} each`;
+                  const subtitle =
+                    a.type === 'per_guest_toggle'
+                      ? `${formatMoney(a.unit)} per guest`
+                      : a.type === 'tiered_per_guest_toggle'
+                        ? `${formatMoney(a.unit)} includes ${a.includedGuests} guests + ${formatMoney(a.extraAmountPerGuest)} per extra guest`
+                        : `${formatMoney(a.unit)} each`;
 
                   return (
                     <div key={a.id} className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">

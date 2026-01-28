@@ -61,21 +61,41 @@ export default function BookingEngine({
     const master = (tourSlug && financialAddOnsBySlug[tourSlug]) || financialAddOnsBySlug['custom-charter'] || [];
 
     return master.map((a) => {
-      const pricing = a.pricing;
-
-      if (pricing.type === 'per_guest') {
-        return { id: a.id, label: a.name, unit: pricing.amountPerGuest, type: 'per_guest_toggle' as const };
+      if (a.pricing.type === 'flat') {
+        return {
+          id: a.id,
+          label: a.name,
+          type: 'flat' as const,
+          unit: a.pricing.amount,
+        };
       }
 
-      if (pricing.type === 'flat') {
-        return { id: a.id, label: a.name, unit: pricing.amount, type: 'flat' as const };
+      if (a.pricing.type === 'per_guest') {
+        return {
+          id: a.id,
+          label: a.name,
+          type: 'per_guest' as const,
+          unit: a.pricing.amountPerGuest,
+        };
       }
 
-      if (pricing.type === 'merch_unit') {
-        return { id: a.id, label: a.name, unit: pricing.unitAmount, type: 'flat' as const };
+      if (a.pricing.type === 'tiered_per_guest') {
+        return {
+          id: a.id,
+          label: a.name,
+          type: 'tiered_per_guest' as const,
+          baseAmount: a.pricing.baseAmount,
+          includedGuests: a.pricing.includedGuests,
+          extraAmountPerGuest: a.pricing.extraAmountPerGuest,
+        };
       }
 
-      return { id: a.id, label: a.name, unit: pricing.baseAmount, type: 'tiered_per_guest_toggle' as const, tiered: pricing };
+      return {
+        id: a.id,
+        label: a.name,
+        type: 'merch_unit' as const,
+        unit: a.pricing.unitAmount,
+      };
     });
   }, [tourSlug]);
 
@@ -89,11 +109,13 @@ export default function BookingEngine({
         if (q <= 0) return null;
 
         const lineTotal =
-          a.type === 'per_guest_toggle'
+          a.type === 'flat'
             ? q * a.unit
-            : a.type === 'tiered_per_guest_toggle'
-              ? a.tiered.baseAmount + Math.max(0, q - a.tiered.includedGuests) * a.tiered.extraAmountPerGuest
-              : q * a.unit;
+            : a.type === 'merch_unit'
+              ? q * a.unit
+              : a.type === 'per_guest'
+                ? q * a.unit
+                : a.baseAmount + Math.max(0, q - a.includedGuests) * a.extraAmountPerGuest;
 
         return { id: a.id, label: a.label, qty: q, total: lineTotal };
       })
@@ -222,11 +244,11 @@ export default function BookingEngine({
               {selectedAddOnLines.map((line) => {
                 const addOn = addOns.find((a) => a.id === line.id);
                 const unitLabel =
-                  addOn?.type === 'tiered_per_guest_toggle'
-                    ? formatMoney(addOn.tiered.extraAmountPerGuest)
-                    : addOn
-                      ? formatMoney(addOn.unit)
-                      : '';
+                  !addOn
+                    ? ''
+                    : addOn.type === 'tiered_per_guest'
+                      ? `${formatMoney(addOn.baseAmount)} + ${formatMoney(addOn.extraAmountPerGuest)}/extra`
+                      : formatMoney(addOn.unit);
 
                 return (
                   <div key={line.id} className="flex items-center justify-between gap-3 leading-snug">

@@ -1,4 +1,4 @@
-export type TourAddOn = {
+﻿export type TourAddOn = {
   name: string;
   price: number;
   perPerson: boolean;
@@ -114,7 +114,7 @@ export const tours: Tour[] = [
     id: "custom-adventure-bbq",
     title: "Rene's Custom Adventure with Beach BBQ",
     slug: "custom-charter",
-    description: "Design your perfect day on the water — whether it’s fishing, snorkeling...",
+    description: "Design your perfect day on the water ΓÇö whether itΓÇÖs fishing, snorkeling...",
     price: 400,
     priceFullDay: 600,
     duration: "Varies by Season",
@@ -178,7 +178,7 @@ export const tours: Tour[] = [
     id: "sunset-cruise",
     title: "Sunset Cruise",
     slug: "sunset-cruise",
-    description: "Experience Belize’s famous sunsets from the best seat in the house — the water.",
+    description: "Experience BelizeΓÇÖs famous sunsets from the best seat in the house ΓÇö the water.",
     price: 350,
     duration: "Varies by Season",
     maxGuests: 8,
@@ -239,7 +239,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'morning-fishing',
       title: 'Spearfishing',
-      description: 'Start with spearfishing—target fresh catch for the beach BBQ.',
+      description: 'Start with spearfishingΓÇötarget fresh catch for the beach BBQ.',
       keywords: ['spearfishing', 'spear', 'speargun', 'fish', 'catch', 'reef'],
       videoUrl: `${base}/videos/luxury/deep-sea-fishing.mp4`,
     },
@@ -257,7 +257,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'lobster-mission',
       title: 'Lobster Mission (Seasonal)',
-      description: 'Seasonal lobster mission—quick, clean, and unforgettable.',
+      description: 'Seasonal lobster missionΓÇöquick, clean, and unforgettable.',
       keywords: ['lobster', 'reef', 'snorkel', 'dive', 'catch'],
       videoUrl: `${base}/videos/luxury/Lobster Fishing 1.mp4`,
       season: {
@@ -268,7 +268,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'hol-chan-snorkel',
       title: 'Hol Chan Marine Reserve',
-      description: 'Snorkel Hol Chan—one of Belize’s most iconic reef zones.',
+      description: 'Snorkel Hol ChanΓÇöone of BelizeΓÇÖs most iconic reef zones.',
       note: '($15 Ranger Fee paid directly to ranger)',
       keywords: ['hol', 'chan', 'snorkel', 'reef', 'coral', 'underwater'],
       videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.49 PM.mp4`,
@@ -283,14 +283,14 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'caye-caulker-stop',
       title: 'Caye Caulker Stop',
-      description: 'Dock in, explore, and catch the island pulse—easy and fun.',
+      description: 'Dock in, explore, and catch the island pulseΓÇöeasy and fun.',
       keywords: ['island', 'dock', 'caye', 'caulker', 'tropical', 'boat'],
       videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.41 PM.mp4`,
     },
     {
       id: 'high-dive',
       title: 'The High Dive (Optional)',
-      description: 'The famous high dive—if you want the adrenaline moment.',
+      description: 'The famous high diveΓÇöif you want the adrenaline moment.',
       keywords: ['jump', 'dive', 'adrenaline', 'island', 'ocean'],
       videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.44 PM.mp4`,
     },
@@ -304,14 +304,14 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'seahorse-spotting',
       title: 'Seahorse Spotting',
-      description: 'A quiet, magical stop—spot seahorses in the grass beds.',
+      description: 'A quiet, magical stopΓÇöspot seahorses in the grass beds.',
       keywords: ['seahorse', 'snorkel', 'underwater', 'grass', 'mangrove'],
       videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.36 PM.mp4`,
     },
     {
       id: 'beach-bbq-feast',
       title: 'Private Beach BBQ Feast',
-      description: 'Mayan-style BBQ on the sand—fresh catch, ceviche, and island time.',
+      description: 'Mayan-style BBQ on the sandΓÇöfresh catch, ceviche, and island time.',
       keywords: ['bbq', 'beach', 'grill', 'ceviche', 'lobster', 'food'],
       videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-09-26 at 20.28.36_7a150342.mp4`,
     },
