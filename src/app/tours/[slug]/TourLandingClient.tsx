@@ -21,10 +21,28 @@ type VideoItem = {
 
 type AddOnUiItem =
   | {
+      type: 'flat';
       id: string;
       label: string;
       unit: number;
-      type: 'flat' | 'per_guest_toggle';
+      selected: number;
+    }
+  | {
+      type: 'per_guest_toggle';
+      id: string;
+      label: string;
+      unit: number;
+      isPerGuest: boolean;
+      selected: number;
+    }
+  | {
+      type: 'tiered_per_guest_toggle';
+      id: string;
+      label: string;
+      unit: number;
+      isPerGuest: boolean;
+      selected: number;
+      tiered: Array<{ minGuests: number; maxGuests: number; pricePerGuest: number }>;
     };
 
 function pickInitialVideo(videos: VideoItem[]) {
@@ -159,12 +177,27 @@ export default function TourLandingClient({
   const addOns = useMemo<AddOnUiItem[]>(() => {
     const master = financialAddOnsBySlug[tour.slug] || financialAddOnsBySlug['custom-charter'] || [];
 
-    return master.map((a) => ({
-      id: a.id,
-      label: a.title,
-      unit: a.price,
-      type: a.isPerGuest ? 'per_guest_toggle' : 'flat',
-    }));
+    return master.map((a) => {
+      const base = {
+        id: a.id,
+        label: a.title,
+        unit: a.price,
+        selected: 0,
+      };
+
+      if (a.isPerGuest) {
+        return {
+          ...base,
+          type: 'per_guest_toggle' as const,
+          isPerGuest: true,
+        };
+      }
+
+      return {
+        ...base,
+        type: 'flat' as const,
+      };
+    });
   }, [tour.slug]);
 
   const getQty = useCallback((id: string) => Math.max(0, qty[id] || 0), [qty]);
