@@ -68,7 +68,7 @@ export function BoatGalleryPlaceholder() {
                       alt: 'Meet Your Vessel - B-roll',
                     },
                     { type: 'image', src: `${base}/images/tours/deep-sea-fishing.jpg`, alt: 'Center-console exterior - offshore ready' },
-                    { type: 'image', src: `${base}/images/tours/reef-fishing.jpg`, alt: 'Center-console deck space - reef days' },
+                    { type: 'image', src: `${base}/images/tours/hol-chan-snorkel.jpg`, alt: 'Center-console deck space - reef days' },
                     { type: 'image', src: `${base}/images/tours/sunset-cruise.jpg`, alt: 'Premium comfort on the water' },
                   ]}
                 />

@@ -1,7 +1,7 @@
-/**
+﻿/**
  * TOUR LANDING PAGE TEMPLATE
  *
- * ⚠️ STRUCTURE IS LOCKED ⚠️
+ * âš ï¸ STRUCTURE IS LOCKED âš ï¸
  *
  * This template is based on Reef Fishing page.
  *
@@ -26,16 +26,27 @@ import Link from 'next/link';
 import type { ComponentType } from 'react';
 import {
   Anchor,
+  Car,
   Camera,
+  Crown,
+  DollarSign,
+  Droplets,
+  FileCheck,
   Fish,
+  Glasses,
   PartyPopper,
+  Scissors,
+  Shield,
   ShieldCheck,
-  FileText,
   Shirt,
+  Smartphone,
+  Snowflake,
   Sun,
   User,
-  Utensils,
   Waves,
+  Worm,
+  UtensilsCrossed,
+  Wind,
 } from 'lucide-react';
 import { tours, itineraryActivitiesBySlug } from '@/data/tours';
 import { TOUR_ADDONS } from '@/data/tour-addons';
@@ -43,8 +54,9 @@ import { TourGuestGallery, TourHeroMedia, TourInteractivePortals } from './TourL
 
 const TOUR_VIDEOS: Record<string, string> = {
   'deep-sea-fishing': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep-sea-fishing.mp4',
+  'reef-fishing': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/Reef Fishing.mp4',
   'sunset-cruise': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/sunset-ritual.mp4',
-  'blue-hole': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/Secrete Beach 5.mp4',
+  'blue-hole-adventure': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/Secrete Beach 5.mp4',
   'secret-beach': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/secret-beach.mp4',
   'custom-adventure-bbq': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/beach-bbq.mp4',
 };
@@ -53,86 +65,81 @@ function formatMoney(amount: number) {
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
 }
 
-/**
- * 🔒 STANDARDIZED ICON MAPPING
- * Each category ALWAYS uses the same icon, regardless of tour.
- */
-function itemIconFor(text: string) {
-  const lower = text.toLowerCase();
+function itemIconFor(text: string, kind: 'included' | 'bring') {
+  const s = text.toLowerCase();
 
-  // CREW/PEOPLE/GUIDES - ALWAYS User icon (blue gradient)
-  if (
-    lower.includes('crew') ||
-    lower.includes('captain') ||
-    lower.includes('experienced') ||
-    lower.includes('guide') ||
-    lower.includes('instructor')
-  ) {
-    return { Icon: User, gradient: 'from-blue-400 to-blue-600' };
+  if (kind === 'included') {
+    if (s.includes('captain') || s.includes('crew') || s.includes('guide')) {
+      return { Icon: User, gradient: 'from-cyan-400 to-blue-500' };
+    }
+    if (s.includes('rod') || s.includes('reel')) {
+      return { Icon: Fish, gradient: 'from-blue-400 to-indigo-500' };
+    }
+    if (s.includes('tackle') || s.includes('bait')) {
+      return { Icon: Worm, gradient: 'from-amber-600 to-orange-700' };
+    }
+    if (s.includes('snack') || s.includes('rum') || s.includes('water') || s.includes('soda') || s.includes('meal') || s.includes('food')) {
+      return { Icon: UtensilsCrossed, gradient: 'from-orange-400 to-red-500' };
+    }
+    if (s.includes('ice') || s.includes('cooler')) {
+      return { Icon: Snowflake, gradient: 'from-cyan-300 to-blue-400' };
+    }
+    if (s.includes('clean') || s.includes('fillet')) {
+      return { Icon: Scissors, gradient: 'from-purple-400 to-pink-500' };
+    }
+    if (s.includes('snorkel') || s.includes('mask') || s.includes('fins') || s.includes('reef')) {
+      return { Icon: Waves, gradient: 'from-teal-400 to-cyan-500' };
+    }
+    if (s.includes('hotel') || s.includes('pickup')) {
+      return { Icon: Car, gradient: 'from-amber-400 to-orange-500' };
+    }
+    if (s.includes('boat') || s.includes('transport') || s.includes('cruise')) {
+      return { Icon: Anchor, gradient: 'from-amber-400 to-orange-500' };
+    }
+    if (s.includes('license')) {
+      return { Icon: FileCheck, gradient: 'from-green-400 to-emerald-500' };
+    }
+    if (s.includes('safety') || s.includes('safe')) {
+      return { Icon: Shield, gradient: 'from-red-400 to-rose-500' };
+    }
+    if (s.includes('photo') || s.includes('camera') || s.includes('video')) {
+      return { Icon: Camera, gradient: 'from-purple-400 to-pink-500' };
+    }
+    return { Icon: ShieldCheck, gradient: 'from-slate-400 to-gray-500' };
   }
 
-  // FISHING GEAR/BAIT/TACKLE - ALWAYS Fish icon (indigo/purple gradient)
-  if (
-    lower.includes('bait') ||
-    lower.includes('license') ||
-    lower.includes('tackle') ||
-    lower.includes('rod') ||
-    lower.includes('reel') ||
-    lower.includes('gear') ||
-    lower.includes('fishing equipment')
-  ) {
-    return { Icon: Fish, gradient: 'from-indigo-400 to-purple-600' };
-  }
-
-  // SNORKELING/WATER ACTIVITIES - ALWAYS Waves icon (cyan gradient)
-  if (lower.includes('snorkel') || lower.includes('mask') || lower.includes('fins') || lower.includes('world-class site')) {
-    return { Icon: Waves, gradient: 'from-cyan-400 to-teal-600' };
-  }
-
-  // FOOD/DRINKS/BEVERAGES - ALWAYS Utensils icon (orange/red gradient)
-  if (
-    lower.includes('champagne') ||
-    lower.includes('wine') ||
-    lower.includes('beverage') ||
-    lower.includes('waterfront stop') ||
-    lower.includes('crystal-clear') ||
-    lower.includes('turquoise waters') ||
-    lower.includes('water') ||
-    lower.includes('lunch') ||
-    lower.includes('snack') ||
-    lower.includes('rum')
-  ) {
-    return { Icon: Utensils, gradient: 'from-orange-400 to-red-500' };
-  }
-
-  // SUN PROTECTION - ALWAYS Sun icon (yellow gradient)
-  if (lower.includes('sunscreen') || lower.includes('reef-safe') || lower.includes('sunglasses') || lower.includes('polarized')) {
+  if (s.includes('sunscreen') || s.includes('sun')) {
     return { Icon: Sun, gradient: 'from-yellow-400 to-amber-500' };
   }
-
-  // CLOTHING/SWIMWEAR - ALWAYS Shirt icon (cyan gradient)
-  if (lower.includes('swimwear') || lower.includes('towel') || lower.includes('swim') || lower.includes('clothing')) {
-    return { Icon: Shirt, gradient: 'from-cyan-400 to-teal-500' };
+  if (s.includes('hat')) {
+    return { Icon: Crown, gradient: 'from-amber-500 to-yellow-600' };
+  }
+  if (s.includes('swim')) {
+    return { Icon: Shirt, gradient: 'from-cyan-400 to-teal-400' };
+  }
+  if (s.includes('towel')) {
+    return { Icon: Waves, gradient: 'from-blue-300 to-cyan-400' };
+  }
+  if (s.includes('sunglass')) {
+    return { Icon: Glasses, gradient: 'from-slate-400 to-gray-600' };
+  }
+  if (s.includes('wind') || s.includes('jacket')) {
+    return { Icon: Wind, gradient: 'from-pink-400 to-purple-500' };
+  }
+  if (s.includes('camera') || s.includes('photo') || s.includes('video')) {
+    return { Icon: Camera, gradient: 'from-purple-400 to-pink-500' };
+  }
+  if (s.includes('waterproof') || s.includes('case') || s.includes('phone')) {
+    return { Icon: Smartphone, gradient: 'from-purple-500 to-pink-600' };
+  }
+  if (s.includes('water')) {
+    return { Icon: Droplets, gradient: 'from-cyan-400 to-teal-500' };
+  }
+  if (s.includes('cash') || s.includes('money') || s.includes('card')) {
+    return { Icon: DollarSign, gradient: 'from-green-500 to-emerald-600' };
   }
 
-  // CAMERA/PHOTOS - ALWAYS Camera icon (orange/red gradient)
-  if (lower.includes('camera') || lower.includes('waterproof') || lower.includes('photo')) {
-    return { Icon: Camera, gradient: 'from-orange-500 to-red-600' };
-  }
-
-  // CASH/DOCUMENTS - ALWAYS FileText icon (green gradient)
-  if (
-    lower.includes('cash') ||
-    lower.includes('card') ||
-    lower.includes('some stops') ||
-    lower.includes('wallet') ||
-    lower.includes('id')
-  ) {
-    return { Icon: FileText, gradient: 'from-green-400 to-emerald-600' };
-  }
-
-  // EVERYTHING ELSE (species, locations, activities, etc.) - ALWAYS Anchor icon (gray gradient)
-  return { Icon: Anchor, gradient: 'from-slate-500 to-slate-700' };
+  return { Icon: Waves, gradient: 'from-slate-400 to-gray-500' };
 }
 
 function GlassIcon({
@@ -143,17 +150,8 @@ function GlassIcon({
   gradient: string;
 }) {
   return (
-    <div
-      className={`
-        relative h-11 w-11 rounded-xl
-        bg-gradient-to-br ${gradient}
-        flex items-center justify-center
-        backdrop-blur-sm bg-opacity-90
-        shadow-lg shadow-black/10
-        ring-1 ring-white/20
-      `}
-    >
-      <Icon className="h-5 w-5 text-white drop-shadow-sm" strokeWidth={2.5} />
+    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg bg-gradient-to-br ${gradient}`}>
+      <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
     </div>
   );
 }
@@ -189,8 +187,9 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
   const heroKeywordsBySlug: Partial<Record<string, string[]>> = {
     'deep-sea-fishing': ['deep', 'sea', 'offshore', 'fishing', 'tuna', 'wahoo', 'dorado', 'marlin'],
+    'reef-fishing': ['reef', 'fishing', 'snapper', 'barracuda', 'tackle'],
     'sunset-cruise': ['sunset', 'golden', 'cruise', 'romantic'],
-    'blue-hole': ['blue', 'hole', 'reef', 'snorkel', 'full', 'day'],
+    'blue-hole-adventure': ['blue', 'hole', 'reef', 'snorkel', 'full', 'day'],
     'secret-beach': ['secret', 'beach', 'shallow', 'turquoise', 'bar'],
   };
 
@@ -226,7 +225,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     key={h}
                     className="px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/90 text-sm"
                   >
-                    ✓ {h}
+                    âœ“ {h}
                   </span>
                 ))}
               </div>
@@ -291,12 +290,12 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     {
                       title: 'Iconic Water',
                       icon: Waves,
-                      body: 'Belize colors that look edited—but they’re real.',
+                      body: 'Belize colors that look editedâ€”but theyâ€™re real.',
                     },
                     {
                       title: 'Camera Moments',
                       icon: Camera,
-                      body: 'We position you for the “wow” clip, not just the safe shot.',
+                      body: 'We position you for the â€œwowâ€ clip, not just the safe shot.',
                     },
                   ].map(({ title, icon: Icon, body }) => (
                     <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -321,7 +320,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Your Day. Your Boat. Your Adventure.</div>
                 <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">A flow, not a script</h2>
                 <p className="mt-5 text-lg text-slate-700 leading-relaxed">
-                  You choose the pace. We adjust the route live—fishing, snorkeling, sandbars, food stops, island time. The best days feel effortless.
+                  You choose the pace. We adjust the route liveâ€”fishing, snorkeling, sandbars, food stops, island time. The best days feel effortless.
                 </p>
 
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -332,11 +331,11 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     },
                     {
                       title: 'Peak',
-                      body: 'Your highlights—hookups, reef time, beach bars, iconic Belize moments.',
+                      body: 'Your highlightsâ€”hookups, reef time, beach bars, iconic Belize moments.',
                     },
                     {
                       title: 'Finish',
-                      body: 'Slow cruise back—salt on your skin, camera roll full, already planning the next one.',
+                      body: 'Slow cruise backâ€”salt on your skin, camera roll full, already planning the next one.',
                     },
                   ].map((card, idx) => (
                     <div key={card.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -355,19 +354,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <div className="h-10" />
 
-            <TourGuestGallery
-              keywords={[slug, 'fishing', 'boat', 'belize']}
-              fallbackImages={[
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-80sj5WrGZF6Lfws1XtSJTW7tipz3D8.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_2488a0f4-UQRhRgJ4vZ98QqcZtviUNwPdPwY6KR.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_57c6cffb-FEp5aoFPSnxOcqe33W0kxowKxlpttk.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.04_f96e9e3d-DSYkKcCXqNYxjOZrwOxR4ZR3cYza1i.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_5ea54345-zuE5Z4SdPu1o5vpmvVL5LIQzxJlmqQ.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_376ce445-1k9GtEbrF6xHmOBXIRdCttAvk35ZrZ.jpg',
-                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.04_d74959cd-BISF1lsEf467bUwxqD8uL52qD8iweG.jpg',
-              ]}
-            />
+            <TourGuestGallery keywords={heroKeywordsBySlug[slug] || [slug]} />
 
             <div className="h-10" />
 
@@ -383,7 +370,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 <ul className="space-y-4">
                   {tour.features.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <GlassIcon {...itemIconFor(item)} />
+                      <GlassIcon {...itemIconFor(item, 'included')} />
                       <div className="pt-1">
                         <div className="text-slate-800 font-semibold">{item}</div>
                         <div className="text-slate-600 text-sm">Included for a smooth, premium day.</div>
@@ -403,7 +390,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 <ul className="space-y-4">
                   {['Reef-safe sunscreen', 'Swimwear & towel', 'Polarized sunglasses', 'Waterproof camera', 'Cash/card (some stops)'].map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <GlassIcon {...itemIconFor(item)} />
+                      <GlassIcon {...itemIconFor(item, 'bring')} />
                       <div className="pt-1">
                         <div className="text-slate-800 font-semibold">{item}</div>
                         <div className="text-slate-600 text-sm">Small thing, big comfort upgrade.</div>
@@ -441,8 +428,8 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
               <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="text-amber-400 font-bold mb-4">★★★★★</div>
-                    <div className="text-slate-800 font-semibold mb-4">“Absolutely unreal day. Private, premium, and the water looked edited.”</div>
+                    <div className="text-amber-400 font-bold mb-4">â˜…â˜…â˜…â˜…â˜…</div>
+                    <div className="text-slate-800 font-semibold mb-4">â€œAbsolutely unreal day. Private, premium, and the water looked edited.â€</div>
                     <div className="text-sm text-slate-600">
                       <div className="font-extrabold text-slate-900">Guest</div>
                       <div>San Pedro, Belize</div>
@@ -520,7 +507,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     <p className="text-slate-700 text-sm line-clamp-2 mb-4">{t.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs uppercase tracking-wide text-slate-500">{t.duration}</span>
-                      <span className="text-amber-600 font-bold">View Tour →</span>
+                      <span className="text-amber-600 font-bold">View Tour â†’</span>
                     </div>
                   </div>
                 </Link>

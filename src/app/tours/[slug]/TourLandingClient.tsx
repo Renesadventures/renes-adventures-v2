@@ -62,7 +62,7 @@ export default function TourLandingClient({
   heroVideos: VideoItem[];
 }) {
   const isCustomCharter = tour.slug === 'custom-charter';
-  const hasFullDay = typeof tour.priceFullDay === 'number' && Number.isFinite(tour.priceFullDay) && tour.priceFullDay > 0;
+  const hasFullDay = tour.hasFullDay && typeof tour.fullDayPrice === 'number' && Number.isFinite(tour.fullDayPrice) && tour.fullDayPrice > 0;
 
   const [duration, setDuration] = useState<'half' | 'full' | null>(hasFullDay ? null : 'half');
   const [guests, setGuests] = useState(() => Math.max(1, Math.min(8, tour.includedGuests || 1)));
@@ -73,7 +73,6 @@ export default function TourLandingClient({
 
   const customAdventureCards = useMemo<VideoItem[]>(
     () => [
-      { id: 'reef-fishing', label: 'Reef Fishing', src: `${base}/videos/hero/reef-fishing.mp4` },
       { id: 'spearfishing', label: 'Spearfishing', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
       { id: 'lobster', label: 'Lobster', src: `${base}/videos/luxury/Lobster Fishing 1.mp4` },
       { id: 'conch', label: 'Conch', src: `${base}/videos/luxury/Conch Fishing 1.mp4` },
@@ -96,7 +95,6 @@ export default function TourLandingClient({
     const fallbackThumbs = [
       `${base}/images/tours/full-day-ultimate.jpg`,
       `${base}/images/tours/deep-sea-fishing.jpg`,
-      `${base}/images/tours/reef-fishing.jpg`,
       `${base}/images/tours/beach-bbq.jpg`,
     ];
     const clips = videos.slice(0, 4);
@@ -394,8 +392,8 @@ export default function TourLandingClient({
                 <div>
                   <div className="text-xs uppercase tracking-[0.35em] text-white/60">{tour.title}</div>
                   <div className="mt-2 text-3xl font-extrabold text-[#D4AF37]">${tour.price.toLocaleString('en-US')}</div>
-                  {tour.priceFullDay && (
-                    <div className="mt-1 text-sm text-white/60">Full Day: ${tour.priceFullDay.toLocaleString('en-US')}</div>
+                  {tour.fullDayPrice && (
+                    <div className="mt-1 text-sm text-white/60">Full Day: ${tour.fullDayPrice.toLocaleString('en-US')}</div>
                   )}
                 </div>
                 <div className="text-right">
@@ -409,7 +407,7 @@ export default function TourLandingClient({
                   tourName={tour.title}
                   tourSlug={tour.slug}
                   basePrice={tour.price}
-                  fullDayPrice={tour.priceFullDay}
+                  fullDayPrice={tour.fullDayPrice ?? undefined}
                   includedGuests={tour.includedGuests}
                   duration={duration}
                   onDurationChange={setDuration}

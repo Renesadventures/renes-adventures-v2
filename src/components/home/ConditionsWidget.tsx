@@ -52,7 +52,7 @@ function pickByConditions(args: {
       recommendation: 'North Reef is Glass - Perfect for Snorkeling',
       reasoning: `Winds from the ${args.windDir} at ${args.windMph} mph with ${args.waveMaxFt} ft seas keep the north side protected and clear.`,
       bookingHref: '/tours/custom-charter?activity=snorkeling',
-      defaultMediaId: 'vid-reef-fishing-6',
+      defaultMediaId: 'img-nature',
     };
   }
 
@@ -120,12 +120,6 @@ export default function ConditionsWidget() {
         type: 'video',
         src: `${base}/luxury/Secrete%20Beach%205.mp4`,
         label: 'Secret Beach',
-      },
-      {
-        id: 'vid-reef-fishing-xxx',
-        type: 'video',
-        src: `${base}/luxury/reef-fishing%20xxx.mp4`,
-        label: 'Reef Fishing',
       },
       {
         id: 'vid-lobster-1',

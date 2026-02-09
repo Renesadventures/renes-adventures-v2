@@ -9,7 +9,6 @@ type AssetListResponse = {
 
 const FALLBACK_IMAGES = [
   '/images/tours/deep-sea-fishing.jpg',
-  '/images/tours/reef-fishing.jpg',
   '/images/tours/full-day-ultimate.jpg',
   '/images/tours/hol-chan-snorkel.jpg',
   '/images/tours/beach-bbq.jpg',

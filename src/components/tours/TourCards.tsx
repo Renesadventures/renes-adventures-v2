@@ -71,9 +71,9 @@ export default function TourCards() {
                 <div className="flex justify-between items-start mb-5 pb-5 border-b border-white/10">
                   <div>
                     <div className="text-3xl font-extrabold text-[#D4AF37]">{formatMoney(tour.price)}</div>
-                    {tour.priceFullDay && (
+                    {tour.fullDayPrice && (
                       <div className="text-sm text-white/70 mt-1">
-                        Full Day: {formatMoney(tour.priceFullDay)}
+                        Full Day: {formatMoney(tour.fullDayPrice)}
                       </div>
                     )}
                   </div>

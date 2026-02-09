@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Heart, Share2, X, Volume2, VolumeX } from 'lucide-react';
 
 type StoryItem = {
-  id: number;
-  caption: string;
+  id: string;
+  title: string;
+  summary: string;
   avatar: string;
   videoSrc: string;
 };
@@ -20,58 +21,78 @@ export default function StoryWall() {
   const stories = useMemo<StoryItem[]>(
     () => [
       {
-        id: 1,
+        id: 'spearfishing',
         videoSrc: `${base}/luxury/Deep Sea Fishing 5.mp4`,
-        caption: 'The moment it hit',
+        title: 'Spearfishing',
+        summary:
+          "Silent hunt beneath waves. Target dinner with precision. Fresh catch, primal thrill—this is how Belizeans feed their families.",
         avatar: '🎣',
       },
       {
-        id: 2,
+        id: 'sunset',
         videoSrc: `${base}/luxury/Secrete Beach 5.mp4`,
-        caption: 'Golden hour magic',
+        title: 'Sunset Ritual',
+        summary: 'Sky turns liquid gold. Water reflects fire. Slow sips. No rush. This is Belize at its softest.',
         avatar: '🌅',
       },
       {
-        id: 3,
+        id: 'lobster',
         videoSrc: `${base}/luxury/Lobster Fishing 1.mp4`,
-        caption: 'Feast mode activated',
+        title: 'Lobster Hunt',
+        summary:
+          'Seasonal treasure hunt in coral mazes. Find bugs hiding in reef cracks. June-February only—when lobster tastes like butter.',
         avatar: '🦞',
       },
       {
-        id: 4,
+        id: 'hol-chan',
         videoSrc: `${base}/luxury/Reef Fishing 6.mp4`,
-        caption: 'Into the blue',
+        title: 'Hol Chan',
+        summary:
+          "Swim with nurse sharks in sanctuary. Protected reef teeming with life. This is Belize's underwater crown jewel.",
         avatar: '🐠',
       },
       {
-        id: 5,
+        id: 'bbq',
         videoSrc: `${base}/hero/beach-bbq.mp4`,
-        caption: 'Beach vibes only',
+        title: 'Beach BBQ',
+        summary: 'Fresh catch. Fire on sand. Rum punch. This is the taste of Belize with your feet in the surf.',
         avatar: '🏖️',
       },
       {
-        id: 6,
+        id: 'reef',
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        caption: "Captain's call",
+        title: 'Reef Fishing',
+        summary: 'Snapper strikes near coral gardens. Fast action. Light tackle. Dinner is earned, not ordered.',
         avatar: '⚓',
       },
       {
-        id: 7,
+        id: 'seahorse',
         videoSrc: `${base}/hero/blue-hole.mp4`,
-        caption: 'Pure Belize',
+        title: 'Seahorse Search',
+        summary:
+          'Magical grass beds hide tiny horses. Spot them swaying like underwater artwork. Quiet moment that lasts forever.',
         avatar: '💎',
       },
       {
-        id: 8,
+        id: 'caye-caulker',
         videoSrc: `${base}/luxury/deep-sea-fishing.mp4`,
-        caption: 'Trophy time',
+        title: 'Caye Caulker',
+        summary: "Island where cars don't exist. Dock, explore, breathe. This is 'Go Slow' headquarters.",
         avatar: '🏆',
+      },
+      {
+        id: 'tarpon-feeding',
+        title: 'Tarpon Feeding Frenzy',
+        videoSrc: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.45 PM.mp4`,
+        summary:
+          'Hand-feed prehistoric silver kings. Watch 100-pound tarpon explode from calm water in feeding fury. Ancient fish, modern thrill—this is Belize raw and unfiltered.',
+        avatar: '🐟',
       },
     ],
     []
   );
 
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [modalMuted, setModalMuted] = useState(true);
 
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -165,9 +186,9 @@ export default function StoryWall() {
           </p>
         </div>
 
-        <div className="[column-gap:1.5rem] columns-1 md:columns-2 lg:columns-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stories.map((story, idx) => {
-            const storyKey = String(story.id);
+            const storyKey = story.id;
 
             return (
               <div
@@ -176,7 +197,7 @@ export default function StoryWall() {
                   cardRefs.current[idx] = el;
                 }}
                 data-story-id={storyKey}
-                className="mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl cursor-pointer group"
+                className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl cursor-pointer group"
                 onClick={() => openModal(story)}
                 role="button"
                 tabIndex={0}
@@ -184,60 +205,79 @@ export default function StoryWall() {
                   if (e.key === 'Enter' || e.key === ' ') openModal(story);
                 }}
               >
-                <div className="relative w-full aspect-[9/16] bg-black">
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[storyKey] = el;
-                    }}
-                    muted
-                    loop
-                    playsInline
-                    preload="none"
-                    className="absolute inset-0 w-full h-full object-cover"
-                    data-src={story.videoSrc}
-                  />
+                <div className="group perspective-1000">
+                  <div className="relative w-full aspect-square transform-style-3d transition-transform duration-700 hover:rotate-y-180">
+                    <div className="absolute inset-0 backface-hidden">
+                      <div className="relative w-full h-full bg-black">
+                        <video
+                          ref={(el) => {
+                            videoRefs.current[storyKey] = el;
+                          }}
+                          muted
+                          loop
+                          playsInline
+                          preload="none"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          data-src={story.videoSrc}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <div className="absolute right-3 top-3">
+                          <div className="px-3 py-1.5 rounded-full border border-[#D4AF37]/45 bg-black/35 backdrop-blur-md text-[10px] uppercase tracking-[0.25em] text-[#D4AF37]">
+                            Lia&apos;s Tale
+                          </div>
+                        </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <div className="absolute left-0 right-0 bottom-0 p-4">
+                          <div className="flex items-end justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-base">
+                                {story.avatar}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-white/90 text-sm font-semibold leading-tight line-clamp-2">{story.title}</div>
+                              </div>
+                            </div>
 
-                  <div className="absolute right-3 top-3">
-                    <div className="px-3 py-1.5 rounded-full border border-[#D4AF37]/45 bg-black/35 backdrop-blur-md text-[10px] uppercase tracking-[0.25em] text-[#D4AF37]">
-                      Lia&apos;s Tale
+                            <div className="flex items-center gap-2 text-white/65">
+                              <button
+                                type="button"
+                                className="h-9 w-9 rounded-full bg-black/35 border border-white/10 hover:border-white/25 transition flex items-center justify-center"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                aria-label="Like"
+                              >
+                                <Heart className="h-4 w-4" />
+                              </button>
+                              <button
+                                type="button"
+                                className="h-9 w-9 rounded-full bg-black/35 border border-white/10 hover:border-white/25 transition flex items-center justify-center"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                aria-label="Share"
+                              >
+                                <Share2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="absolute left-0 right-0 bottom-0 p-4">
-                    <div className="flex items-end justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-base">
-                          {story.avatar}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-white/90 text-sm font-semibold leading-tight line-clamp-2">{story.caption}</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-white/65">
-                        <button
-                          type="button"
-                          className="h-9 w-9 rounded-full bg-black/35 border border-white/10 hover:border-white/25 transition flex items-center justify-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                          aria-label="Like"
-                        >
-                          <Heart className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          className="h-9 w-9 rounded-full bg-black/35 border border-white/10 hover:border-white/25 transition flex items-center justify-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                          aria-label="Share"
-                        >
-                          <Share2 className="h-4 w-4" />
-                        </button>
-                      </div>
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-[#001d3d] to-[#000814] p-6 flex flex-col items-center justify-center text-center">
+                      <h3 className="text-2xl font-black text-[#c5a059] mb-4">{story.title}</h3>
+                      <p className="text-white/90 text-sm leading-relaxed mb-6">{story.summary}</p>
+                      <button
+                        type="button"
+                        className="bg-[#fbbf24] text-black px-6 py-3 rounded-xl font-bold"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(story);
+                        }}
+                      >
+                        Watch Full Story
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -303,8 +343,8 @@ export default function StoryWall() {
                       {activeStory.avatar}
                     </div>
                     <div>
-                      <div className="text-white text-base font-semibold">{activeStory.caption}</div>
-                      <div className="mt-1 text-white/70 text-sm">{activeStory.caption}</div>
+                      <div className="text-white text-base font-semibold">{activeStory.title}</div>
+                      <div className="mt-1 text-white/70 text-sm">{activeStory.summary}</div>
                     </div>
                   </div>
 

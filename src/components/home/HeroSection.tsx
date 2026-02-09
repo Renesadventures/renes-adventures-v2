@@ -18,15 +18,6 @@ const CHANNELS = [
     ctaLink: '/tours/deep-sea-fishing'
   },
   {
-    id: 'reef-fishing',
-    title: 'Reef Fishing',
-    tagline: 'Cast your line in paradise—snappers, groupers, and pure Caribbean bliss.',
-    videoUrl: `${base}/videos/hero/reef-fishing.mp4`,
-    fallbackImageUrl: `${base}/images/tours/reef-fishing.jpg`,
-    ctaText: 'Book This Adventure',
-    ctaLink: '/tours/reef-fishing'
-  },
-  {
     id: 'sunset-cruise',
     title: 'Sunset Ritual',
     tagline: 'Watch the sky ignite as the Caribbean melts into gold.',
@@ -42,7 +33,7 @@ const CHANNELS = [
     videoUrl: `${base}/videos/hero/blue-hole.mp4`,
     fallbackImageUrl: `${base}/images/tours/hol-chan-snorkel.jpg`,
     ctaText: 'Book This Adventure',
-    ctaLink: '/tours/blue-hole-adventure'
+    ctaLink: '/tours/blue-hole'
   },
   {
     id: 'secret-beach',

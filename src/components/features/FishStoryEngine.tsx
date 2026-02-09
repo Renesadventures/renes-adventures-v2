@@ -74,7 +74,6 @@ export default function FishStoryEngine() {
   const items = useMemo<StoryWallItem[]>(() => {
     const fallback = [
       `${base}/images/tours/deep-sea-fishing.jpg`,
-      `${base}/images/tours/reef-fishing.jpg`,
       `${base}/images/tours/full-day-ultimate.jpg`,
       `${base}/images/tours/hol-chan-snorkel.jpg`,
       `${base}/images/tours/beach-bbq.jpg`,
