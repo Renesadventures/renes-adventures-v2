@@ -1,4 +1,8 @@
-﻿export type TourAddOn = {
+﻿import type { Tour } from '@/types/tour';
+
+export type { Tour };
+
+export type TourAddOn = {
   name: string;
   price: number;
   perPerson: boolean;
@@ -61,27 +65,6 @@ export type TourExtrasMeta = {
   };
 };
 
-export interface Tour {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  price: number;
-  duration: string;
-  maxGuests: number;
-  includedGuests: number;
-  additionalGuestPrice: number;
-  imageUrl: string;
-  features: string[];
-  priceWithout?: number;
-  priceFullDay?: number;
-  bbqPricing?: {
-    priceUpToGuests: number;
-    includedGuests: number;
-    extraGuestPrice: number;
-  };
-}
-
 export type TourGearItem = {
   name: string;
   priceRange: {
@@ -116,8 +99,12 @@ export const tours: Tour[] = [
     slug: "custom-charter",
     description: "Design your perfect day on the water ΓÇö whether itΓÇÖs fishing, snorkeling...",
     price: 400,
+    fullDayPrice: 600,
     priceFullDay: 600,
-    duration: "Varies by Season",
+    duration: 'Half Day (4 hours)',
+    fullDayDuration: 'Full Day (8 hours)',
+    hasHalfDay: true,
+    hasFullDay: true,
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
@@ -142,9 +129,12 @@ export const tours: Tour[] = [
     title: "Deep Sea Fishing",
     slug: "deep-sea-fishing",
     description: "Set out into the open waters for a thrilling offshore adventure...",
-    price: 650,
-    priceFullDay: 900,
-    duration: "Varies by Season",
+    price: 600,
+    fullDayPrice: 900,
+    duration: 'Half Day (4 hours)',
+    fullDayDuration: 'Full Day (8 hours)',
+    hasHalfDay: true,
+    hasFullDay: true,
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
@@ -157,30 +147,16 @@ export const tours: Tour[] = [
     ]
   },
   {
-    id: "reef-fishing",
-    title: "Reef Fishing",
-    slug: "reef-fishing",
-    description: "Target snapper, grouper, and barracuda near Belize's stunning coral reefs. Perfect for families and first-timers with experienced local guides.",
-    price: 550,
-    duration: "Varies by Season",
-    maxGuests: 8,
-    includedGuests: 4,
-    additionalGuestPrice: 75,
-    imageUrl: '/images/tours/reef-fishing.jpg',
-    features: [
-      "Target reef fish species",
-      "Snapper, grouper, barracuda",
-      "Near stunning coral reefs",
-      "Perfect for families"
-    ]
-  },
-  {
     id: "sunset-cruise",
     title: "Sunset Cruise",
     slug: "sunset-cruise",
     description: "Experience BelizeΓÇÖs famous sunsets from the best seat in the house ΓÇö the water.",
     price: 350,
-    duration: "Varies by Season",
+    fullDayPrice: null,
+    duration: '2.5 Hours',
+    fullDayDuration: null,
+    hasHalfDay: false,
+    hasFullDay: false,
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
@@ -193,12 +169,16 @@ export const tours: Tour[] = [
     ]
   },
   {
-    id: "blue-hole-adventure",
+    id: "blue-hole",
     title: "Blue Hole Adventure",
-    slug: "blue-hole-adventure",
+    slug: 'blue-hole',
     description: "Visit the iconic Blue Hole, snorkel this world-class site, and explore surrounding reefs. Full-day adventure to one of Belize's most famous landmarks.",
     price: 900,
-    duration: "Varies by Season",
+    fullDayPrice: null,
+    duration: 'Full Day (8 hours)',
+    fullDayDuration: null,
+    hasHalfDay: false,
+    hasFullDay: true,
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,
@@ -216,8 +196,11 @@ export const tours: Tour[] = [
     slug: "secret-beach",
     description: "Visit the famous Secret Beach with crystal-clear turquoise waters. Beach bars and restaurants nearby, perfect for relaxation. Available as half-day or full-day trip.",
     price: 400,
-    priceFullDay: 600,
-    duration: "Varies by Season",
+    fullDayPrice: 600,
+    duration: 'Half Day (4 hours)',
+    fullDayDuration: 'Full Day (8 hours)',
+    hasHalfDay: true,
+    hasFullDay: true,
     maxGuests: 8,
     includedGuests: 4,
     additionalGuestPrice: 75,

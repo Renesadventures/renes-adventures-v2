@@ -1,183 +1,533 @@
-"use client";
-import React, { useState } from 'react';
-import { Anchor, Luggage, CheckCircle2 } from 'lucide-react';
+/**
+ * TOUR LANDING PAGE TEMPLATE
+ *
+ * ⚠️ STRUCTURE IS LOCKED ⚠️
+ *
+ * This template is based on Reef Fishing page.
+ *
+ * ALLOWED CHANGES:
+ * - Tour content (descriptions, titles)
+ * - Images/videos (URLs, captions)
+ * - Pricing (amounts, add-ons)
+ *
+ * NOT ALLOWED:
+ * - Section order
+ * - Layout structure
+ * - Component hierarchy
+ * - Add/remove sections
+ *
+ * Template locked: 2025-02-08
+ * Reference: /tours/reef-fishing
+ */
 
-export default function TourPage() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-  const [activeVideo, setActiveVideo] = useState(`${base}/videos/hero/renes-custom-adventures.mp4`);
-  const [guests, setGuests] = useState(4);
-  const [addonQtys, setAddonQtys] = useState<{ [key: string]: number }>({});
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import type { ComponentType } from 'react';
+import {
+  Anchor,
+  Camera,
+  Fish,
+  PartyPopper,
+  ShieldCheck,
+  FileText,
+  Shirt,
+  Sun,
+  User,
+  Utensils,
+  Waves,
+} from 'lucide-react';
+import { tours, itineraryActivitiesBySlug } from '@/data/tours';
+import { TOUR_ADDONS } from '@/data/tour-addons';
+import { TourGuestGallery, TourHeroMedia, TourInteractivePortals } from './TourLandingLightClient';
 
-  const basePrice = 400;
-  const extraPassengerPrice = guests > 4 ? (guests - 4) * 75 : 0;
-  
-  const addonList = [
-    { name: "Beach BBQ", price: 25 },
-    { name: "BBQ Additional Guest", price: 15 },
-    { name: "Snorkel Gear", price: 10 },
-    { name: "Hol Chan Fee", price: 15, note: "$15.00 fee paid directly to the ranger at the time of boat entry" },
-    { name: "Adult T-Shirt", price: 25 },
-    { name: "Youth T-Shirt", price: 20 },
-    { name: "XXL T-Shirt", price: 30 }
-  ];
+const TOUR_VIDEOS: Record<string, string> = {
+  'deep-sea-fishing': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep-sea-fishing.mp4',
+  'sunset-cruise': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/sunset-ritual.mp4',
+  'blue-hole': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/Secrete Beach 5.mp4',
+  'secret-beach': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/secret-beach.mp4',
+  'custom-adventure-bbq': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/beach-bbq.mp4',
+};
 
-  const updateQty = (name: string, delta: number) => {
-    setAddonQtys(prev => {
-      const current = prev[name] || 0;
-      if (current === 0 && delta > 0) return { ...prev, [name]: guests };
-      return { ...prev, [name]: Math.max(0, current + delta) };
-    });
+function formatMoney(amount: number) {
+  return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
+}
+
+/**
+ * 🔒 STANDARDIZED ICON MAPPING
+ * Each category ALWAYS uses the same icon, regardless of tour.
+ */
+function itemIconFor(text: string) {
+  const lower = text.toLowerCase();
+
+  // CREW/PEOPLE/GUIDES - ALWAYS User icon (blue gradient)
+  if (
+    lower.includes('crew') ||
+    lower.includes('captain') ||
+    lower.includes('experienced') ||
+    lower.includes('guide') ||
+    lower.includes('instructor')
+  ) {
+    return { Icon: User, gradient: 'from-blue-400 to-blue-600' };
+  }
+
+  // FISHING GEAR/BAIT/TACKLE - ALWAYS Fish icon (indigo/purple gradient)
+  if (
+    lower.includes('bait') ||
+    lower.includes('license') ||
+    lower.includes('tackle') ||
+    lower.includes('rod') ||
+    lower.includes('reel') ||
+    lower.includes('gear') ||
+    lower.includes('fishing equipment')
+  ) {
+    return { Icon: Fish, gradient: 'from-indigo-400 to-purple-600' };
+  }
+
+  // SNORKELING/WATER ACTIVITIES - ALWAYS Waves icon (cyan gradient)
+  if (lower.includes('snorkel') || lower.includes('mask') || lower.includes('fins') || lower.includes('world-class site')) {
+    return { Icon: Waves, gradient: 'from-cyan-400 to-teal-600' };
+  }
+
+  // FOOD/DRINKS/BEVERAGES - ALWAYS Utensils icon (orange/red gradient)
+  if (
+    lower.includes('champagne') ||
+    lower.includes('wine') ||
+    lower.includes('beverage') ||
+    lower.includes('waterfront stop') ||
+    lower.includes('crystal-clear') ||
+    lower.includes('turquoise waters') ||
+    lower.includes('water') ||
+    lower.includes('lunch') ||
+    lower.includes('snack') ||
+    lower.includes('rum')
+  ) {
+    return { Icon: Utensils, gradient: 'from-orange-400 to-red-500' };
+  }
+
+  // SUN PROTECTION - ALWAYS Sun icon (yellow gradient)
+  if (lower.includes('sunscreen') || lower.includes('reef-safe') || lower.includes('sunglasses') || lower.includes('polarized')) {
+    return { Icon: Sun, gradient: 'from-yellow-400 to-amber-500' };
+  }
+
+  // CLOTHING/SWIMWEAR - ALWAYS Shirt icon (cyan gradient)
+  if (lower.includes('swimwear') || lower.includes('towel') || lower.includes('swim') || lower.includes('clothing')) {
+    return { Icon: Shirt, gradient: 'from-cyan-400 to-teal-500' };
+  }
+
+  // CAMERA/PHOTOS - ALWAYS Camera icon (orange/red gradient)
+  if (lower.includes('camera') || lower.includes('waterproof') || lower.includes('photo')) {
+    return { Icon: Camera, gradient: 'from-orange-500 to-red-600' };
+  }
+
+  // CASH/DOCUMENTS - ALWAYS FileText icon (green gradient)
+  if (
+    lower.includes('cash') ||
+    lower.includes('card') ||
+    lower.includes('some stops') ||
+    lower.includes('wallet') ||
+    lower.includes('id')
+  ) {
+    return { Icon: FileText, gradient: 'from-green-400 to-emerald-600' };
+  }
+
+  // EVERYTHING ELSE (species, locations, activities, etc.) - ALWAYS Anchor icon (gray gradient)
+  return { Icon: Anchor, gradient: 'from-slate-500 to-slate-700' };
+}
+
+function GlassIcon({
+  Icon,
+  gradient,
+}: {
+  Icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+  gradient: string;
+}) {
+  return (
+    <div
+      className={`
+        relative h-11 w-11 rounded-xl
+        bg-gradient-to-br ${gradient}
+        flex items-center justify-center
+        backdrop-blur-sm bg-opacity-90
+        shadow-lg shadow-black/10
+        ring-1 ring-white/20
+      `}
+    >
+      <Icon className="h-5 w-5 text-white drop-shadow-sm" strokeWidth={2.5} />
+    </div>
+  );
+}
+
+export function generateStaticParams() {
+  return tours.map((tour) => ({ slug: tour.slug }));
+}
+
+export default async function TourPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  const tour = tours.find((t) => t.slug === slug);
+  if (!tour) notFound();
+
+  const activities = itineraryActivitiesBySlug[slug] || [];
+  const videoUrl =
+    TOUR_VIDEOS[slug] ||
+    activities[0]?.videoUrl ||
+    'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/renes-custom-adventures.mp4';
+
+  const videoUrls =
+    slug === 'deep-sea-fishing'
+      ? [
+          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep-sea-fishing.mp4',
+          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep%20sea%20fishing.mp4',
+          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/deep-sea-fishing.mp4',
+          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/renes-custom-adventures.mp4',
+        ]
+      : undefined;
+
+  const highlights = tour.features.slice(0, 4);
+  const addOns = TOUR_ADDONS;
+
+  const heroKeywordsBySlug: Partial<Record<string, string[]>> = {
+    'deep-sea-fishing': ['deep', 'sea', 'offshore', 'fishing', 'tuna', 'wahoo', 'dorado', 'marlin'],
+    'sunset-cruise': ['sunset', 'golden', 'cruise', 'romantic'],
+    'blue-hole': ['blue', 'hole', 'reef', 'snorkel', 'full', 'day'],
+    'secret-beach': ['secret', 'beach', 'shallow', 'turquoise', 'bar'],
   };
 
-  const selectedAddons = addonList.filter(item => (addonQtys[item.name] || 0) > 0);
-  const addonsTotal = selectedAddons.reduce((sum, item) => sum + (addonQtys[item.name] * item.price), 0);
-  const grandTotal = basePrice + extraPassengerPrice + addonsTotal + (basePrice + extraPassengerPrice + addonsTotal) * 0.185;
-
-  const activities = [
-    { name: "PROMO", vid: `${base}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1544551763-47a016066e53?w=400" },
-    { name: "FISHING", vid: `${base}/videos/hero/reef-fishing.mp4`, thumb: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400" },
-    { name: "SNORKEL", vid: `${base}/videos/hero/renes-custom-adventures.mp4`, thumb: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" },
-    { name: "BEACH BBQ", vid: `${base}/videos/hero/beach-bbq.mp4`, thumb: "https://images.unsplash.com/photo-1583212292354-0837cc556eb2?w=400" }
+  const fallbackGallery = [
+    tour.imageUrl,
+    '/images/tours/hol-chan-snorkel.jpg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    '/images/tours/full-day-ultimate.jpg',
   ];
 
   return (
-    <main className="bg-[#000814] min-h-screen p-10 flex flex-col items-center font-sans text-white pt-24">
-      <div className="flex justify-center gap-10 w-full max-w-7xl relative">
-        
-        {/* LEFT COLUMN: THE SOUL ENGINE */}
-        <div className="w-[700px] flex flex-col gap-16">
-          <div className="w-full h-[450px] rounded-[2rem] overflow-hidden border border-[#c5a059] shadow-2xl bg-black">
-            <video key={activeVideo} autoPlay muted loop playsInline className="w-full h-full object-cover">
-              <source src={activeVideo} type="video/mp4" />
-            </video>
-          </div>
-
-          {/* Quick Clips Selector */}
-          <div className="flex gap-4">
-            {activities.map((act, i) => (
-              <button key={i} onClick={() => setActiveVideo(act.vid)} className="flex-1 h-24 rounded-2xl border-2 border-[#c5a059]/40 relative overflow-hidden transition-all hover:border-[#c5a059]">
-                <img src={act.thumb} className="w-full h-full object-cover opacity-50" alt="" />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                  <span className="text-[10px] font-black tracking-widest uppercase">{act.name}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Mosaic Overview */}
-          <section className="bg-[#001d3d] rounded-[2.5rem] p-12 border border-[#c5a059]/20 relative">
-            <div className="flex gap-10 items-center">
-              <div className="flex-1 space-y-6">
-                <h2 className="text-[#c5a059] text-4xl font-black uppercase tracking-tighter italic">Island Soul,<br/>Engineered for Wow.</h2>
-                <p className="text-gray-400 leading-relaxed text-base font-light">
-                  This isn&apos;t a scripted excursion. It&apos;s a private day on the water curated live—fast when you want adrenaline, slow when you want calm.
-                </p>
-              </div>
-              <div className="w-64 h-64 rounded-3xl overflow-hidden border border-[#c5a059] rotate-3 shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1544551763-47a016066e53?w=600" className="w-full h-full object-cover" alt="" />
-              </div>
-            </div>
-          </section>
-
-          {/* Fish Story Narrative */}
-          <section className="bg-black/40 rounded-[2.5rem] p-12 border border-white/5">
-             <h3 className="text-[#c5a059] text-xs font-black uppercase mb-4 tracking-widest">Fish Story</h3>
-             <h2 className="text-3xl font-black mb-6">The moment the water explodes.</h2>
-             <p className="text-gray-400 leading-relaxed italic text-sm">
-                You feel the tap—then the line goes tight. The boat pivots. Someone shouts directions. Your heart spikes. The fish runs hard and the sea turns electric. That&apos;s Island Soul: calm luxury with sudden, cinematic action. You don&apos;t just catch fish—you collect stories you&apos;ll repeat for years.
-             </p>
-          </section>
-
-          {/* The Flow Itinerary */}
-          <section className="bg-gradient-to-br from-[#001d3d] to-[#000814] rounded-[2.5rem] p-12 border border-[#c5a059]/20">
-            <h3 className="text-[#c5a059] text-xs font-black uppercase mb-10 tracking-widest text-center">Personalized itinerary. No rush.</h3>
-            <div className="grid grid-cols-3 gap-8">
-              {['Start', 'Peak', 'Finish'].map((stage, i) => (
-                <div key={stage} className="bg-white/5 p-8 rounded-3xl border border-white/10 text-center">
-                   <div className="w-10 h-10 rounded-full bg-[#c5a059] text-black flex items-center justify-center font-black mx-auto mb-6">{i+1}</div>
-                   <h4 className="font-black uppercase text-[#c5a059] text-xs mb-4">{stage}</h4>
-                   <p className="text-xs text-gray-400 leading-relaxed">
-                     {i === 0 && "Meet the crew & set priorities. Reef? Fishing? Food? We align the day to your vibe."}
-                     {i === 1 && "Action blocks + iconic Belize moments. High-adrenaline or island calm—you decide."}
-                     {i === 2 && "Slow down into sunset energy. Beach time, photos, and the last swim—no fixed checklist."}
-                   </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Essentials Icon Grid */}
-          <div className="grid grid-cols-2 gap-12 px-6 pb-20">
-             <div className="space-y-8">
-                <h4 className="text-[#c5a059] font-black uppercase text-sm tracking-widest flex items-center gap-3"><Luggage size={18}/> Essentials</h4>
-                <ul className="space-y-4 text-sm text-gray-400">
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Reef-safe sunscreen</li>
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Swimwear & towel</li>
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Polarized sunglasses</li>
-                </ul>
-             </div>
-             <div className="space-y-8">
-                <h4 className="text-[#c5a059] font-black uppercase text-sm tracking-widest flex items-center gap-3"><Anchor size={18}/> Inclusions</h4>
-                <ul className="space-y-4 text-sm text-gray-400">
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Gold standard crew</li>
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Ice, water & sodas</li>
-                   <li className="flex items-center gap-4"><CheckCircle2 size={16} className="text-[#c5a059]"/> Core snorkel & fishing gear</li>
-                </ul>
-             </div>
-          </div>
+    <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900">
+      <section className="relative z-0">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-white" />
         </div>
 
-        {/* RIGHT COLUMN: STICKY LOCKDOWN */}
-        <div className="w-[380px] flex-shrink-0">
-          <div className="sticky top-28 flex flex-col gap-8">
-            <div className="bg-[#001d3d] rounded-[2rem] border border-[#c5a059] p-8 pt-10 relative shadow-2xl">
-              <h2 className="text-[#FFD700] text-[10px] font-black tracking-widest uppercase absolute -top-3 left-10 bg-[#001d3d] px-4 border border-[#c5a059] rounded-full">Adventure Add-Ons</h2>
-              <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                {addonList.map(item => (
-                  <div key={item.name} className="flex flex-col border-b border-white/5 pb-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[12px] font-bold">{item.name} <span className="text-[#c5a059] ml-1">${item.price}</span></span>
+        <div className="relative mx-auto w-full max-w-screen-2xl px-4 pt-24 pb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-2 text-white backdrop-blur-md">
+                <PartyPopper className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.3em]">Adventure</span>
+              </div>
+
+              <h1 className="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight text-white">{tour.title}</h1>
+              <p className="mt-4 text-lg md:text-2xl text-white/90 max-w-2xl">{tour.description}</p>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                {highlights.map((h) => (
+                  <span
+                    key={h}
+                    className="px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/90 text-sm"
+                  >
+                    ✓ {h}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-7 flex flex-wrap gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
+                  <Anchor className="h-4 w-4" /> Book 1-{tour.maxGuests} guests instantly
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
+                  <Waves className="h-4 w-4" /> Private charter
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
+                  <ShieldCheck className="h-4 w-4" /> Local crew
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10">
+            <TourHeroMedia
+              videoUrl={videoUrl}
+              videoUrls={videoUrls}
+              keywords={heroKeywordsBySlug[slug] || [slug]}
+              fallbackImages={fallbackGallery}
+            />
+          </div>
+        </div>
+      </section>
+
+      <TourInteractivePortals tour={tour} addOns={addOns} />
+
+      <section className="mx-auto w-full max-w-screen-2xl px-4 py-14">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-amber-50" />
+              <div className="relative max-w-4xl">
+                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Discovery Summary</div>
+                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">A day that feels like a documentary</h2>
+                <div className="mt-5 grid gap-4 text-lg text-slate-700 leading-relaxed">
+                  <p>{tour.description}</p>
+                </div>
+              </div>
+            </section>
+
+            <div className="h-10" />
+
+            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-sky-50" />
+              <div className="relative">
+                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Why Unforgettable</div>
+                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You feel it in your chest</h2>
+                <p className="mt-5 text-lg text-slate-700 leading-relaxed">Belize hits different: private water, fewer crowds, and the kind of day you can only get with a local captain who knows where the story is hiding.</p>
+
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      title: 'Golden Crew',
+                      icon: ShieldCheck,
+                      body: 'Local captains and mates who make the whole day feel effortless.',
+                    },
+                    {
+                      title: 'Iconic Water',
+                      icon: Waves,
+                      body: 'Belize colors that look edited—but they’re real.',
+                    },
+                    {
+                      title: 'Camera Moments',
+                      icon: Camera,
+                      body: 'We position you for the “wow” clip, not just the safe shot.',
+                    },
+                  ].map(({ title, icon: Icon, body }) => (
+                    <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                       <div className="flex items-center gap-3">
-                        <button onClick={() => updateQty(item.name, -1)} className="bg-[#c5a059] w-7 h-7 rounded text-black font-black">-</button>
-                        <span className="min-w-[15px] text-center font-black text-xs">{addonQtys[item.name] || 0}</span>
-                        <button onClick={() => updateQty(item.name, 1)} className="bg-[#c5a059] w-7 h-7 rounded text-black font-black">+</button>
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200">
+                          <Icon className="h-5 w-5 text-amber-700" />
+                        </span>
+                        <div className="font-extrabold text-slate-900">{title}</div>
                       </div>
+                      <div className="mt-3 text-slate-700">{body}</div>
                     </div>
-                    {item.note && <p className="text-[9px] text-[#c5a059]/70 mt-2 italic">{item.note}</p>}
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <div className="h-10" />
+
+            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-amber-50" />
+              <div className="relative">
+                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Your Day. Your Boat. Your Adventure.</div>
+                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">A flow, not a script</h2>
+                <p className="mt-5 text-lg text-slate-700 leading-relaxed">
+                  You choose the pace. We adjust the route live—fishing, snorkeling, sandbars, food stops, island time. The best days feel effortless.
+                </p>
+
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      title: 'Start',
+                      body: 'Meet the crew, set the vibe, and head out into bright water.',
+                    },
+                    {
+                      title: 'Peak',
+                      body: 'Your highlights—hookups, reef time, beach bars, iconic Belize moments.',
+                    },
+                    {
+                      title: 'Finish',
+                      body: 'Slow cruise back—salt on your skin, camera roll full, already planning the next one.',
+                    },
+                  ].map((card, idx) => (
+                    <div key={card.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center font-black text-amber-700">
+                          {idx + 1}
+                        </div>
+                        <div className="font-extrabold text-slate-900">{card.title}</div>
+                      </div>
+                      <div className="mt-3 text-slate-700">{card.body}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <div className="h-10" />
+
+            <TourGuestGallery
+              keywords={[slug, 'fishing', 'boat', 'belize']}
+              fallbackImages={[
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-80sj5WrGZF6Lfws1XtSJTW7tipz3D8.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_2488a0f4-UQRhRgJ4vZ98QqcZtviUNwPdPwY6KR.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_57c6cffb-FEp5aoFPSnxOcqe33W0kxowKxlpttk.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.04_f96e9e3d-DSYkKcCXqNYxjOZrwOxR4ZR3cYza1i.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_5ea54345-zuE5Z4SdPu1o5vpmvVL5LIQzxJlmqQ.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_376ce445-1k9GtEbrF6xHmOBXIRdCttAvk35ZrZ.jpg',
+                'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.04_d74959cd-BISF1lsEf467bUwxqD8uL52qD8iweG.jpg',
+              ]}
+            />
+
+            <div className="h-10" />
+
+            <section>
+              <div id="tour-addons-slot" />
+            </section>
+
+            <div className="h-10" />
+
+            <section className="grid md:grid-cols-2 gap-8">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="text-2xl font-extrabold text-slate-900 mb-6">What&apos;s Included</h3>
+                <ul className="space-y-4">
+                  {tour.features.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <GlassIcon {...itemIconFor(item)} />
+                      <div className="pt-1">
+                        <div className="text-slate-800 font-semibold">{item}</div>
+                        <div className="text-slate-600 text-sm">Included for a smooth, premium day.</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-4 text-sm text-slate-700">
+                  <div className="font-extrabold text-slate-900">Included With All Trips</div>
+                  <div className="mt-2">All trips include water, sodas, snacks, rum punch, rods, tackle, and fishing licenses.</div>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="text-2xl font-extrabold text-slate-900 mb-6">What to Bring</h3>
+                <ul className="space-y-4">
+                  {['Reef-safe sunscreen', 'Swimwear & towel', 'Polarized sunglasses', 'Waterproof camera', 'Cash/card (some stops)'].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <GlassIcon {...itemIconFor(item)} />
+                      <div className="pt-1">
+                        <div className="text-slate-800 font-semibold">{item}</div>
+                        <div className="text-slate-600 text-sm">Small thing, big comfort upgrade.</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-4 text-sm text-slate-700">
+                  <div className="font-extrabold text-slate-900">Special Requests</div>
+                  <div className="mt-2">We&apos;ll do our best to accommodate all preferences. Your requests will be included when you book.</div>
+                </div>
+              </div>
+            </section>
+
+            <div className="h-10" />
+
+            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Pricing Information</div>
+              <div className="mt-3 text-slate-700">
+                All prices are for up to 4 passengers. Additional passengers are $75 USD per person (maximum 8 passengers). For groups larger than 8, please contact us for custom pricing.
+              </div>
+              <div className="mt-4 text-slate-700">
+                From <span className="text-3xl font-black text-amber-600">{formatMoney(tour.price)}</span>
+              </div>
+            </section>
+
+            <div className="h-10" />
+
+            <section>
+              <div className="max-w-3xl">
+                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Real Stories</div>
+                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Guest Experiences</h2>
+              </div>
+              <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div className="text-amber-400 font-bold mb-4">★★★★★</div>
+                    <div className="text-slate-800 font-semibold mb-4">“Absolutely unreal day. Private, premium, and the water looked edited.”</div>
+                    <div className="text-sm text-slate-600">
+                      <div className="font-extrabold text-slate-900">Guest</div>
+                      <div>San Pedro, Belize</div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
+          </div>
 
-            <div className="bg-[#001d3d] rounded-[2rem] border border-[#c5a059] p-8 shadow-2xl">
-               <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-[#c5a059] text-[10px] font-black uppercase tracking-widest">Order Summary</h3>
-                  <div className="flex items-center gap-4 bg-black/40 px-4 py-1 rounded-full border border-[#c5a059]/30">
-                     <button onClick={() => setGuests(Math.max(1, guests - 1))} className="text-[#c5a059] font-black">-</button>
-                     <span className="font-black text-xs">{guests} GUESTS</span>
-                     <button onClick={() => setGuests(Math.min(8, guests + 1))} className="text-[#c5a059] font-black">+</button>
-                  </div>
-               </div>
-               <div className="space-y-4 text-xs font-medium">
-                  <div className="flex justify-between text-gray-400"><span>Base Charter</span><span>$400.00</span></div>
-                  {guests > 4 && <div className="flex justify-between text-gray-400"><span>Extra Passengers</span><span>${extraPassengerPrice}.00</span></div>}
-                  {selectedAddons.map(item => (
-                    <div key={item.name} className="flex justify-between text-[#c5a059] pl-4 border-l border-[#c5a059]/20 italic">
-                      <span>+ {item.name} (x{addonQtys[item.name]})</span>
-                      <span>${addonQtys[item.name] * item.price}.00</span>
-                    </div>
-                  ))}
-                  <div className="h-[1px] bg-[#c5a059]/20 my-6" />
-                  <div className="flex justify-between items-center">
-                     <span className="text-[10px] font-black uppercase text-gray-500 tracking-widest">Total</span>
-                     <span className="text-[#fbbf24] text-3xl font-black">${grandTotal.toFixed(2)}</span>
-                  </div>
-               </div>
-               <button className="w-full mt-8 py-5 bg-[#fbbf24] hover:bg-[#c5a059] text-black font-black text-xs uppercase rounded-2xl transition-all shadow-xl tracking-widest">Proceed to Checkout</button>
+          <div className="lg:col-span-4">
+            <div className="hidden lg:block sticky top-24">
+              <div id="tour-pricing-slot" />
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="py-16">
+        <div className="mx-auto w-full max-w-screen-2xl px-4">
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-10 shadow-sm text-center">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Ready when you are</h2>
+            <p className="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">Lock in your date, choose your upgrades, and let the crew handle the rest.</p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <a
+                href="#tour-pricing-slot"
+                className="h-12 px-6 rounded-2xl bg-amber-400 text-slate-950 font-black border border-black/10 hover:brightness-105 transition inline-flex items-center justify-center"
+              >
+                View Pricing
+              </a>
+              <a
+                href="#tour-addons-slot"
+                className="h-12 px-6 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition inline-flex items-center justify-center"
+              >
+                Pick Add-Ons
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900">More Adventures You&apos;ll Love</h2>
+            <p className="mt-4 text-lg text-slate-600">Guests who chose this also chose...</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {tours
+              .filter((t) => t.slug !== slug)
+              .filter((t) => t.slug !== 'custom-charter')
+              .slice(0, 4)
+              .map((t) => (
+                <Link
+                  key={t.slug}
+                  href={`/tours/${t.slug}`}
+                  className="group rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all"
+                >
+                  <div className="relative h-64">
+                    <Image
+                      src={t.imageUrl}
+                      alt={t.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <h3 className="text-2xl font-extrabold text-white mb-2">{t.title}</h3>
+                      <div className="text-amber-300 font-bold text-lg">From {formatMoney(t.price)}</div>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-slate-700 text-sm line-clamp-2 mb-4">{t.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs uppercase tracking-wide text-slate-500">{t.duration}</span>
+                      <span className="text-amber-600 font-bold">View Tour →</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

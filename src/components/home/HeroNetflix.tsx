@@ -7,6 +7,9 @@ type Channel = {
   id: string;
   label: string;
   src: string;
+  href: string;
+  tagline: string;
+  ctaLabel: string;
 };
 
 export default function HeroNetflix() {
@@ -15,39 +18,60 @@ export default function HeroNetflix() {
   const channels = useMemo<Channel[]>(
     () => [
       {
+        id: 'custom',
+        label: 'Custom Charter',
+        src: `${base}/hero/renes-custom-adventures.mp4`,
+        href: '/tours/custom-charter',
+        tagline: 'Your day. Your boat. Your adventure.',
+        ctaLabel: 'Explore This Tour',
+      },
+      {
         id: 'deep-sea',
         label: 'Deep Sea',
         src: `${base}/hero/deep-sea-fIshing.mp4`,
+        href: '/tours/deep-sea-fishing',
+        tagline: 'Big game beyond the reef.',
+        ctaLabel: 'Explore This Tour',
       },
       {
         id: 'beach-bbq',
         label: 'Beach BBQ',
         src: `${base}/hero/beach-bbq.mp4`,
-      },
-      {
-        id: 'blue-hole',
-        label: 'Blue Hole',
-        src: `${base}/hero/blue-hole.mp4`,
-      },
-      {
-        id: 'custom',
-        label: 'Custom',
-        src: `${base}/hero/renes-custom-adventures.mp4`,
-      },
-      {
-        id: 'reef',
-        label: 'Reef',
-        src: `${base}/hero/Reef Fishing.mp4`,
-      },
-      {
-        id: 'secret-beach',
-        label: 'Secret Beach',
-        src: `${base}/hero/secret-beach.mp4`,
+        href: '/tours/custom-charter',
+        tagline: 'Fresh catch. White sand. Rum punch.',
+        ctaLabel: 'Part of Custom Adventure →',
       },
       {
         id: 'sunset',
         label: 'Sunset',
         src: `${base}/hero/sunset-ritual.mp4`,
+        href: '/tours/sunset-cruise',
+        tagline: 'Golden hour with champagne.',
+        ctaLabel: 'Explore This Tour',
+      },
+      {
+        id: 'blue-hole',
+        label: 'Blue Hole',
+        src: `${base}/hero/blue-hole.mp4`,
+        href: '/tours/blue-hole',
+        tagline: 'UNESCO diving legend.',
+        ctaLabel: 'Explore This Tour',
+      },
+      {
+        id: 'reef',
+        label: 'Reef',
+        src: `${base}/hero/Reef Fishing.mp4`,
+        href: '/tours/custom-charter',
+        tagline: 'Snappers. Groupers. Fast action.',
+        ctaLabel: 'Part of Custom Adventure →',
+      },
+      {
+        id: 'secret-beach',
+        label: 'Secret Beach',
+        src: `${base}/hero/secret-beach.mp4`,
+        href: '/tours/secret-beach',
+        tagline: 'Hidden. Pristine. Yours.',
+        ctaLabel: 'Explore This Tour',
       },
     ],
     [base]
@@ -58,13 +82,15 @@ export default function HeroNetflix() {
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const activeSrc = channels[activeIndex]?.src;
+  const active = channels[activeIndex];
+  const activeSrc = active?.src;
 
   useEffect(() => {
     const el = videoRef.current;
     if (!el) return;
 
     try {
+      el.playbackRate = 0.5;
       const p = el.play();
       if (p && typeof (p as Promise<void>).catch === 'function') {
         (p as Promise<void>).catch(() => {
@@ -95,7 +121,7 @@ export default function HeroNetflix() {
   };
 
   return (
-    <main className="relative h-screen w-full bg-black overflow-hidden">
+    <section className="relative h-screen w-full bg-black overflow-hidden">
       <div className="absolute inset-0">
         <video
           key={activeSrc}
@@ -122,16 +148,21 @@ export default function HeroNetflix() {
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif tracking-tight text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.65)]">
               Rene&apos;s Adventures
             </h1>
-            <p className="mt-4 text-lg sm:text-xl text-sky-200/90 tracking-wide">
+            <p className="mt-3 text-base sm:text-lg text-sky-200/90 tracking-wide">
               Belize Custom Charter Co.
             </p>
 
-            <div className="mt-7 flex items-center justify-center gap-4">
+            {/* Dynamic tagline + CTA based on active channel */}
+            <p className="mt-4 text-sm sm:text-base text-white/80 italic transition-opacity duration-300">
+              {active?.tagline}
+            </p>
+
+            <div className="mt-5 flex items-center justify-center gap-3">
               <Link
-                href="/tours/custom-charter"
+                href={active?.href || '/tours/custom-charter'}
                 className="inline-flex items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-sm sm:text-base font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400"
               >
-                Explore Adventures
+                {active?.ctaLabel || 'Explore This Tour'}
               </Link>
             </div>
           </div>
@@ -147,7 +178,7 @@ export default function HeroNetflix() {
 
               <div className="mt-3 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] [scrollbar-color:rgba(245,158,11,0.7)_rgba(255,255,255,0.10)]">
                 {channels.map((c, idx) => {
-                  const active = idx === activeIndex;
+                  const isActive = idx === activeIndex;
                   return (
                     <button
                       key={c.id}
@@ -158,7 +189,7 @@ export default function HeroNetflix() {
                     >
                       <div
                         className={`relative w-36 sm:w-40 md:w-44 aspect-video rounded-lg overflow-hidden border transition-all duration-300 group-hover:scale-[1.03] ${
-                          active ? 'border-amber-500' : 'border-white/30'
+                          isActive ? 'border-amber-500' : 'border-white/30'
                         }`}
                       >
                         <video
@@ -178,7 +209,7 @@ export default function HeroNetflix() {
 
                       <span
                         className={`text-xs uppercase tracking-wide transition-colors duration-300 ${
-                          active ? 'text-amber-500' : 'text-white/70'
+                          isActive ? 'text-amber-500' : 'text-white/70'
                         }`}
                       >
                         {c.label}
@@ -191,6 +222,6 @@ export default function HeroNetflix() {
           </div>
         </div>
       </div>
-    </main>
+    </section>
   );
 }

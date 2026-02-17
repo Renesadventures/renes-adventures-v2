@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import AppSoundShell from "@/components/audio/AppSoundShell";
 import SiteNav from "@/components/layout/SiteNav";
+import SiteFooter from "@/components/layout/SiteFooter";
 import "./globals.css";
 
 const inter = Inter({
@@ -62,6 +63,7 @@ export default function RootLayout({
         <AppSoundShell>
           <SiteNav />
           <div className="mx-auto w-full max-w-screen-2xl">{children}</div>
+          <SiteFooter />
         </AppSoundShell>
       </body>
     </html>
