@@ -2,16 +2,47 @@
 
 import Image from 'next/image';
 import type { DragEvent, ChangeEvent } from 'react';
-import { useMemo, useRef, useState } from 'react';
-import { Camera, Facebook, Instagram, MessageCircle } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Camera,
+  Facebook,
+  Hash,
+  Instagram,
+  MessageCircle,
+  Mic,
+  Pause,
+  Play,
+  PenLine,
+  Sparkles,
+  Volume2,
+  Wand2,
+} from 'lucide-react';
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
 
 type GeneratedStory = {
   title: string;
-  body: string;
-  tagline: string;
+  story: string;
+  caption: string;
+  hashtags: string;
+  narration: string;
 };
 
-function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number, maxLines: number) {
+/* ------------------------------------------------------------------ */
+/*  Canvas poster generation (1080×1350 IG format)                     */
+/* ------------------------------------------------------------------ */
+
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines: number
+) {
   const words = text.split(/\s+/).filter(Boolean);
   let line = '';
   const lines: string[] = [];
@@ -22,10 +53,8 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
       line = test;
       continue;
     }
-
     if (line) lines.push(line);
     line = w;
-
     if (lines.length >= maxLines) break;
   }
 
@@ -38,259 +67,398 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
   return lines.length;
 }
 
-function makeStory(seed: { month: string; interests: string[] }) {
-  const adjectives = ['obsidian', 'golden', 'salt-kissed', 'mythic', 'storm-tested', 'tide-born', 'sunlit', 'legendary'] as const;
-  const verbs = ['charged', 'glided', 'hunted', 'surged', 'danced', 'tracked', 'hooked', 'landed'] as const;
-  const places = ['the reef edge', 'the deep blue', 'the mangrove line', 'the channel', 'the open sea', 'the drop-off'] as const;
+async function renderPoster(
+  previewUrl: string,
+  data: GeneratedStory
+): Promise<string | null> {
+  const W = 1080;
+  const H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
 
-  const a = adjectives[Math.floor(Math.random() * adjectives.length)]!;
-  const v = verbs[Math.floor(Math.random() * verbs.length)]!;
-  const p = places[Math.floor(Math.random() * places.length)]!;
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#082f49');
+  bg.addColorStop(0.55, '#0f766e');
+  bg.addColorStop(1, '#d1fae5');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
 
-  const focus = seed.interests.slice(0, 3).join(', ') || 'Fishing';
-
-  const title = 'Your Fish Story, Immortalized';
-  const tagline = `Belize • ${seed.month} • ${focus}`;
-  const body = `On a ${a} morning in Belize, we ${v} toward ${p}. The water was glass until it wasn’t—then the strike hit like thunder. A single pull became a battle, and a battle became a memory you’ll tell forever. This isn’t just a catch. It’s proof you showed up for the ocean and the ocean answered.`;
-
-  return { title, tagline, body } satisfies GeneratedStory;
-}
-
-export default function FishStoryCreator() {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [interests] = useState<string[]>(['Fishing', 'Reef', 'Adventure']);
-  const [visitMonth] = useState<string>(() => {
-    const m = new Date().toLocaleString(undefined, { month: 'short' });
-    return m || 'Belize';
+  // Load user image
+  const imgEl = new window.Image();
+  // Only set crossOrigin for remote URLs — blob URLs don't support CORS
+  // and setting this causes them to fail silently
+  if (!previewUrl.startsWith('blob:')) {
+    imgEl.crossOrigin = 'anonymous';
+  }
+  await new Promise<void>((resolve, reject) => {
+    imgEl.onload = () => resolve();
+    imgEl.onerror = () => reject(new Error('Image load failed'));
+    imgEl.src = previewUrl;
   });
 
+  const pad = 64;
+  const imgTop = 88;
+  const imgH = 720;
+  const imgW = W - pad * 2;
+
+  const srcAR = imgEl.width / imgEl.height;
+  const dstAR = imgW / imgH;
+  let sx = 0, sy = 0, sW = imgEl.width, sH = imgEl.height;
+  if (srcAR > dstAR) { sW = Math.floor(imgEl.height * dstAR); sx = Math.floor((imgEl.width - sW) / 2); }
+  else { sH = Math.floor(imgEl.width / dstAR); sy = Math.floor((imgEl.height - sH) / 2); }
+
+  // Rounded clip
+  ctx.save();
+  ctx.beginPath();
+  const r = 28;
+  ctx.moveTo(pad + r, imgTop);
+  ctx.lineTo(pad + imgW - r, imgTop);
+  ctx.quadraticCurveTo(pad + imgW, imgTop, pad + imgW, imgTop + r);
+  ctx.lineTo(pad + imgW, imgTop + imgH - r);
+  ctx.quadraticCurveTo(pad + imgW, imgTop + imgH, pad + imgW - r, imgTop + imgH);
+  ctx.lineTo(pad + r, imgTop + imgH);
+  ctx.quadraticCurveTo(pad, imgTop + imgH, pad, imgTop + imgH - r);
+  ctx.lineTo(pad, imgTop + r);
+  ctx.quadraticCurveTo(pad, imgTop, pad + r, imgTop);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(imgEl, sx, sy, sW, sH, pad, imgTop, imgW, imgH);
+
+  // Vignette
+  const vig = ctx.createLinearGradient(0, imgTop, 0, imgTop + imgH);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(0.7, 'rgba(0,0,0,0.30)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.75)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(pad, imgTop, imgW, imgH);
+  ctx.restore();
+
+  // Gold frame
+  const frameGrad = ctx.createLinearGradient(pad, imgTop, pad + imgW, imgTop + imgH);
+  frameGrad.addColorStop(0, '#fde68a');
+  frameGrad.addColorStop(0.45, '#f59e0b');
+  frameGrad.addColorStop(1, '#fef3c7');
+  ctx.lineWidth = 18;
+  ctx.strokeStyle = frameGrad;
+  ctx.strokeRect(pad - 10, imgTop - 10, imgW + 20, imgH + 20);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+  ctx.strokeRect(pad - 22, imgTop - 22, imgW + 44, imgH + 44);
+
+  // Overlay tint
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.08)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Dark text area
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(pad, imgTop + imgH + 36, imgW, H - (imgTop + imgH + 36) - pad);
+
+  // Header
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.font = '700 52px ui-serif, Georgia, serif';
+  ctx.fillText("RENE'S ADVENTURES", pad + 22, 66);
+
+  // Stamp
+  ctx.save();
+  ctx.translate(W - pad - 220, imgTop + imgH - 64);
+  ctx.rotate(-0.08);
+  ctx.fillStyle = '#f59e0b';
+  ctx.fillRect(0, 0, 210, 64);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+  ctx.strokeRect(0, 0, 210, 64);
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(255,255,255,0.85)';
+  ctx.shadowBlur = 6;
+  ctx.font = '900 30px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText('BELIZE 2026', 18, 41);
+  ctx.restore();
+
+  // Story title + body
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 46px ui-serif, Georgia, serif';
+  const titleY = imgTop + imgH + 110;
+  wrapText(ctx, data.title.toUpperCase(), pad + 24, titleY - 24, imgW - 48, 44, 2);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.font = '500 34px ui-serif, Georgia, serif';
+  wrapText(ctx, data.story, pad + 24, titleY + 76, imgW - 48, 44, 6);
+
+  // Watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.38)';
+  ctx.font = '800 90px ui-serif, Georgia, serif';
+  ctx.fillText("RENE'S", pad + 18, imgTop + imgH - 70);
+
+  // Footer badges
+  ctx.fillStyle = 'rgba(245,158,11,0.95)';
+  ctx.font = '700 30px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText('Caribbean Gold Edition', pad + 24, H - 120);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.70)';
+  ctx.font = '500 26px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText('Instant Legend Poster', pad + 24, H - 84);
+
+  return canvas.toDataURL('image/png');
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mock featured story (placeholder for the story wall)               */
+/* ------------------------------------------------------------------ */
+
+const MOCK_STORY: GeneratedStory = {
+  title: 'The Beast From Beyond the Reef',
+  story:
+    'The line screamed off the reel as the mahi-mahi broke the surface in a blaze of neon green and gold. Captain René cut the engine and the Caribbean went silent — just the rod bend, the salt spray, and the sound of a legend being born off the coast of Ambergris Caye.',
+  caption:
+    "When the ocean sends a message, you answer. 40lb mahi on the deep drop — Captain René called the spot. 🔥🎣",
+  hashtags:
+    '#RenesAdventures #BelizeFishing #AmbergrisCaye #MahiMahi #DeepSeaFishing #CaribbeanLife #SportFishing #BelizeTravel',
+  narration:
+    'The line screamed. Forty pounds of mahi-mahi exploded from the deep, painting the Caribbean in neon gold. Captain René just smiled — he knew these waters would deliver.',
+};
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
+
+export default function FishStoryCreator() {
+  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+  const placeholderSrc = `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
+
+  /* --- File state ------------------------------------------------- */
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null); // data: URL for poster (no CORS)
+  const [isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  /* --- AI state --------------------------------------------------- */
   const [story, setStory] = useState<GeneratedStory | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  /* --- Narration state -------------------------------------------- */
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isNarrating, setIsNarrating] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const poster = useMemo(() => {
-    if (!story) return null;
-    return story;
-  }, [story]);
+  /* --- Poster state ----------------------------------------------- */
+  const [posterDataUrl, setPosterDataUrl] = useState<string | null>(null);
 
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-  const placeholderPreviewSrc = `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
+  /* --- Personal story state --------------------------------------- */
+  const [personalStory, setPersonalStory] = useState('');
+  const [userName, setUserName] = useState('');
 
+  /* --- Display story (real or mock) ------------------------------- */
+  const displayStory = story || MOCK_STORY;
+  const isReal = !!story;
+
+  /* --- Poster text (personal story overrides AI story) ------------ */
+  const posterStory = useMemo(() => {
+    const v = personalStory.trim();
+    if (v.length >= 10) return v;
+    return displayStory.story;
+  }, [personalStory, displayStory.story]);
+
+  /* --- Re-render poster when personal story changes --------------- */
+  useEffect(() => {
+    if (!story || !imageDataUrl) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const url = await renderPoster(imageDataUrl, {
+          ...story,
+          story: personalStory.trim().length >= 10 ? personalStory.trim() : story.story,
+        });
+        if (!cancelled && url) setPosterDataUrl(url);
+      } catch (err) {
+        console.error('Poster re-render failed:', err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [personalStory, imageDataUrl, story]);
+
+  /* --- File handling ---------------------------------------------- */
   const handleFile = (f: File | null) => {
     if (!f) return;
-
-    if (!f.type.startsWith('image/')) {
-      setError('Please upload an image file.');
+    if (!f.type.startsWith('image/') && !f.type.startsWith('video/')) {
+      setError('Please upload an image or video file.');
       return;
     }
-
     setError(null);
     setFile(f);
-
+    // Blob URL for fast <Image> preview
     const url = URL.createObjectURL(f);
-    setPreviewUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return url;
-    });
-
+    setPreviewUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return url; });
+    // Data URL for canvas poster (zero CORS issues)
+    const reader = new FileReader();
+    reader.onload = () => { if (typeof reader.result === 'string') setImageDataUrl(reader.result); };
+    reader.readAsDataURL(f);
     setStory(null);
+    setAudioUrl(null);
+    setPosterDataUrl(null);
+    setPersonalStory('');
   };
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-
     const f = e.dataTransfer.files?.[0];
-    if (!f) return;
-    handleFile(f);
+    if (f) handleFile(f);
   };
 
   const onBrowse = (e: ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] || null;
-    handleFile(f);
+    handleFile(e.target.files?.[0] || null);
   };
 
+  /* --- AI story generation ---------------------------------------- */
   const generate = async () => {
-    if (!file || !previewUrl) {
+    if (!file || !imageDataUrl) {
       setError('Upload a photo first.');
       return;
     }
 
     setError(null);
     setIsGenerating(true);
+    setAudioUrl(null);
 
     try {
-      await new Promise((r) => setTimeout(r, 700));
-      const s = makeStory({ month: visitMonth, interests });
-      setStory(s);
+      // Extract raw base64 from the stored data URL
+      const base64 = imageDataUrl.split(',')[1] || '';
+
+      const res = await fetch('/api/ai/fish-story', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageBase64: base64,
+          userName: userName.trim() || undefined,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Story generation failed.');
+        return;
+      }
+
+      const generated: GeneratedStory = {
+        title: data.title,
+        story: data.story,
+        caption: data.caption,
+        hashtags: data.hashtags,
+        narration: data.narration,
+      };
+
+      setStory(generated);
+
+      // Auto-generate poster using data URL (no CORS)
+      try {
+        const posterUrl = await renderPoster(imageDataUrl, {
+          ...generated,
+          story: personalStory.trim().length >= 10 ? personalStory.trim() : generated.story,
+        });
+        if (posterUrl) setPosterDataUrl(posterUrl);
+      } catch (err) {
+        console.error('Poster generation failed:', err);
+      }
+    } catch {
+      setError('Network error. Please try again.');
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const downloadPoster = async () => {
-    if (!previewUrl || !poster) {
-      setError('Generate your story first.');
-      return;
-    }
+  /* --- ElevenLabs narration -------------------------------------- */
+  const narrate = async () => {
+    const text = story?.narration || story?.story;
+    if (!text) return;
 
+    setIsNarrating(true);
     setError(null);
 
-    const W = 1080;
-    const H = 1350;
+    try {
+      const res = await fetch('/api/ai/narrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
 
-    const canvas = document.createElement('canvas');
-    canvas.width = W;
-    canvas.height = H;
+      const data = await res.json();
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+      if (!res.ok) {
+        setError(data.error || 'Narration failed.');
+        return;
+      }
 
-    const bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#082f49');
-    bg.addColorStop(0.55, '#0f766e');
-    bg.addColorStop(1, '#d1fae5');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
+      setAudioUrl(data.audioUrl);
 
-    const imgEl = new window.Image();
-    imgEl.crossOrigin = 'anonymous';
-
-    await new Promise<void>((resolve, reject) => {
-      imgEl.onload = () => resolve();
-      imgEl.onerror = () => reject(new Error('Image failed to load for download'));
-      imgEl.src = previewUrl;
-    });
-
-    const pad = 64;
-    const imgTop = 88;
-    const imgH = 720;
-    const imgW = W - pad * 2;
-
-    const srcAR = imgEl.width / imgEl.height;
-    const dstAR = imgW / imgH;
-
-    let sx = 0;
-    let sy = 0;
-    let sW = imgEl.width;
-    let sH = imgEl.height;
-
-    if (srcAR > dstAR) {
-      sW = Math.floor(imgEl.height * dstAR);
-      sx = Math.floor((imgEl.width - sW) / 2);
-    } else {
-      sH = Math.floor(imgEl.width / dstAR);
-      sy = Math.floor((imgEl.height - sH) / 2);
+      // Auto-play
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      }, 100);
+    } catch {
+      setError('Narration unavailable. Please try again.');
+    } finally {
+      setIsNarrating(false);
     }
+  };
 
-    ctx.save();
-    ctx.beginPath();
-    const r = 28;
-    const x = pad;
-    const y = imgTop;
-    const w = imgW;
-    const h = imgH;
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-    ctx.clip();
+  const togglePlay = () => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (el.paused) { el.play().catch(() => {}); setIsPlaying(true); }
+    else { el.pause(); setIsPlaying(false); }
+  };
 
-    ctx.drawImage(imgEl, sx, sy, sW, sH, pad, imgTop, imgW, imgH);
-
-    const vignette = ctx.createLinearGradient(0, imgTop, 0, imgTop + imgH);
-    vignette.addColorStop(0, 'rgba(0,0,0,0.0)');
-    vignette.addColorStop(0.7, 'rgba(0,0,0,0.30)');
-    vignette.addColorStop(1, 'rgba(0,0,0,0.75)');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(pad, imgTop, imgW, imgH);
-
-    ctx.restore();
-
-    const frameGrad = ctx.createLinearGradient(pad, imgTop, pad + imgW, imgTop + imgH);
-    frameGrad.addColorStop(0, '#fde68a');
-    frameGrad.addColorStop(0.45, '#f59e0b');
-    frameGrad.addColorStop(1, '#fef3c7');
-
-    ctx.lineWidth = 18;
-    ctx.strokeStyle = frameGrad;
-    ctx.strokeRect(pad - 10, imgTop - 10, imgW + 20, imgH + 20);
-
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-    ctx.strokeRect(pad - 22, imgTop - 22, imgW + 44, imgH + 44);
-
-    ctx.fillStyle = 'rgba(245, 158, 11, 0.08)';
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-    ctx.fillRect(pad, imgTop + imgH + 36, imgW, H - (imgTop + imgH + 36) - pad);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.font = '700 52px ui-serif, Georgia, serif';
-    ctx.fillText("RENE'S ADVENTURES", pad + 22, 66);
-
-    ctx.save();
-    ctx.translate(W - pad - 220, imgTop + imgH - 64);
-    ctx.rotate(-0.08);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(0, 0, 210, 64);
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-    ctx.strokeRect(0, 0, 210, 64);
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(255,255,255,0.85)';
-    ctx.shadowBlur = 6;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 2;
-    ctx.font = '900 30px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
-    ctx.fillText('BELIZE 2026', 18, 41);
-    ctx.restore();
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 46px ui-serif, Georgia, serif';
-    const titleY = imgTop + imgH + 110;
-    wrapText(ctx, poster.tagline.toUpperCase(), pad + 24, titleY - 24, imgW - 48, 44, 2);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.font = '500 34px ui-serif, Georgia, serif';
-    const bodyY = titleY + 76;
-    wrapText(ctx, poster.body, pad + 24, bodyY, imgW - 48, 44, 6);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.38)';
-    ctx.font = '800 90px ui-serif, Georgia, serif';
-    ctx.fillText("RENE'S", pad + 18, imgTop + imgH - 70);
-
-    ctx.fillStyle = 'rgba(245,158,11,0.95)';
-    ctx.font = '700 30px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
-    ctx.fillText('Caribbean Gold Edition', pad + 24, H - 90);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.70)';
-    ctx.font = '500 26px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif';
-    ctx.fillText('Instant Legend Poster', pad + 24, H - 54);
-
+  /* --- Download poster ------------------------------------------- */
+  const downloadPoster = () => {
+    if (!posterDataUrl) {
+      setError('Generate your story first to create a poster.');
+      return;
+    }
     const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
+    a.href = posterDataUrl;
     a.download = `fish-story-${Date.now()}.png`;
     a.click();
   };
 
+  /* --- Share helpers ---------------------------------------------- */
+  const shareText = story
+    ? `${story.caption}\n\n${story.hashtags}`
+    : '';
+
+  const shareToWhatsApp = () => {
+    if (!shareText) return;
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+  };
+
+  const copyCaption = async () => {
+    if (!shareText) return;
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setError(null);
+    } catch {
+      // Fallback
+    }
+  };
+
+  /* --- Render ---------------------------------------------------- */
   return (
     <section className="w-full bg-gradient-to-b from-sky-950 via-teal-800 to-emerald-200">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="rounded-3xl bg-white/75 ring-1 ring-black/5 shadow-[0_22px_70px_rgba(15,23,42,0.18)] overflow-hidden">
           <div className="grid grid-cols-1 gap-0 lg:grid-cols-[55%_45%]">
+
+            {/* ========== LEFT: Upload + Controls ========== */}
             <div className="p-6 sm:p-10">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-900 ring-1 ring-black/10">
                 <Camera className="h-4 w-4 text-amber-600" />
@@ -298,94 +466,191 @@ export default function FishStoryCreator() {
               </div>
 
               <h2 className="mt-5 text-3xl sm:text-4xl font-serif tracking-tight text-slate-950">
-                Your Fish Story, Immortalized
+                Your Adventure, Immortalized
               </h2>
               <p className="mt-2 text-sm sm:text-base text-slate-700">
-                Upload a photo. Get an epic AI story. Download an Instagram-ready poster in Caribbean Gold.
+                Upload your photo. Get an epic story, cinematic narration, and an Instagram-ready poster — instantly.
               </p>
 
+              {/* Name input */}
+              <div className="mt-6">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-500">
+                  Who&apos;s the legend in this story?
+                </label>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Your name (e.g. Jake, The Rodriguez Family)"
+                  maxLength={60}
+                  className="mt-1.5 w-full rounded-xl border border-black/10 bg-white/80 px-4 py-3 text-sm text-slate-950 placeholder-slate-400 outline-none transition-colors focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+                />
+              </div>
+
+              {/* Drop zone */}
               <div
-                className={`mt-8 rounded-3xl border border-dashed p-6 transition-all duration-300 ${
+                className={`mt-8 rounded-3xl border border-dashed p-6 transition-all duration-300 cursor-pointer ${
                   isDragging
                     ? 'border-amber-500 bg-amber-500/10 shadow-[0_18px_60px_rgba(245,158,11,0.18)]'
                     : 'border-black/10 bg-white/60 hover:border-black/20'
                 }`}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setIsDragging(true);
-                }}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={onDrop}
                 role="button"
                 tabIndex={0}
                 onClick={() => inputRef.current?.click()}
               >
-                <input ref={inputRef} type="file" accept="image/*" onChange={onBrowse} className="hidden" />
-
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={onBrowse}
+                  className="hidden"
+                />
                 <div className="flex flex-col items-center justify-center text-center">
                   <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white ring-1 ring-black/10">
                     <Camera className="h-6 w-6 text-amber-600" />
                   </div>
-                  <div className="mt-4 text-sm font-semibold text-slate-950">Drag & drop a photo</div>
+                  <div className="mt-4 text-sm font-semibold text-slate-950">
+                    Drag &amp; drop a photo or video
+                  </div>
                   <div className="mt-1 text-xs text-slate-600">or click to browse</div>
-
-                  {file ? (
+                  {file && (
                     <div className="mt-4 inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-700 ring-1 ring-black/10">
                       {file.name}
                     </div>
-                  ) : null}
+                  )}
                 </div>
               </div>
 
-              {error ? (
+              {/* Error */}
+              {error && (
                 <div className="mt-5 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-700 ring-1 ring-rose-500/20">
                   {error}
                 </div>
-              ) : null}
+              )}
 
+              {/* Action buttons */}
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <button
                   type="button"
                   onClick={generate}
                   disabled={!file || isGenerating}
-                  className="inline-flex flex-1 items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-base font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400 disabled:opacity-60"
+                  className="group relative inline-flex flex-1 items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-base font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400 disabled:opacity-60"
                 >
-                  {isGenerating ? 'Generating…' : 'Generate My Epic Story'}
+                  {isGenerating ? (
+                    <span className="flex items-center gap-2">
+                      <Wand2 className="h-4 w-4 animate-spin" />
+                      Creating Your Legend…
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      Generate My Epic Story
+                    </span>
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={downloadPoster}
-                  disabled={!story || !previewUrl}
+                  disabled={!posterDataUrl}
                   className="inline-flex flex-1 items-center justify-center rounded-full border border-black/10 bg-white px-6 py-3 text-base font-semibold text-slate-900 transition-all duration-300 hover:bg-slate-50 hover:border-black/20 disabled:opacity-60"
                 >
                   Download Poster
                 </button>
               </div>
 
+              {/* ---------- Story Preview ---------- */}
               <div className="mt-8 grid grid-cols-1 gap-4">
                 <div className="rounded-3xl bg-white/70 p-5 ring-1 ring-amber-500/25">
-                  <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
-                    Story Preview
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
+                      {isReal ? 'Your Story' : 'Story Preview'}
+                    </div>
                   </div>
-                  <div className="mt-3 text-base font-serif leading-relaxed text-slate-900">
-                    {poster
-                      ? poster.body
-                      : 'The morning sun painted the Caribbean in shades of amber as Captain René pointed starboard...'}
+                  <div className="mt-2 text-lg font-serif font-bold text-slate-950">
+                    {displayStory.title}
+                  </div>
+                  <div className="mt-2 text-base font-serif leading-relaxed text-slate-900">
+                    {displayStory.story}
                   </div>
                 </div>
 
+                {/* ---------- Narration ---------- */}
                 <div className="rounded-3xl bg-white/70 p-5 ring-1 ring-black/10">
-                  <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
-                    Narration (Coming Soon)
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
+                      Captain&apos;s Narration
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-700 ring-1 ring-amber-500/20">
+                      <Volume2 className="h-3 w-3" /> Voice Experience
+                    </div>
                   </div>
-                  <div className="mt-2 text-sm text-slate-700">
-                    ElevenLabs narration placeholder — soon you’ll be able to generate an audio version of your story.
+                  <div className="mt-2 text-sm italic text-slate-700">
+                    &ldquo;{displayStory.narration}&rdquo;
                   </div>
-                  <div className="mt-4 inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-700 ring-1 ring-black/10">
-                    Voice: Captain René
+
+                  {audioUrl && (
+                    <audio
+                      ref={audioRef}
+                      src={audioUrl}
+                      onEnded={() => setIsPlaying(false)}
+                      className="hidden"
+                    />
+                  )}
+
+                  <div className="mt-4 flex items-center gap-3">
+                    {audioUrl ? (
+                      <button
+                        type="button"
+                        onClick={togglePlay}
+                        className="inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black transition-colors duration-300 hover:bg-amber-400"
+                      >
+                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {isPlaying ? 'Pause' : 'Play Narration'}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={narrate}
+                        disabled={!story || isNarrating}
+                        className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-black/10 transition-colors duration-300 hover:bg-slate-50 disabled:opacity-60"
+                      >
+                        <Mic className="h-4 w-4 text-amber-600" />
+                        {isNarrating ? 'Generating Voice…' : 'Generate Narration'}
+                      </button>
+                    )}
+                    <div className="inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-700 ring-1 ring-black/10">
+                      Voice: Captain René
+                    </div>
                   </div>
                 </div>
 
+                {/* ---------- Caption + Hashtags ---------- */}
+                <div className="rounded-3xl bg-white/70 p-5 ring-1 ring-amber-500/25">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
+                      Caption &amp; Hashtags
+                    </div>
+                    {isReal && (
+                      <button
+                        type="button"
+                        onClick={copyCaption}
+                        className="text-[10px] font-semibold text-amber-600 hover:text-amber-700"
+                      >
+                        Copy to clipboard
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-2 text-sm text-slate-900">{displayStory.caption}</div>
+                  <div className="mt-2 flex items-start gap-2">
+                    <Hash className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-600" />
+                    <div className="text-xs text-sky-700 leading-relaxed">{displayStory.hashtags}</div>
+                  </div>
+                </div>
+
+                {/* ---------- Share ---------- */}
                 <div className="rounded-3xl bg-white/70 p-5 ring-1 ring-amber-500/25">
                   <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-700">
                     Share Your Story
@@ -395,148 +660,152 @@ export default function FishStoryCreator() {
                   <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        // placeholder
-                      }}
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                      onClick={copyCaption}
+                      disabled={!story}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50 disabled:opacity-60"
                     >
                       <Instagram className="h-4 w-4 text-amber-600" />
                       Instagram
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        // placeholder
-                      }}
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                      onClick={copyCaption}
+                      disabled={!story}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50 disabled:opacity-60"
                     >
                       <Facebook className="h-4 w-4 text-amber-600" />
                       Facebook
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        // placeholder
-                      }}
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50"
+                      onClick={shareToWhatsApp}
+                      disabled={!story}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-500/40 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors duration-300 hover:bg-amber-50 disabled:opacity-60"
                     >
                       <MessageCircle className="h-4 w-4 text-amber-600" />
                       WhatsApp
                     </button>
                   </div>
-
-                  <div className="mt-4 rounded-2xl bg-amber-500/10 p-4 ring-1 ring-amber-500/20">
-                    <div className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-800">
-                      Coming Soon
-                    </div>
-                    <div className="mt-2 text-sm text-slate-700">
-                      We&apos;ll auto-generate a caption + hashtags and share-ready story formats.
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
+            {/* ========== RIGHT: Preview + Info ========== */}
             <div className="border-t border-black/5 lg:border-t-0 lg:border-l border-black/5 bg-white/60 p-6 sm:p-10">
               <div className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-600">
-                Preview
+                Poster Preview
               </div>
 
+              {/* Poster preview */}
               <div className="mt-5">
                 <div className="rounded-3xl bg-white ring-1 ring-amber-500/25 shadow-[0_18px_60px_rgba(245,158,11,0.16)] overflow-hidden">
                   <div className="relative aspect-[4/5]">
-                    {previewUrl ? (
+                    {posterDataUrl ? (
+                      /* Show the ACTUAL generated poster */
                       <Image
-                        src={previewUrl}
-                        alt=""
+                        src={posterDataUrl}
+                        alt="Your generated poster"
                         fill
                         unoptimized
                         sizes="(min-width: 1024px) 45vw, 100vw"
-                        className="object-cover"
+                        className="object-contain"
                       />
                     ) : (
+                      /* Show photo with CSS poster mockup */
                       <>
                         <Image
-                          src={placeholderPreviewSrc}
-                          alt="Angler holding large mahi-mahi on boat deck, turquoise water, golden hour"
+                          src={previewUrl || placeholderSrc}
+                          alt="Your adventure poster"
                           fill
                           unoptimized
                           sizes="(min-width: 1024px) 45vw, 100vw"
                           className="object-cover"
                         />
-                        <div className="absolute inset-0 grid place-items-center bg-black/35">
-                          <div className="text-center">
-                            <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-white/90 ring-1 ring-white/60">
-                              <Camera className="h-6 w-6 text-amber-600" />
+
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/10" />
+
+                        {/* Gold frame overlay */}
+                        <div className="absolute inset-0 p-4">
+                          <div className="h-full w-full rounded-2xl bg-gradient-to-br from-amber-200 via-amber-500 to-yellow-200 p-[3px]">
+                            <div className="h-full w-full rounded-2xl ring-1 ring-white/40" />
+                          </div>
+                        </div>
+
+                        <div className="absolute left-5 top-5 rounded-full bg-black/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white ring-1 ring-white/20 backdrop-blur">
+                          Rene&apos;s Adventures
+                        </div>
+
+                        <div
+                          className="absolute right-5 bottom-5 -rotate-6 rounded-xl bg-amber-500 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-white/50"
+                          style={{ textShadow: '0 2px 0 rgba(255,255,255,0.65)' }}
+                        >
+                          Belize 2026
+                        </div>
+
+                        <div className="absolute inset-x-5 bottom-24">
+                          <div className="rounded-2xl bg-black/55 p-4 ring-1 ring-white/15 backdrop-blur-sm">
+                            <div className="text-xs font-semibold uppercase tracking-[0.26em] text-amber-200">
+                              {displayStory.title}
                             </div>
-                            <div className="mt-3 text-sm font-semibold text-white">Upload a photo to begin</div>
-                            <div className="mt-1 text-xs text-white/80">Poster preview will appear here</div>
+                            <div className="mt-3 text-sm leading-relaxed text-white/90">
+                              {posterStory.slice(0, 120)}…
+                            </div>
+                            <div className="mt-4 text-xs font-semibold text-white/70">
+                              {previewUrl ? '1080×1350 • Your Poster' : 'Your adventure. Your legend. Your poster.'}
+                            </div>
                           </div>
                         </div>
                       </>
                     )}
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-
-                    <div className="absolute inset-0 p-4">
-                      <div className="h-full w-full rounded-2xl bg-gradient-to-br from-amber-200 via-amber-500 to-yellow-200 p-[3px]">
-                        <div className="h-full w-full rounded-2xl ring-1 ring-white/40" />
-                      </div>
-                    </div>
-
-                    <div className="absolute left-5 top-5 rounded-full bg-black/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white ring-1 ring-white/20 backdrop-blur">
-                      Rene&apos;s Adventures
-                    </div>
-
-                    <div
-                      className="absolute right-5 bottom-5 -rotate-6 rounded-xl bg-amber-500 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white ring-1 ring-white/50"
-                      style={{ textShadow: '0 2px 0 rgba(255,255,255,0.65)' }}
-                    >
-                      Belize 2026
-                    </div>
-
-                    <div className="absolute inset-x-5 bottom-24">
-                      <div className="rounded-2xl bg-black/55 p-4 ring-1 ring-white/15 backdrop-blur-sm">
-                        <div className="text-xs font-semibold uppercase tracking-[0.26em] text-amber-200">
-                          {poster ? poster.tagline : 'Belize • Your Date • Your Style'}
-                        </div>
-                        <div className="mt-3 text-sm leading-relaxed text-white/90">
-                          {poster
-                            ? poster.body
-                            : 'Generate your story to see the epic caption styled for Instagram-ready storytelling.'}
-                        </div>
-                        <div className="mt-4 text-xs font-semibold text-white/70">Format: 1080×1350</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 rounded-2xl bg-white/70 p-4 ring-1 ring-black/10">
-                  <div className="text-sm font-semibold text-slate-950">Caribbean Gold Frame</div>
-                  <div className="mt-1 text-xs text-slate-600">
-                    Ornate border, watermark, and stamp—styled for a clean IG post.
                   </div>
                 </div>
               </div>
 
+              {/* How it works */}
               <div className="mt-6 rounded-2xl bg-white/70 p-4 ring-1 ring-black/10">
                 <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
                   How it works
                 </div>
                 <div className="mt-2 text-sm text-slate-700">
-                  Upload a photo, generate your story, then download a ready-to-post poster.
+                  Upload a photo, we create your epic story, poster, and narration in Captain René&apos;s voice. Download and share everywhere.
                 </div>
               </div>
 
-              <div className="mt-6 rounded-2xl bg-amber-500/10 p-4 ring-1 ring-amber-500/20">
-                <div className="text-sm font-semibold text-slate-900">AI Story Engine</div>
-                <div className="mt-1 text-sm text-slate-700">
-                  This is a placeholder generator for now. When you&apos;re ready, we can connect it to your real AI pipeline.
+              {/* Your Side of the Story */}
+              <div className="mt-6 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-50 p-5 ring-2 ring-amber-400/40 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <PenLine className="h-5 w-5 text-amber-700" />
+                  <span className="text-base font-bold text-slate-950">Your Side of the Story</span>
+                </div>
+                <div className="mt-2 text-sm font-medium text-slate-800">
+                  Every photo has a real story behind it — write yours. Your words replace the generated text on the poster.
+                </div>
+                <textarea
+                  value={personalStory}
+                  onChange={(e) => setPersonalStory(e.target.value)}
+                  placeholder="The sun was barely up when Captain René said 'hold on tight'…"
+                  rows={4}
+                  maxLength={500}
+                  className="mt-3 w-full rounded-xl border-2 border-amber-300 bg-white px-4 py-3 text-sm text-slate-950 placeholder-slate-400 outline-none transition-colors focus:border-amber-500 focus:ring-2 focus:ring-amber-200 resize-none"
+                />
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="text-xs font-semibold text-slate-600">
+                    {personalStory.length}/500
+                  </div>
+                  {personalStory.length > 10 ? (
+                    <div className="text-xs font-bold text-emerald-700">
+                      ✓ Your words are on the poster
+                    </div>
+                  ) : (
+                    <div className="text-xs font-semibold text-amber-700">
+                      Write 10+ characters to personalize your poster
+                    </div>
+                  )}
                 </div>
               </div>
 
               <div className="mt-6 text-xs text-slate-600">
-                Tip: For best results, use a photo with the fish + angler visible and a clear horizon.
+                Tip: For best results, use a well-lit photo with the catch and angler visible. Portrait orientation works best for posters.
               </div>
             </div>
           </div>
