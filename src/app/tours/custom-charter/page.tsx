@@ -50,7 +50,7 @@ type Activity = {
   description: string;
 };
 
-type AddOnKey = 'bbq-upgrade' | 'extra-guest' | 'snorkel-premium' | 'underwater-camera';
+type AddOnKey = 'extra-guest' | 'snorkel-premium' | 'underwater-camera';
 
 type AddOn = {
   id: AddOnKey;
@@ -109,8 +109,8 @@ export default function CustomCharterPage() {
       },
       {
         id: 'spearfishing',
-        title: 'Spearfishing',
-        shortLabel: 'Spear',
+        title: 'Speargun Fishing',
+        shortLabel: 'Speargun',
         icon: <LifeBuoy className="h-5 w-5" />,
         image: `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`,
         video: `${base}/luxury/deep-sea-fishing.mp4`,
@@ -197,29 +197,22 @@ export default function CustomCharterPage() {
   const addOns = useMemo<AddOn[]>(
     () => [
       {
-        id: 'bbq-upgrade',
-        title: 'Beach BBQ Upgrade',
-        price: 75,
-        icon: <Flame className="h-5 w-5" />,
-        blurb: 'Lobster. Grilled fish. Beach vibes.',
-      },
-      {
         id: 'extra-guest',
-        title: 'Extra Guest',
+        title: 'Extra Guests (5–8)',
         price: 75,
         icon: <UserPlus className="h-5 w-5" />,
-        blurb: 'Bring the crew. Up to 8 total.',
+        blurb: 'Flat $75 for 5–8 guests total.',
       },
       {
         id: 'snorkel-premium',
-        title: 'Snorkel Gear Premium',
-        price: 25,
+        title: 'Snorkel Gear Rental',
+        price: 15,
         icon: <Waves className="h-5 w-5" />,
-        blurb: 'GoPro-ready mask. Prescription available.',
+        blurb: '$15 per set. Or bring your own.',
       },
       {
         id: 'underwater-camera',
-        title: 'Underwater Camera',
+        title: 'Underwater Camera Rental',
         price: 50,
         icon: <Camera className="h-5 w-5" />,
         blurb: 'Capture it all. 4K waterproof.',
@@ -250,13 +243,12 @@ export default function CustomCharterPage() {
 
   const includedGuests = tour?.includedGuests ?? 4;
   const baseHalfDay = tour?.price ?? 400;
-  const baseFullDay = tour?.priceFullDay ?? 600;
+  const baseFullDay = tour?.priceFullDay ?? 675;
 
   const [duration, setDuration] = useState<'half' | 'full'>('half');
   const [guests, setGuests] = useState(4);
 
   const [addOnQty, setAddOnQty] = useState<Record<AddOnKey, number>>({
-    'bbq-upgrade': 0,
     'extra-guest': 0,
     'snorkel-premium': 0,
     'underwater-camera': 0,
@@ -276,7 +268,7 @@ export default function CustomCharterPage() {
 
   const effectiveGuests = useMemo(() => clamp(guests + (addOnQty['extra-guest'] || 0), 1, 8), [addOnQty, guests]);
   const overageGuests = useMemo(() => Math.max(0, effectiveGuests - includedGuests), [effectiveGuests, includedGuests]);
-  const overageCost = useMemo(() => overageGuests * 75, [overageGuests]);
+  const overageCost = useMemo(() => overageGuests > 0 ? 75 : 0, [overageGuests]);
 
   const addOnsTotal = useMemo(() => {
     return addOns.reduce((sum, a) => sum + (addOnQty[a.id] || 0) * a.price, 0);
@@ -347,7 +339,7 @@ export default function CustomCharterPage() {
               </div>
 
               <h1 className="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight text-white">
-                Your Boat. Your Day. Your Adventure.
+                Your Day. Your Boat. Your Adventure.
               </h1>
               <p className="mt-4 text-lg md:text-2xl text-white/90 max-w-2xl">
                 One boat. Ten adventures. Pure Belize magic.

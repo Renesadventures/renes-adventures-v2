@@ -43,11 +43,11 @@ export default function Home() {
       <HeroNetflix />
       <ConditionsWidget />
       <AdventureGrid />
-      <BelizeIntelligence />
       <FishStoryCreator />
       <StoryWall />
       <VesselShowcase />
       <BelizeLifestyle />
+      <BelizeIntelligence />
       <SunsetRitualCTA />
     </>
   );

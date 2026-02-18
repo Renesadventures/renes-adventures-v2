@@ -97,10 +97,10 @@ export const tours: Tour[] = [
     id: "custom-adventure-bbq",
     title: "Rene's Custom Adventure with Beach BBQ",
     slug: "custom-charter",
-    description: "Design your perfect day on the water ΓÇö whether itΓÇÖs fishing, snorkeling...",
+    description: "Design your perfect day on the water — whether it's fishing, snorkeling...",
     price: 400,
-    fullDayPrice: 600,
-    priceFullDay: 600,
+    fullDayPrice: 675,
+    priceFullDay: 675,
     duration: 'Half Day (4 hours)',
     fullDayDuration: 'Full Day (8 hours)',
     hasHalfDay: true,
@@ -110,18 +110,18 @@ export const tours: Tour[] = [
     additionalGuestPrice: 75,
     imageUrl: '/images/tours/full-day-ultimate.jpg',
     features: [
-      "Speargun or rod and reel fishing",
+      "Speargun fishing or rod and reel",
       "Snorkel the Belize Barrier Reef",
       "Hol Chan Marine Reserve (sharks & rays)",
       "Caye Caulker & famous high dive",
       "Feed tarpon & spot seahorses",
-      "Authentic Mayan-style Beach BBQ",
+      "Beach BBQ included (full day)",
       "Lobster or conch ceviche (seasonal)"
     ],
     bbqPricing: {
-      priceUpToGuests: 75,
+      priceUpToGuests: 0,
       includedGuests: 4,
-      extraGuestPrice: 25,
+      extraGuestPrice: 75,
     },
   },
   {
@@ -221,8 +221,8 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
   'custom-charter': [
     {
       id: 'morning-fishing',
-      title: 'Spearfishing',
-      description: 'Start with spearfishingΓÇötarget fresh catch for the beach BBQ.',
+      title: 'Speargun Fishing',
+      description: 'Start with speargun fishing — target fresh catch for the beach BBQ.',
       keywords: ['spearfishing', 'spear', 'speargun', 'fish', 'catch', 'reef'],
       videoUrl: `${base}/videos/luxury/deep-sea-fishing.mp4`,
     },

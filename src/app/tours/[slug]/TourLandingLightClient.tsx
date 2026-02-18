@@ -773,12 +773,12 @@ function AddOnCard({ item }: { item: AddOnUiItem }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-sky-500 to-indigo-500 shadow-sm">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-sky-500 to-indigo-500 shadow-sm">
               <AddOnIcon name={item.icon} className="h-5 w-5 text-white" />
             </span>
-            <div className="font-extrabold text-slate-900 truncate">{item.title}</div>
+            <div className="font-extrabold text-slate-900 text-sm leading-tight">{item.title}</div>
           </div>
-          <div className="mt-1 text-xs text-slate-600 line-clamp-2">{subtitle}</div>
+          <div className="mt-1 text-xs text-slate-600">{subtitle}</div>
           {qty > 0 ? (
             <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-extrabold text-amber-800">
               <CheckCircle2 className="h-4 w-4" /> Selected
