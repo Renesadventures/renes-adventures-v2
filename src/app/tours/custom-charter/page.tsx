@@ -825,7 +825,7 @@ export default function CustomCharterPage() {
               onClick={onOpenWhatsAppLargeGroup}
               className="mt-5 h-12 w-full rounded-2xl border border-slate-200 bg-white font-extrabold hover:bg-slate-50 transition"
             >
-              WhatsApp +501 670 7760
+              WhatsApp +501 627 3556
             </button>
           </div>
 

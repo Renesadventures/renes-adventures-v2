@@ -188,7 +188,7 @@ export default function StoryWall() {
   }, [activeId, closeModal]);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-slate-950 via-[#0B1120] to-slate-950 overflow-hidden">
+    <section id="story-wall" className="py-20 bg-gradient-to-b from-slate-950 via-[#0B1120] to-slate-950 overflow-hidden">
       <div className="mx-auto w-full max-w-screen-2xl px-4">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-14">

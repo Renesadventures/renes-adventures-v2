@@ -5,11 +5,11 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
-  { label: 'Experiences', href: '#experiences' },
-  { label: 'Conditions', href: '#conditions' },
+  { label: 'Experiences', href: '#adventure-grid' },
+  { label: 'Conditions', href: '#weather-intelligence' },
   { label: 'Stories', href: '#story-wall' },
-  { label: 'Vessel', href: '#vessel' },
-  { label: 'Belize Guide', href: '#lead-magnet' },
+  { label: 'Vessel', href: '#vessel-showcase' },
+  { label: 'Belize Guide', href: '#belize-lifestyle' },
 ];
 
 export default function SiteNav() {

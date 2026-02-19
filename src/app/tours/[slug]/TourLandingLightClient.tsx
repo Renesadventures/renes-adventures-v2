@@ -51,7 +51,7 @@ function uniq<T>(arr: T[]) {
 function getWhatsAppNumberClient(): string {
   const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
   const cleaned = typeof raw === 'string' ? raw.replace(/\D/g, '') : '';
-  return cleaned.length >= 8 ? cleaned : '5016707760';
+  return cleaned.length >= 8 ? cleaned : '5016273556';
 }
 
 function buildWhatsAppBookingLink(opts: {

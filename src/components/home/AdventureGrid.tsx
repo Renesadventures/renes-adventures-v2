@@ -132,7 +132,7 @@ export default function AdventureGrid() {
   };
 
   return (
-    <section className="w-full bg-gradient-to-b from-amber-50 via-sky-50 to-emerald-50">
+    <section id="adventure-grid" className="w-full bg-gradient-to-b from-amber-50 via-sky-50 to-emerald-50">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-3xl sm:text-4xl font-serif tracking-tight text-slate-950">

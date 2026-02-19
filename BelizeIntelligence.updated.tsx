@@ -167,7 +167,7 @@ function GuideModal({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -328,33 +328,9 @@ export default function BelizeIntelligence() {
     setIsSubmitting(true);
 
     try {
-      const selectedList = Object.entries(selectedInterests)
-        .filter(([, v]) => v)
-        .map(([k]) => k);
-
-      const res = await fetch('/api/belize-guide', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          visitDate,
-          interests: selectedList,
-          tier,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || 'Something went wrong. Please try again.');
-        return;
-      }
-
+      // TODO: POST to lead capture API / payment gateway
+      await new Promise((r) => setTimeout(r, 800));
       setSubmitted(tier);
-    } catch {
-      setError('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }

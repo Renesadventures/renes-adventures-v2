@@ -51,7 +51,7 @@ export default function VesselShowcase() {
   });
 
   return (
-    <section className="w-full bg-white">
+    <section id="vessel-showcase" className="w-full bg-white">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[60%_40%] lg:items-stretch">
           <div className="rounded-3xl bg-white ring-1 ring-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.10)] overflow-hidden">

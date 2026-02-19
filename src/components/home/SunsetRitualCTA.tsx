@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Phone, MessageCircle } from 'lucide-react';
 
 export default function SunsetRitualCTA() {
@@ -35,25 +34,31 @@ export default function SunsetRitualCTA() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/tours/custom-charter"
+              <a
+                href="#adventure-grid"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById('adventure-grid')
+                    ?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="inline-flex items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-base font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400"
               >
                 Book Your Belize Adventure
-              </Link>
-
-              <a
-                href="tel:+5016707760"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 py-3 text-base font-semibold text-white backdrop-blur transition-all duration-300 hover:bg-white/10 hover:border-white/35"
-              >
-                <Phone className="h-5 w-5 text-amber-300" />
-                +501 670 7760
               </a>
 
               <a
-                href="https://wa.me/5016707760"
+                href="tel:+5016273556"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 py-3 text-base font-semibold text-white backdrop-blur transition-all duration-300 hover:bg-white/10 hover:border-white/35"
+              >
+                <Phone className="h-5 w-5 text-amber-300" />
+                +501 627 3556
+              </a>
+
+              <a
+                href="https://wa.me/5016273556"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-emerald-500/15 px-6 py-3 text-base font-semibold text-white backdrop-blur transition-all duration-300 hover:bg-emerald-500/25 hover:border-emerald-200/40"
               >
                 <MessageCircle className="h-5 w-5 text-emerald-300" />

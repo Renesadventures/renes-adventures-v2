@@ -57,6 +57,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
         className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}
       >
