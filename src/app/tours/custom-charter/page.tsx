@@ -6,19 +6,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Anchor,
+  Banknote,
   Camera,
-  CheckCircle2,
+  Droplets,
   Fish,
   Flame,
+  Footprints,
+  Glasses,
   LifeBuoy,
   Map,
   PartyPopper,
   Shell,
   ShieldCheck,
-  Snail,
   Sun,
-  Sunset,
-  UserPlus,
+  Wind,
   Waves,
 } from 'lucide-react';
 
@@ -32,12 +33,12 @@ type ActivityKey =
   | 'reef-fishing'
   | 'spearfishing'
   | 'hol-chan'
-  | 'conch-lobster'
+  | 'conch-hunt'
+  | 'lobster-mission'
   | 'caye-caulker'
   | 'beach-bbq'
-  | 'secret-beach'
   | 'snorkeling'
-  | 'sunset-ritual';
+  ;
 
 type Activity = {
   id: ActivityKey;
@@ -50,15 +51,97 @@ type Activity = {
   description: string;
 };
 
-type AddOnKey = 'extra-guest' | 'snorkel-premium' | 'underwater-camera';
+type AddOnId =
+  | 'beach-bbq'
+  | 'bbq-extra-guest'
+  | 'snorkel-gear'
+  | 'holchan-fee'
+  | 'tshirt-adult'
+  | 'tshirt-xxl'
+  | 'tshirt-youth'
+  | 'hat-standard'
+  | 'hat-leather';
 
-type AddOn = {
-  id: AddOnKey;
+interface AddOn {
+  id: AddOnId;
+  label: string;
+  note: string;
+  price: number;
+  perGuest: boolean;
+}
+
+type RelatedCard = {
+  slug: string;
   title: string;
   price: number;
-  icon: ReactNode;
-  blurb: string;
+  imageSrc: string;
 };
+
+const ADDONS: AddOn[] = [
+  {
+    id: 'beach-bbq',
+    label: 'Beach BBQ',
+    note: 'Up to 4 guests — fresh catch, lobster & conch when in season, ceviche, potatoes, vegetables, rice',
+    price: 75,
+    perGuest: true,
+  },
+  {
+    id: 'bbq-extra-guest',
+    label: 'Beach BBQ – Extra Guest',
+    note: 'Per guest beyond 4',
+    price: 25,
+    perGuest: true,
+  },
+  {
+    id: 'snorkel-gear',
+    label: 'Snorkel Gear Rental',
+    note: 'Per person — or bring your own',
+    price: 15,
+    perGuest: true,
+  },
+  {
+    id: 'holchan-fee',
+    label: 'Hol Chan Marine Reserve Fee',
+    note: 'Per person — paid directly to ranger at time of boat entry',
+    price: 15,
+    perGuest: true,
+  },
+  {
+    id: 'tshirt-adult',
+    label: 'T-Shirt – Adult (S/M/L/XL)',
+    note: 'Standard sizes',
+    price: 25,
+    perGuest: false,
+  },
+  {
+    id: 'tshirt-xxl',
+    label: 'T-Shirt – XXL / XXXL',
+    note: 'Extended sizes',
+    price: 30,
+    perGuest: false,
+  },
+  {
+    id: 'tshirt-youth',
+    label: 'T-Shirt – Youth (S/M/L)',
+    note: 'Kids sizes',
+    price: 20,
+    perGuest: false,
+  },
+  {
+    id: 'hat-standard',
+    label: 'Snapback Hat – Standard',
+    note: 'Classic snapback',
+    price: 30,
+    perGuest: false,
+  },
+  {
+    id: 'hat-leather',
+    label: 'Snapback Hat – Leather Patch',
+    note: 'Premium leather patch design',
+    price: 35,
+    perGuest: false,
+  },
+];
 
 function formatMoney(amount: number) {
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -87,9 +170,9 @@ export default function CustomCharterPage() {
     () => [
       {
         id: 'deep-sea-trolling',
-        title: 'Deep Sea Trolling',
-        shortLabel: 'Trolling',
-        icon: <Fish className="h-5 w-5" />,
+        title: 'Deep Sea Fishing',
+        shortLabel: 'Deep Sea',
+        icon: <Fish className="h-5 w-5 text-sky-600" />,
         image: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
         video: `${base}/hero/deep-sea-fIshing.mp4`,
         minutes: 90,
@@ -100,7 +183,7 @@ export default function CustomCharterPage() {
         id: 'reef-fishing',
         title: 'Reef Fishing',
         shortLabel: 'Reef',
-        icon: <Waves className="h-5 w-5" />,
+        icon: <Waves className="h-5 w-5 text-emerald-600" />,
         image: `${base}/images/renes-activities/offshore-fishing-2024-10-15-06-43-13-utc.jpg`,
         video: `${base}/hero/Reef Fishing.mp4`,
         minutes: 75,
@@ -111,7 +194,7 @@ export default function CustomCharterPage() {
         id: 'spearfishing',
         title: 'Speargun Fishing',
         shortLabel: 'Speargun',
-        icon: <LifeBuoy className="h-5 w-5" />,
+        icon: <LifeBuoy className="h-5 w-5 text-indigo-600" />,
         image: `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`,
         video: `${base}/luxury/deep-sea-fishing.mp4`,
         minutes: 75,
@@ -121,7 +204,7 @@ export default function CustomCharterPage() {
         id: 'hol-chan',
         title: 'Hol Chan Marine Reserve',
         shortLabel: 'Hol Chan',
-        icon: <Anchor className="h-5 w-5" />,
+        icon: <Anchor className="h-5 w-5 text-cyan-600" />,
         image: `${base}/images/renes-activities/colorful-sea-life-underwater-shallow-underwater-s-2025-02-18-05-18-34-utc.jpg`,
         video: `${base}/luxury/Secrete Beach 5.mp4`,
         minutes: 90,
@@ -129,20 +212,30 @@ export default function CustomCharterPage() {
           "Swim with nurse sharks. Stingrays glide under your fins. Sea turtles surface for air. This is the Caribbean's underwater cathedral.",
       },
       {
-        id: 'conch-lobster',
-        title: 'Conch & Lobster Diving',
-        shortLabel: 'Conch/Lobster',
-        icon: <Shell className="h-5 w-5" />,
+        id: 'conch-hunt',
+        title: 'Conch Hunt (Seasonal)',
+        shortLabel: 'Conch',
+        icon: <Shell className="h-5 w-5 text-amber-600" />,
+        image: 'https://images.unsplash.com/photo-1516683037151-9a17603a8dc7?w=1200&q=80',
+        video: `${base}/luxury/Conch Fishing 1.mp4`,
+        minutes: 75,
+        description: 'If conditions allow, we hunt conch and prep it island-style for ceviche. Fresh, clean, unreal.',
+      },
+      {
+        id: 'lobster-mission',
+        title: 'Lobster Mission (Seasonal)',
+        shortLabel: 'Lobster',
+        icon: <Shell className="h-5 w-5 text-red-600" />,
         image: `${base}/images/renes-activities/live-big-lobster-in-the-hands-of-people-selective-2024-12-19-13-46-57-utc.JPG`,
         video: `${base}/luxury/Lobster Fishing 1.mp4`,
-        minutes: 90,
-        description: 'Hunt your feast. Fresh conch ceviche. Grilled lobster tails. Caught by YOU. Cooked on the beach.',
+        minutes: 75,
+        description: 'Seasonal lobster mission—quick, clean, and unforgettable. Catch it. Cook it. Eat it on the sand.',
       },
       {
         id: 'caye-caulker',
         title: 'Caye Caulker',
         shortLabel: 'Caye Caulker',
-        icon: <Map className="h-5 w-5" />,
+        icon: <Map className="h-5 w-5 text-purple-600" />,
         image: `${base}/images/renes-activities/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
         video: `${base}/luxury/Secrete Island 2.mp4`,
         minutes: 75,
@@ -153,69 +246,21 @@ export default function CustomCharterPage() {
         id: 'beach-bbq',
         title: 'Beach BBQ',
         shortLabel: 'BBQ',
-        icon: <Flame className="h-5 w-5" />,
+        icon: <Flame className="h-5 w-5 text-orange-600" />,
         image: `${base}/images/renes-activities/barbecue-chicken-meat-on-grill-2025-03-08-13-06-23-utc.jpg`,
         video: `${base}/hero/beach-bbq.mp4`,
         minutes: 90,
         description: 'White sand. Grilled lobster. Rum punch. Hammock time. This is the pause that makes the action sweeter.',
       },
       {
-        id: 'secret-beach',
-        title: 'Secret Beach',
-        shortLabel: 'Secret Beach',
-        icon: <Snail className="h-5 w-5" />,
-        image: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
-        video: `${base}/hero/secret-beach.mp4`,
-        minutes: 60,
-        description: 'Hidden. Pristine. Yours. Swim in glass-clear water. This beach has no crowds—just you and paradise.',
-      },
-      {
         id: 'snorkeling',
         title: 'Snorkeling',
         shortLabel: 'Snorkel',
-        icon: <Waves className="h-5 w-5" />,
+        icon: <Waves className="h-5 w-5 text-teal-600" />,
         image: `${base}/images/renes-activities/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
         video: `${base}/luxury/Reef Fishing 6.mp4`,
         minutes: 60,
         description: 'Coral gardens. Tropical fish in every color. Underwater caves. The barrier reef is your aquarium.',
-      },
-      {
-        id: 'sunset-ritual',
-        title: 'Sunset Ritual',
-        shortLabel: 'Sunset',
-        icon: <Sunset className="h-5 w-5" />,
-        image: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
-        video: `${base}/hero/sunset-ritual.mp4`,
-        minutes: 60,
-        description:
-          'Golden hour. Cold drinks. No agenda. Watch the sun melt into the Caribbean. This is how every adventure should end.',
-      },
-    ],
-    []
-  );
-
-  const addOns = useMemo<AddOn[]>(
-    () => [
-      {
-        id: 'extra-guest',
-        title: 'Extra Guests (5–8)',
-        price: 75,
-        icon: <UserPlus className="h-5 w-5" />,
-        blurb: 'Flat $75 for 5–8 guests total.',
-      },
-      {
-        id: 'snorkel-premium',
-        title: 'Snorkel Gear Rental',
-        price: 15,
-        icon: <Waves className="h-5 w-5" />,
-        blurb: '$15 per set. Or bring your own.',
-      },
-      {
-        id: 'underwater-camera',
-        title: 'Underwater Camera Rental',
-        price: 50,
-        icon: <Camera className="h-5 w-5" />,
-        blurb: 'Capture it all. 4K waterproof.',
       },
     ],
     []
@@ -233,12 +278,11 @@ export default function CustomCharterPage() {
     'reef-fishing': false,
     spearfishing: false,
     'hol-chan': false,
-    'conch-lobster': false,
+    'conch-hunt': false,
+    'lobster-mission': false,
     'caye-caulker': false,
     'beach-bbq': false,
-    'secret-beach': false,
     snorkeling: false,
-    'sunset-ritual': false,
   }));
 
   const includedGuests = tour?.includedGuests ?? 4;
@@ -246,13 +290,31 @@ export default function CustomCharterPage() {
   const baseFullDay = tour?.priceFullDay ?? 675;
 
   const [duration, setDuration] = useState<'half' | 'full'>('half');
-  const [guests, setGuests] = useState(4);
+  const [guestCount, setGuestCount] = useState(4);
 
-  const [addOnQty, setAddOnQty] = useState<Record<AddOnKey, number>>({
-    'extra-guest': 0,
-    'snorkel-premium': 0,
-    'underwater-camera': 0,
+  const [addOnQty, setAddOnQty] = useState<Record<AddOnId, number>>({
+    'beach-bbq': 0,
+    'bbq-extra-guest': 0,
+    'snorkel-gear': 0,
+    'holchan-fee': 0,
+    'tshirt-adult': 0,
+    'tshirt-xxl': 0,
+    'tshirt-youth': 0,
+    'hat-standard': 0,
+    'hat-leather': 0,
   });
+
+  function incrementAddon(addon: AddOn) {
+    setAddOnQty((prev) => {
+      const current = prev[addon.id];
+      const next = current === 0 && addon.perGuest ? guestCount : current + 1;
+      return { ...prev, [addon.id]: next };
+    });
+  }
+
+  function decrementAddon(id: AddOnId) {
+    setAddOnQty((prev) => ({ ...prev, [id]: Math.max(0, prev[id] - 1) }));
+  }
 
   const activityCount = useMemo(() => {
     return (Object.keys(selectedActivities) as ActivityKey[]).reduce((sum, k) => sum + (selectedActivities[k] ? 1 : 0), 0);
@@ -264,20 +326,20 @@ export default function CustomCharterPage() {
 
   const paceLabel = useMemo(() => estimatePace(totalActivityMinutes, activityCount), [activityCount, totalActivityMinutes]);
 
-  const basePrice = useMemo(() => (duration === 'full' ? baseFullDay : baseHalfDay), [baseFullDay, baseHalfDay, duration]);
+  const isFullDay = duration === 'full';
+  const basePrice = useMemo(() => (isFullDay ? 600 : 400), [isFullDay]);
+  const extraGuests = useMemo(() => Math.max(0, guestCount - 4) * 75, [guestCount]);
+  const addOnsTotal = useMemo(() => ADDONS.reduce((sum, a) => sum + a.price * addOnQty[a.id], 0), [addOnQty]);
+  const subtotal = useMemo(() => basePrice + extraGuests + addOnsTotal, [addOnsTotal, basePrice, extraGuests]);
+  const tax = useMemo(() => subtotal * 0.125, [subtotal]);
+  const serviceFee = useMemo(() => subtotal * 0.06, [subtotal]);
+  const liveTotal = useMemo(() => subtotal + tax + serviceFee, [serviceFee, subtotal, tax]);
 
-  const effectiveGuests = useMemo(() => clamp(guests + (addOnQty['extra-guest'] || 0), 1, 8), [addOnQty, guests]);
-  const overageGuests = useMemo(() => Math.max(0, effectiveGuests - includedGuests), [effectiveGuests, includedGuests]);
-  const overageCost = useMemo(() => overageGuests > 0 ? 75 : 0, [overageGuests]);
-
-  const addOnsTotal = useMemo(() => {
-    return addOns.reduce((sum, a) => sum + (addOnQty[a.id] || 0) * a.price, 0);
-  }, [addOnQty, addOns]);
-
-  const liveTotal = useMemo(() => {
-    const subtotal = basePrice + overageCost + addOnsTotal;
-    return subtotal;
-  }, [addOnsTotal, basePrice, overageCost]);
+  const selectedActivityList = useMemo(() => {
+    return activities
+      .filter((a) => selectedActivities[a.id])
+      .map((a) => ({ id: a.id, label: a.title, price: 0 }));
+  }, [activities, selectedActivities]);
 
   const [stickyVisible, setStickyVisible] = useState(false);
 
@@ -292,11 +354,28 @@ export default function CustomCharterPage() {
   }, []);
 
   const youMightAlsoLike = useMemo(() => {
-    const picks = ['deep-sea-fishing', 'sunset-cruise', 'blue-hole-adventure', 'secret-beach'];
-    const mapped = picks.map((slug) => tours.find((t) => t.slug === slug)).filter(Boolean);
-    if (mapped.length >= 4) return mapped.slice(0, 4);
-    const fallback = tours.filter((t) => t.slug !== 'custom-charter').slice(0, 4);
-    return fallback;
+    const related: RelatedCard[] = [
+      {
+        slug: 'deep-sea-fishing',
+        title: 'Deep Sea Fishing',
+        price: tours.find((t) => t.slug === 'deep-sea-fishing')?.price ?? 500,
+        imageSrc: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
+      },
+      {
+        slug: 'blue-hole-adventure',
+        title: 'Blue Hole Adventure',
+        price: tours.find((t) => t.slug === 'blue-hole-adventure')?.price ?? 600,
+        imageSrc: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',
+      },
+      {
+        slug: 'custom-charter',
+        title: "Rene's Custom Adventure",
+        price: tours.find((t) => t.slug === 'custom-charter')?.price ?? 400,
+        imageSrc: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-80sj5WrGZF6Lfws1XtSJTW7tipz3D8.jpg',
+      },
+    ];
+
+    return related;
   }, []);
 
   const onOpenLia = (message: string) => {
@@ -314,7 +393,7 @@ export default function CustomCharterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900">
+    <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900 pb-24">
       <section className="relative">
         <div className="absolute inset-0">
           <video
@@ -345,10 +424,13 @@ export default function CustomCharterPage() {
                 One boat. Ten adventures. Pure Belize magic.
               </p>
 
-              <div className="mt-6 rounded-3xl border border-white/20 bg-white/10 backdrop-blur-md overflow-hidden">
+              <div className="mt-6 rounded-2xl border border-white/20 bg-white/[0.04] backdrop-blur-sm overflow-hidden">
                 <div className="p-4 md:p-5">
                   <div className="text-[11px] uppercase tracking-[0.35em] text-white/80">Now Playing</div>
                   <div className="mt-2 text-2xl md:text-3xl font-extrabold text-white leading-tight">{selectedVideoLabel}</div>
+                  {selectedVideoLabel.toLowerCase().includes('hol chan') && (
+                    <p className="text-xs text-amber-400/80 mt-0.5">$15.00 fee paid directly to ranger at time of boat entry</p>
+                  )}
                   <div className="mt-2 text-sm text-white/80">
                     You tap. The story changes. The day gets better.
                   </div>
@@ -385,7 +467,7 @@ export default function CustomCharterPage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-3xl border border-white/20 bg-white/10 backdrop-blur-md p-5 md:p-6">
+              <div className="rounded-2xl border border-white/20 bg-white/[0.04] backdrop-blur-sm p-5 md:p-6">
                 <div className="flex items-start justify-between gap-6">
                   <div>
                     <div className="text-xs uppercase tracking-[0.35em] text-white/80">Starting at</div>
@@ -429,18 +511,18 @@ export default function CustomCharterPage() {
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => setGuests((g) => clamp(g - 1, 1, 8))}
+                        onClick={() => setGuestCount((g) => clamp(g - 1, 1, 8))}
                         className="h-10 w-10 rounded-full border border-white/25 bg-white/10 text-white font-black hover:bg-white/15 transition"
                       >
                         −
                       </button>
                       <div className="min-w-[54px] text-center">
-                        <div className="text-2xl font-extrabold text-white">{guests}</div>
+                        <div className="text-2xl font-extrabold text-white">{guestCount}</div>
                         <div className="text-[10px] uppercase tracking-[0.25em] text-white/70">Base</div>
                       </div>
                       <button
                         type="button"
-                        onClick={() => setGuests((g) => clamp(g + 1, 1, 8))}
+                        onClick={() => setGuestCount((g) => clamp(g + 1, 1, 8))}
                         className="h-10 w-10 rounded-full border border-white/25 bg-white/10 text-white font-black hover:bg-white/15 transition"
                       >
                         +
@@ -483,279 +565,382 @@ export default function CustomCharterPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-screen-2xl px-4 py-16">
-        <div className="max-w-3xl">
-          <div className="text-xs uppercase tracking-[0.35em] text-sky-700">The Promise</div>
-          <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">This Isn&apos;t a Tour. It&apos;s Your Perfect Day.</h2>
-          <p className="mt-4 text-lg text-slate-700">
-            You decide on the boat. Captain René adapts. This is YOUR day.
-          </p>
-        </div>
-
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Maximum Overdrive',
-              icon: <Flame className="h-5 w-5" />,
-              body: 'Non-stop action. 5+ activities. Adrenaline on demand.',
-            },
-            {
-              title: 'The Explorer',
-              icon: <Map className="h-5 w-5" />,
-              body: 'Balanced pace. See everything. Savor the moments that matter.',
-            },
-            {
-              title: 'Island Time',
-              icon: <Sun className="h-5 w-5" />,
-              body: 'Slow down. Dive deep. One or two experiences done right.',
-            },
-          ].map((c) => (
-            <div key={c.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center">{c.icon}</div>
-                <div className="text-lg font-extrabold">{c.title}</div>
-              </div>
-              <div className="mt-4 text-slate-700 leading-relaxed">{c.body}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
-        <div className="max-w-3xl">
-          <div className="text-xs uppercase tracking-[0.35em] text-sky-700">The 10 Adventures</div>
-          <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Pick the moments you&apos;ll talk about forever.</h2>
-          <p className="mt-4 text-lg text-slate-700">Each one hits different. Stack them. Mix them. Make it yours.</p>
-        </div>
-
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activities.map((a) => {
-            const checked = selectedActivities[a.id];
-            return (
-              <article key={a.id} className="group rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-                <div className="relative h-48">
-                  <Image src={a.image} alt="" fill className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" sizes="(min-width: 1024px) 33vw, 100vw" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                  <div className="absolute left-5 right-5 bottom-4 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 text-white">
-                      <div className="h-9 w-9 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center">{a.icon}</div>
-                      <div className="font-extrabold leading-tight">{a.title}</div>
-                    </div>
-                    <div className="text-[11px] uppercase tracking-[0.25em] text-white/90">{Math.round(a.minutes / 30) * 0.5}h+</div>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <div className="text-slate-700 leading-relaxed">{a.description}</div>
-
-                  <div className="mt-5 flex flex-col sm:flex-row gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }));
-                      }}
-                      className={`h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs transition border ${
-                        checked ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
-                      }`}
-                    >
-                      {checked ? 'Added' : 'Add This'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedVideo(a.video);
-                        setSelectedVideoLabel(a.title);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className="h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs border border-slate-200 bg-white hover:bg-slate-50 transition"
-                    >
-                      Preview
-                    </button>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
-        <div className="rounded-[2.5rem] border border-slate-200 bg-white p-7 md:p-10 shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div className="lg:col-span-5">
-              <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Build Your Day</div>
-              <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Pick 1. Pick all 10. It&apos;s your call.</h2>
-              <p className="mt-4 text-lg text-slate-700">You choose the direction. We handle the magic.</p>
-
-              <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                <div className="text-[11px] uppercase tracking-[0.35em] text-slate-600">Live Pace</div>
-                <div className="mt-2 text-lg font-extrabold text-slate-900">{paceLabel}</div>
-                <div className="mt-2 text-sm text-slate-700">Timeline adjusts as you stack adventures.</div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDuration('half')}
-                  className={`h-12 rounded-2xl border text-xs font-extrabold uppercase tracking-[0.25em] transition ${
-                    duration === 'half' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
-                >
-                  Half Day
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDuration('full')}
-                  className={`h-12 rounded-2xl border text-xs font-extrabold uppercase tracking-[0.25em] transition ${
-                    duration === 'full' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
-                >
-                  Full Day
-                </button>
-              </div>
-
-              <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.35em] text-slate-600">Guests</div>
-                    <div className="mt-1 text-sm text-slate-700">Includes {includedGuests}. Extra guests are $75.</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setGuests((g) => clamp(g - 1, 1, 8))}
-                      className="h-10 w-10 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
-                    >
-                      −
-                    </button>
-                    <div className="min-w-[64px] text-center">
-                      <div className="text-2xl font-extrabold text-slate-900">{effectiveGuests}</div>
-                      <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Total</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setGuests((g) => clamp(g + 1, 1, 8))}
-                      className="h-10 w-10 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-16">
+        <div className="lg:col-span-2">
+          <section className="mx-auto w-full">
+            <div className="max-w-3xl">
+              <div className="text-xs uppercase tracking-[0.35em] text-sky-700">The Promise</div>
+              <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">This Isn&apos;t a Tour. It&apos;s Your Perfect Day.</h2>
+              <p className="mt-4 text-lg text-slate-700">
+                You decide on the boat. Captain René adapts. This is YOUR day.
+              </p>
             </div>
 
-            <div className="lg:col-span-7">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {activities.map((a) => {
-                  const checked = selectedActivities[a.id];
-                  return (
-                    <label
-                      key={a.id}
-                      className={`flex items-start gap-4 rounded-3xl border p-5 transition cursor-pointer ${
-                        checked ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 bg-white hover:bg-slate-50'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }))}
-                        className="mt-1.5 h-5 w-5"
-                      />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <div className="h-9 w-9 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700">
-                            {a.icon}
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  title: 'Maximum Overdrive',
+                  icon: <Flame className="h-5 w-5" />,
+                  body: 'Non-stop action. 5+ activities. Adrenaline on demand.',
+                },
+                {
+                  title: 'The Explorer',
+                  icon: <Map className="h-5 w-5" />,
+                  body: 'Balanced pace. See everything. Savor the moments that matter.',
+                },
+                {
+                  title: 'Island Time',
+                  icon: <Sun className="h-5 w-5" />,
+                  body: 'Slow down. Dive deep. One or two experiences done right.',
+                },
+              ].map((c) => (
+                <div key={c.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center">{c.icon}</div>
+                    <div className="text-lg font-extrabold">{c.title}</div>
+                  </div>
+                  <div className="mt-4 text-slate-700 leading-relaxed">{c.body}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mx-auto w-full pb-16 pt-16">
+            <div className="max-w-3xl">
+              <div className="text-xs uppercase tracking-[0.35em] text-sky-700">The 10 Adventures</div>
+              <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Pick the moments you&apos;ll talk about forever.</h2>
+              <p className="mt-4 text-lg text-slate-700">Each one hits different. Stack them. Mix them. Make it yours.</p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activities.map((a) => {
+                const checked = selectedActivities[a.id];
+                return (
+                  <article key={a.id} className="group rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                    <div className="relative h-48">
+                      <Image src={a.image} alt="" fill className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" sizes="(min-width: 1024px) 33vw, 100vw" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                      <div className="absolute left-5 right-5 bottom-4 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2 text-white">
+                          <div className="h-9 w-9 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center">{a.icon}</div>
+                          <div>
+                            <div className="font-extrabold leading-tight">{a.title}</div>
+                            {a.id === 'hol-chan' ? (
+                              <p className="text-xs text-amber-400/80 mt-0.5">$15.00 fee paid directly to ranger at time of boat entry</p>
+                            ) : null}
                           </div>
-                          <div className="font-extrabold text-slate-900 truncate">{a.title}</div>
                         </div>
-                        <div className="mt-2 text-sm text-slate-700 line-clamp-2">{a.description}</div>
-                        <div className="mt-3 text-[11px] uppercase tracking-[0.25em] text-slate-500">~{a.minutes} minutes</div>
+                        <div className="text-[11px] uppercase tracking-[0.25em] text-white/90">{Math.round(a.minutes / 30) * 0.5}h+</div>
                       </div>
-                    </label>
+                    </div>
+
+                    <div className="p-6">
+                      <div className="text-slate-700 leading-relaxed">{a.description}</div>
+
+                      {a.id === 'hol-chan' ? (
+                        <p className="text-xs text-amber-400/80 mt-2">$15.00 fee paid directly to ranger at time of boat entry</p>
+                      ) : null}
+
+                      <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }));
+                          }}
+                          className={`h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs transition border ${
+                            checked ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
+                          }`}
+                        >
+                          {checked ? 'Added' : 'Add This'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedVideo(a.video);
+                            setSelectedVideoLabel(a.title);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs border border-slate-200 bg-white hover:bg-slate-50 transition"
+                        >
+                          Preview
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="mx-auto w-full pb-16">
+            <div className="rounded-[2.5rem] border border-slate-200 bg-white p-7 md:p-10 shadow-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div className="lg:col-span-5">
+                  <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Build Your Day</div>
+                  <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Pick 1. Pick all 10. It&apos;s your call.</h2>
+                  <p className="mt-4 text-lg text-slate-700">You choose the direction. We handle the magic.</p>
+
+                  <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                    <div className="text-[11px] uppercase tracking-[0.35em] text-slate-600">Live Pace</div>
+                    <div className="mt-2 text-lg font-extrabold text-slate-900">{paceLabel}</div>
+                    <div className="mt-2 text-sm text-slate-700">Timeline adjusts as you stack adventures.</div>
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setDuration('half')}
+                      className={`h-12 rounded-2xl border text-xs font-extrabold uppercase tracking-[0.25em] transition ${
+                        duration === 'half' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      Half Day
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDuration('full')}
+                      className={`h-12 rounded-2xl border text-xs font-extrabold uppercase tracking-[0.25em] transition ${
+                        duration === 'full' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      Full Day
+                    </button>
+                  </div>
+
+                  <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.35em] text-slate-600">Guests</div>
+                        <div className="mt-1 text-sm text-slate-700">Includes {includedGuests}. Extra guests are $75.</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setGuestCount((g) => clamp(g - 1, 1, 8))}
+                          className="h-10 w-10 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
+                        >
+                          −
+                        </button>
+                        <div className="min-w-[64px] text-center">
+                          <div className="text-2xl font-extrabold text-slate-900">{guestCount}</div>
+                          <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Total</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setGuestCount((g) => clamp(g + 1, 1, 8))}
+                          className="h-10 w-10 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-7">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {activities.map((a) => {
+                      const checked = selectedActivities[a.id];
+                      return (
+                        <label
+                          key={a.id}
+                          className={`relative flex flex-col rounded-2xl border border-slate-200 bg-white p-4 overflow-hidden min-h-[220px] cursor-pointer select-none transition ${
+                            checked ? 'ring-2 ring-emerald-400/30' : 'hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="flex items-start gap-4">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => setSelectedActivities((prev) => ({ ...prev, [a.id]: !prev[a.id] }))}
+                              className="mt-1.5 h-5 w-5"
+                            />
+                            <div className="flex flex-col gap-1 flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <div className="h-9 w-9 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700">
+                                  {a.icon}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-sm font-bold text-slate-900 line-clamp-2">{a.title}</div>
+                                  {a.id === 'hol-chan' ? (
+                                    <p className="text-xs text-amber-400/80 mt-0.5">$15.00 fee paid directly to ranger at time of boat entry</p>
+                                  ) : null}
+                                </div>
+                              </div>
+                              <div className="text-xs text-slate-600 line-clamp-3 mt-1">{a.description}</div>
+                              {a.id === 'hol-chan' ? (
+                                <p className="text-xs text-amber-400/80 mt-0.5">$15.00 fee paid directly to ranger at time of boat entry</p>
+                              ) : null}
+                              <div className="mt-2 text-[11px] uppercase tracking-[0.25em] text-slate-500">~{a.minutes} minutes</div>
+                            </div>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-6 rounded-3xl border border-white/15 bg-gray-950/90 backdrop-blur-md p-6">
+                    <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/40 mb-3">Your Day at a Glance</p>
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.35em] text-white/50">Visual Timeline</div>
+                        <div className="mt-2 text-lg font-extrabold text-white">Your day, in motion.</div>
+                      </div>
+                      <div className="text-sm text-white/70">Total: {Math.round(totalActivityMinutes / 15) * 15} min</div>
+                    </div>
+
+                    <div className="mt-5 flex h-12 w-full overflow-hidden rounded-2xl border border-white/15 bg-white/5">
+                      {activities
+                        .filter((a) => selectedActivities[a.id])
+                        .map((a, idx) => {
+                          const widthPct = totalActivityMinutes > 0 ? (a.minutes / totalActivityMinutes) * 100 : 0;
+                          return (
+                            <div
+                              key={a.id}
+                              className={`${getTimelineColor(idx)} h-full`}
+                              style={{ width: `${widthPct}%` }}
+                              title={a.title}
+                            />
+                          );
+                        })}
+                    </div>
+
+                    {activityCount === 0 && <div className="mt-3 text-sm text-white/60">Select activities to see your timeline build.</div>}
+
+                    <div className="flex flex-wrap gap-4 mt-3">
+                      {[
+                        { color: 'bg-amber-400', label: 'On the water' },
+                        { color: 'bg-emerald-400', label: 'In the water' },
+                        { color: 'bg-sky-400', label: 'On the beach' },
+                        { color: 'bg-purple-400', label: 'Cultural stop' },
+                      ].map(({ color, label }) => (
+                        <div key={label} className="flex items-center gap-1.5">
+                          <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
+                          <span className="text-xs text-white/50">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mx-auto w-full pb-16">
+            <div className="max-w-3xl">
+              <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Add-Ons Supermarket</div>
+              <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You&apos;re already out here. Go bigger.</h2>
+              <p className="mt-4 text-lg text-slate-700">Impulse-buy energy. Zero regrets.</p>
+            </div>
+
+            <div className="mt-8 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:thin]">
+              <div className="flex gap-4 min-w-max">
+                {ADDONS.map((a) => {
+                  const q = addOnQty[a.id] || 0;
+                  return (
+                    <div key={a.id} className="w-[320px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="font-extrabold text-slate-900">{a.label}</div>
+                          <div className="mt-1 text-sm text-slate-600">{formatMoney(a.price)}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => decrementAddon(a.id)}
+                            disabled={q <= 0}
+                            className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition disabled:opacity-40"
+                          >
+                            −
+                          </button>
+                          <div className="min-w-[28px] text-center font-extrabold text-slate-900">{q}</div>
+                          <button
+                            type="button"
+                            onClick={() => incrementAddon(a)}
+                            className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 text-slate-700 leading-relaxed">{a.note}</div>
+                    </div>
                   );
                 })}
               </div>
+            </div>
+          </section>
+        </div>
 
-              <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.35em] text-slate-600">Visual Timeline</div>
-                    <div className="mt-2 text-lg font-extrabold text-slate-900">Your day, in motion.</div>
+        <div className="lg:col-span-1">
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl space-y-4">
+            <div className="rounded-2xl border border-white/20 bg-gray-950/95 backdrop-blur-md p-5">
+              <div className="flex justify-between text-sm font-bold text-white">
+                <span>
+                  {tour?.title || 'Custom Charter'} – {isFullDay ? 'Full Day' : 'Half Day'} (1)
+                </span>
+                <span>{formatMoney(basePrice)}</span>
+              </div>
+
+              {guestCount > 4 && (
+                <div className="flex justify-between text-sm text-white/90 mt-1">
+                  <span>Additional Passengers ({guestCount - 4} @ $75.00)</span>
+                  <span>{formatMoney(extraGuests)}</span>
+                </div>
+              )}
+
+              <hr className="border-white/10 my-3" />
+
+              {ADDONS.filter((a) => addOnQty[a.id] > 0).map((a) => (
+                <div key={a.id} className="flex justify-between text-sm text-white/90 mt-1">
+                  <span className="flex items-center gap-1">
+                    <span className="text-emerald-400">✓</span>
+                    {a.label} {a.perGuest ? `(${addOnQty[a.id]} @ ${formatMoney(a.price)})` : ''}
+                  </span>
+                  <span>{formatMoney(a.price * addOnQty[a.id])}</span>
+                </div>
+              ))}
+
+              {selectedActivityList.filter((a) => a.price === 0).map((a) => (
+                <div key={a.id} className="flex justify-between text-sm text-white/80 mt-1">
+                  <span className="flex items-center gap-1">
+                    <span className="text-emerald-400">✓</span> {a.label}
+                  </span>
+                  <span>$0.00</span>
+                </div>
+              ))}
+
+              <hr className="border-white/10 my-3" />
+
+              <div className="flex justify-between text-sm text-white/90 mt-1">
+                <span>Subtotal</span>
+                <span>{formatMoney(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-white/90 mt-1">
+                <span>Tax (12.5%)</span>
+                <span>{formatMoney(tax)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-white/90 mt-1">
+                <span>Service Fee (6%)</span>
+                <span>{formatMoney(serviceFee)}</span>
+              </div>
+
+              <button className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
+                🔒 Secure Checkout
+              </button>
+
+              <div className="mt-3 space-y-1">
+                {['Bank-level encryption', 'All major cards accepted', 'Instant confirmation'].map((t) => (
+                  <div key={t} className="flex items-center gap-2 text-xs text-white/80">
+                    <span className="text-emerald-400">✓</span> {t}
                   </div>
-                  <div className="text-sm text-slate-700">Total: {Math.round(totalActivityMinutes / 15) * 15} min</div>
-                </div>
-
-                <div className="mt-5 flex h-12 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                  {activities
-                    .filter((a) => selectedActivities[a.id])
-                    .map((a, idx) => {
-                      const widthPct = totalActivityMinutes > 0 ? (a.minutes / totalActivityMinutes) * 100 : 0;
-                      return (
-                        <div
-                          key={a.id}
-                          className={`${getTimelineColor(idx)} h-full`}
-                          style={{ width: `${widthPct}%` }}
-                          title={a.title}
-                        />
-                      );
-                    })}
-                </div>
-
-                {activityCount === 0 && <div className="mt-3 text-sm text-slate-600">Select activities to see your timeline build.</div>}
+                ))}
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
-        <div className="max-w-3xl">
-          <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Add-Ons Supermarket</div>
-          <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You&apos;re already out here. Go bigger.</h2>
-          <p className="mt-4 text-lg text-slate-700">Impulse-buy energy. Zero regrets.</p>
-        </div>
-
-        <div className="mt-8 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:thin]">
-          <div className="flex gap-4 min-w-max">
-            {addOns.map((a) => {
-              const q = addOnQty[a.id] || 0;
-              return (
-                <div key={a.id} className="w-[320px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">{a.icon}</div>
-                      <div>
-                        <div className="font-extrabold text-slate-900">{a.title}</div>
-                        <div className="mt-1 text-sm text-slate-600">{formatMoney(a.price)}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setAddOnQty((prev) => ({ ...prev, [a.id]: Math.max(0, (prev[a.id] || 0) - 1) }))}
-                        disabled={q <= 0}
-                        className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition disabled:opacity-40"
-                      >
-                        −
-                      </button>
-                      <div className="min-w-[28px] text-center font-extrabold text-slate-900">{q}</div>
-                      <button
-                        type="button"
-                        onClick={() => setAddOnQty((prev) => ({ ...prev, [a.id]: (prev[a.id] || 0) + 1 }))}
-                        className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-slate-700 leading-relaxed">{a.blurb}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      </div>
 
       <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
         <div className="max-w-3xl">
@@ -763,14 +948,16 @@ export default function CustomCharterPage() {
           <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Show up ready. Leave with stories.</h2>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Reef-Safe Sunscreen', icon: <Sun className="h-5 w-5" /> },
-            { label: 'Swimwear', icon: <Waves className="h-5 w-5" /> },
-            { label: 'Polarized Sunglasses', icon: <ShieldCheck className="h-5 w-5" /> },
-            { label: 'Towel', icon: <CheckCircle2 className="h-5 w-5" /> },
-            { label: 'Camera', icon: <Camera className="h-5 w-5" /> },
-            { label: 'Sense of Adventure', icon: <PartyPopper className="h-5 w-5" /> },
+            { label: 'Sunscreen', icon: <Sun className="w-5 h-5 text-yellow-400" /> },
+            { label: 'Towel', icon: <Waves className="w-5 h-5 text-sky-400" /> },
+            { label: 'Camera', icon: <Camera className="w-5 h-5 text-purple-400" /> },
+            { label: 'Comfortable shoes', icon: <Footprints className="w-5 h-5 text-emerald-400" /> },
+            { label: 'Sunglasses', icon: <Glasses className="w-5 h-5 text-amber-400" /> },
+            { label: 'Water / Hydration', icon: <Droplets className="w-5 h-5 text-cyan-400" /> },
+            { label: 'Light jacket', icon: <Wind className="w-5 h-5 text-blue-400" /> },
+            { label: 'Cash (for fees)', icon: <Banknote className="w-5 h-5 text-green-400" /> },
           ].map((item) => (
             <div key={item.label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="h-10 w-10 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center">{item.icon}</div>
@@ -791,7 +978,10 @@ export default function CustomCharterPage() {
               <h2 className="mt-3 text-2xl md:text-4xl font-extrabold tracking-tight text-slate-900">Local knowledge. On your side.</h2>
               <p className="mt-4 text-lg text-slate-800 leading-relaxed">
                 If conditions aren&apos;t perfect, we adjust. If the fish aren&apos;t biting deep, we hit the reef. If the wind picks up, we find the lee side.
-                This is 25 years of local knowledge—working for YOU.
+                This is a lifetime born on these waters.
+              </p>
+              <p className="mt-4 text-lg text-slate-800 leading-relaxed">
+                Rene grew up navigating every reef, current, and hidden cay in Belize. This isn&apos;t a job — it&apos;s his home, and he&apos;s inviting you into it.
               </p>
             </div>
           </div>
@@ -881,6 +1071,9 @@ export default function CustomCharterPage() {
               </div>
               <div className="p-6">
                 <div className="text-slate-800 font-extrabold">“{r.quote}”</div>
+                {r.quote.toLowerCase().includes('hol chan') ? (
+                  <p className="text-xs text-amber-400/80 mt-0.5">$15.00 fee paid directly to ranger at time of boat entry</p>
+                ) : null}
               </div>
             </article>
           ))}
@@ -893,25 +1086,30 @@ export default function CustomCharterPage() {
           <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Keep the adrenaline going.</h2>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {youMightAlsoLike.map((t) => (
             <Link
-              key={t!.slug}
-              href={`/tours/${t!.slug}`}
+              key={t.slug}
+              href={`/tours/${t.slug}`}
               className="group rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition"
             >
-              <div className="relative h-44">
-                <Image
-                  src={`${base}${t!.imageUrl}`}
+              <div className="relative">
+                <img
+                  src={t.imageSrc}
                   alt=""
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                  sizes="(min-width: 1024px) 25vw, 100vw"
+                  className="w-full h-48 object-cover"
+                  onError={(e) => {
+                    const tt = e.target as HTMLImageElement;
+                    if (!tt.dataset.fallback) {
+                      tt.dataset.fallback = '1';
+                      tt.src = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg';
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                 <div className="absolute left-5 right-5 bottom-4">
-                  <div className="text-white font-extrabold leading-tight">{t!.title}</div>
-                  <div className="mt-1 text-sm text-white/85">From {formatMoney(t!.price)}</div>
+                  <div className="text-white font-extrabold leading-tight">{t.title}</div>
+                  <div className="mt-1 text-sm text-white/85">From {formatMoney(t.price)}</div>
                 </div>
               </div>
               <div className="p-5">
@@ -925,39 +1123,34 @@ export default function CustomCharterPage() {
       </section>
 
       <div
-        className={`fixed left-0 right-0 bottom-0 z-50 transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 z-[60] bg-gray-950/95 backdrop-blur-md border-t border-white/20 px-6 py-4 flex items-center justify-between transition-transform duration-300 ${
           stickyVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-4">
-          <div className="rounded-3xl border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg px-5 py-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="h-11 w-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">
-                  <Sunset className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-slate-900">Custom Charter</div>
-                  <div className="text-sm text-slate-600">{activityCount} activities selected</div>
-                </div>
-              </div>
+        <div>
+          <div className="text-white font-bold text-sm">Custom Charter · {guestCount} Guests · {isFullDay ? 'Full Day' : 'Half Day'}</div>
+          <div className="text-white/60 text-xs">{activityCount} activities selected</div>
+        </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-4">
-                <div className="text-right">
-                  <div className="text-[11px] uppercase tracking-[0.35em] text-slate-500">Live total</div>
-                  <div className="text-xl font-extrabold text-slate-900">{formatMoney(liveTotal)}</div>
-                </div>
+        {(() => {
+          const activitySummary = selectedActivityList.map((a) => a.label).join(', ');
+          const truncated = activitySummary.length > 45 ? activitySummary.slice(0, 45) + '…' : activitySummary;
+          return <div className="hidden md:block text-white/60 text-xs text-center max-w-sm">{truncated || 'No activities selected yet'}</div>;
+        })()}
 
-                <button
-                  type="button"
-                  onClick={onOpenWhatsApp}
-                  className="h-12 px-6 rounded-2xl bg-amber-500 text-slate-950 font-black border border-black/10 hover:brightness-105 transition"
-                >
-                  Book Your Perfect Day
-                </button>
-              </div>
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <div className="text-white/60 text-[10px] uppercase tracking-widest">Live Total</div>
+            <div className="text-amber-300 font-extrabold text-lg">{formatMoney(liveTotal)}</div>
           </div>
+
+          <button
+            type="button"
+            onClick={onOpenWhatsApp}
+            className="bg-amber-400 hover:bg-amber-300 text-black font-bold px-5 py-2.5 rounded-full text-sm transition-all"
+          >
+            Book Your Perfect Day
+          </button>
         </div>
       </div>
     </main>
