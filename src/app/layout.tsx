@@ -4,6 +4,7 @@ import { Geist_Mono } from "next/font/google";
 import AppSoundShell from "@/components/audio/AppSoundShell";
 import SiteNav from "@/components/layout/SiteNav";
 import SiteFooter from "@/components/layout/SiteFooter";
+import LiaChatWidget from "@/components/ai/LiaChatWidget";
 import "./globals.css";
 
 const inter = Inter({
@@ -70,6 +71,7 @@ export default function RootLayout({
           <SiteNav />
           <div className="mx-auto w-full max-w-screen-2xl">{children}</div>
           <SiteFooter />
+          <LiaChatWidget />
         </AppSoundShell>
       </body>
     </html>

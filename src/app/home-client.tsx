@@ -1,7 +1,6 @@
 'use client';
 
 import HeroSection from '@/components/home/HeroSection';
-import LiaChatWidget from '@/components/ai/LiaChatWidget';
 import { WeatherOpportunitySection } from '@/components/weather/WeatherOpportunitySection';
 import { TravelIntelligenceHub } from '@/components/travel/TravelIntelligenceHub';
 import FishStoryEngine from '@/components/features/FishStoryEngine';
@@ -10,12 +9,10 @@ import VesselSpecs3D from '@/components/vessel/VesselSpecs3D';
 import LeadMagnet from '@/components/features/LeadMagnet';
 import SiteFooter from '@/components/layout/SiteFooter';
 import TourCards from '@/components/tours/TourCards';
-import { useWeather } from '@/hooks/useWeather';
 import { buildWhatsAppTourLink } from '@/lib/utils/whatsapp-link';
 
 export default function HomeClient() {
   const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-  const { weather } = useWeather();
   const eliteCtaLink = buildWhatsAppTourLink({ tourName: 'Sunset Cruise' });
 
   return (
@@ -87,13 +84,6 @@ export default function HomeClient() {
       </section>
 
       <SiteFooter />
-
-      <LiaChatWidget
-        context={{
-          pageName: 'Homepage',
-          weather: weather?.current,
-        }}
-      />
     </main>
   );
 }

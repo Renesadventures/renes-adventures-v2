@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import AmbientEngine from '@/components/audio/AmbientEngine';
 import { SoundProvider } from '@/components/audio/SoundProvider';
 import SoundToggle from '@/components/audio/SoundToggle';
@@ -23,14 +24,19 @@ class AmbientErrorBoundary extends React.Component<{ children: React.ReactNode }
 }
 
 export default function AppSoundShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const showToggle = pathname === '/';
+
   return (
     <SoundProvider>
       <AmbientErrorBoundary>
         <AmbientEngine />
       </AmbientErrorBoundary>
-      <div className="fixed top-4 right-4 z-[60]">
-        <SoundToggle />
-      </div>
+      {showToggle ? (
+        <div className="fixed top-4 right-4 z-40">
+          <SoundToggle />
+        </div>
+      ) : null}
       {children}
     </SoundProvider>
   );

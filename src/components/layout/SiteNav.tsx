@@ -30,7 +30,7 @@ export default function SiteNav() {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[70]">
+    <div className="fixed top-0 left-0 right-0 z-50">
       <div className="bg-slate-950/70 backdrop-blur-xl border-b border-white/10">
         <div className="mx-auto w-full max-w-screen-2xl px-4 py-3 flex items-center justify-between">
           <Link href="/" className="text-white font-semibold tracking-tight">
