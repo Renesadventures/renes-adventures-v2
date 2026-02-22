@@ -392,6 +392,78 @@ export default function CustomCharterPage() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  function buildLineItems() {
+    const items: {
+      price_data: { currency: string; product_data: { name: string }; unit_amount: number };
+      quantity: number;
+    }[] = [];
+
+    items.push({
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `Rene's Custom Adventure – ${isFullDay ? 'Full Day' : 'Half Day'}` },
+        unit_amount: (isFullDay ? 600 : 400) * 100,
+      },
+      quantity: 1,
+    });
+
+    const extra = Math.max(0, guestCount - 4);
+    if (extra > 0) {
+      items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Additional Guest' },
+          unit_amount: 75 * 100,
+        },
+        quantity: extra,
+      });
+    }
+
+    ADDONS.forEach((addon) => {
+      const qty = addOnQty[addon.id];
+      if (qty > 0) {
+        items.push({
+          price_data: {
+            currency: 'usd',
+            product_data: { name: addon.label },
+            unit_amount: addon.price * 100,
+          },
+          quantity: qty,
+        });
+      }
+    });
+
+    return items;
+  }
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  async function handleCheckout() {
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lineItems: buildLineItems(),
+          guestCount,
+          duration: isFullDay ? 'Full Day' : 'Half Day',
+          tourName: "Rene's Custom Adventure",
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Checkout failed: ' + (data.error ?? 'Unknown error'));
+      }
+    } catch {
+      alert('Network error — please try again.');
+    } finally {
+      setCheckoutLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900 pb-24">
       <section className="relative">
@@ -926,8 +998,18 @@ export default function CustomCharterPage() {
                 <span>{formatMoney(serviceFee)}</span>
               </div>
 
-              <button className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
-                🔒 Secure Checkout
+              <button
+                onClick={handleCheckout}
+                disabled={checkoutLoading}
+                className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 \
+               disabled:opacity-60 text-black font-bold py-3 flex \
+               items-center justify-center gap-2 transition-all"
+              >
+                {checkoutLoading ? (
+                  <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+                ) : (
+                  <>🔒 Secure Checkout</>
+                )}
               </button>
 
               <div className="mt-3 space-y-1">
@@ -1146,7 +1228,7 @@ export default function CustomCharterPage() {
 
           <button
             type="button"
-            onClick={onOpenWhatsApp}
+            onClick={handleCheckout}
             className="bg-amber-400 hover:bg-amber-300 text-black font-bold px-5 py-2.5 rounded-full text-sm transition-all"
           >
             Book Your Perfect Day
