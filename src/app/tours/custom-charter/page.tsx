@@ -948,6 +948,27 @@ export default function CustomCharterPage() {
         <div className="lg:col-span-1">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl space-y-4">
             <div className="rounded-2xl border border-white/20 bg-gray-950/95 backdrop-blur-md p-5">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                <span className="text-white/70 text-sm">Guests</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setGuestCount((g) => Math.max(1, g - 1))}
+                    className="w-6 h-6 rounded-full border border-white/20 text-white 
+                   hover:border-white/40 flex items-center justify-center text-sm"
+                  >
+                    −
+                  </button>
+                  <span className="text-white font-bold w-4 text-center">{guestCount}</span>
+                  <button
+                    onClick={() => setGuestCount((g) => Math.min(8, g + 1))}
+                    className="w-6 h-6 rounded-full border border-white/20 text-white 
+                   hover:border-white/40 flex items-center justify-center text-sm"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               <div className="flex justify-between text-sm font-bold text-white">
                 <span>
                   {tour?.title || 'Custom Charter'} – {isFullDay ? 'Full Day' : 'Half Day'} (1)
@@ -964,15 +985,46 @@ export default function CustomCharterPage() {
 
               <hr className="border-white/10 my-3" />
 
-              {ADDONS.filter((a) => addOnQty[a.id] > 0).map((a) => (
-                <div key={a.id} className="flex justify-between text-sm text-white/90 mt-1">
-                  <span className="flex items-center gap-1">
-                    <span className="text-emerald-400">✓</span>
-                    {a.label} {a.perGuest ? `(${addOnQty[a.id]} @ ${formatMoney(a.price)})` : ''}
-                  </span>
-                  <span>{formatMoney(a.price * addOnQty[a.id])}</span>
-                </div>
-              ))}
+              {ADDONS.map((a) => {
+                const qty = addOnQty[a.id];
+                const active = qty > 0;
+                return (
+                  <div
+                    key={a.id}
+                    className={[
+                      'flex items-center justify-between gap-2 py-1.5 transition-opacity',
+                      active ? 'opacity-100' : 'opacity-30 hover:opacity-60',
+                    ].join(' ')}
+                  >
+                    <span className="text-xs text-white/70 flex-1 min-w-0 truncate">
+                      {active && <span className="text-emerald-400 mr-1">✓</span>}
+                      {a.label}
+                    </span>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => decrementAddon(a.id)}
+                        className="w-5 h-5 rounded-full border border-white/20 text-white/60 
+                       hover:text-white hover:border-white/40 flex items-center 
+                       justify-center text-xs leading-none transition-colors"
+                      >
+                        −
+                      </button>
+                      <span className="text-white text-xs w-4 text-center">{qty}</span>
+                      <button
+                        onClick={() => incrementAddon(a)}
+                        className="w-5 h-5 rounded-full border border-white/20 text-white/60 
+                       hover:text-white hover:border-white/40 flex items-center 
+                       justify-center text-xs leading-none transition-colors"
+                      >
+                        +
+                      </button>
+                      <span className="text-white/60 text-xs w-14 text-right">
+                        {qty > 0 ? formatMoney(a.price * qty) : `$${a.price}`}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
 
               {selectedActivityList.filter((a) => a.price === 0).map((a) => (
                 <div key={a.id} className="flex justify-between text-sm text-white/80 mt-1">
