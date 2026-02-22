@@ -28,7 +28,6 @@ import {
   Anchor,
   Camera,
   Fish,
-  PartyPopper,
   ShieldCheck,
   FileText,
   Shirt,
@@ -37,16 +36,185 @@ import {
   Utensils,
   Waves,
 } from 'lucide-react';
-import { tours, itineraryActivitiesBySlug } from '@/data/tours';
+import { tours } from '@/data/tours';
 import { TOUR_ADDONS } from '@/data/tour-addons';
 import { TourGuestGallery, TourHeroMedia, TourInteractivePortals } from './TourLandingLightClient';
 
-const TOUR_VIDEOS: Record<string, string> = {
-  'deep-sea-fishing': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep-sea-fishing.mp4',
-  'sunset-cruise': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/sunset-ritual.mp4',
-  'blue-hole': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/Secrete Beach 5.mp4',
-  'secret-beach': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/secret-beach.mp4',
-  'custom-adventure-bbq': 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/beach-bbq.mp4',
+const WHY_COPY: Record<string, { headline: string; sub: string }> = {
+  'deep-sea-fishing': {
+    headline: 'Why This Trip Hits Different',
+    sub: 'Open water. Big game. No tourist crowds. Just you, the crew, and whatever is running today.',
+  },
+  'sunset-cruise': {
+    headline: 'Why This Sunset Stays With You',
+    sub: 'Belize has roughly 300 days of sunshine a year. This is how you end the best one.',
+  },
+  'blue-hole-adventure': {
+    headline: 'Why People Fly Across the World for This',
+    sub: 'There are seven underwater wonders of the world. One of them is two hours from San Pedro.',
+  },
+  'secret-beach': {
+    headline: 'Why the Locals Keep This One Quiet',
+    sub: 'Most tourists never find it. You will — and you will understand immediately why it has that name.',
+  },
+  'custom-charter': {
+    headline: 'Why No Two Days Look the Same',
+    sub: 'You pick the activities. Rene picks the spots. The Caribbean does the rest.',
+  },
+};
+
+const TOUR_STORY: Record<string, string> = {
+  'deep-sea-fishing': `The captain doesn't explain where he's taking you. He just opens the throttle.
+Two miles out, the reef drops away and the color of the water changes — from turquoise to something darker, deeper, alive.
+Out here, mahi-mahi run in packs. Barracuda patrol the drop-offs. The rod bends before you're ready.
+This isn't a fishing trip. It's a reckoning.`,
+
+  'sunset-cruise': `At 6pm, something happens to the light in Belize.
+The sky stops being blue and starts being something else entirely — gold and crimson and a color you don't have a word for.
+You are on the water when it happens. Drink in hand. No agenda.
+Some people take photos. Most just watch. Nobody talks much.
+They don't need to.`,
+
+  'blue-hole-adventure': `You've seen the satellite image. The perfect circle of darkness in the middle of a turquoise sea.
+What the image doesn't tell you: it takes two hours to get there. Open ocean. Flying fish jumping the bow. Nothing on the horizon.
+Then it appears.
+You anchor at the edge. You look down. The water goes from clear to black in seconds.
+Three hundred meters of nothing below you.
+You jump anyway.`,
+
+  'secret-beach': `Most tourists in San Pedro never find it.
+They stay on the main strip, hit the same bars, take the same photos. They leave thinking they've seen Belize.
+They haven't.
+Secret Beach is on the other side of the island. Shallow, warm, and so clear you can read the sand through six feet of water.
+There are no crowds. There are beach bars. There is a boat ride to get there that most people will tell you was the best part.
+Don't tell too many people.`,
+
+  'custom-charter': `Rene grew up on these waters.
+Not visiting. Not working. Growing up — learning every reef, every current, every spot where the fish run and the lobster hide.
+When you book a custom charter, you're not buying a tour. You're borrowing his island for a day.
+Spearfishing at dawn. Snorkeling Hol Chan at noon. A beach BBQ on a strip of sand with no name on any map.
+No two days look the same. That's the point.`,
+};
+
+const REVIEWS: Record<string, { quote: string; author: string; location: string }[]> = {
+  'deep-sea-fishing': [
+    {
+      quote:
+        'We had mahi-mahi on the line before 8am. Rene knew exactly where to go. Best fishing day of my life, no contest.',
+      author: 'Marcus T.',
+      location: 'Houston, TX',
+    },
+    {
+      quote:
+        'Three of us went full day. The crew was incredible — patient with beginners, kept the experienced guys challenged. Serious haul.',
+      author: 'Jake & Crew',
+      location: 'Chicago, IL',
+    },
+    {
+      quote:
+        "I've chartered in Florida, Costa Rica, and the Bahamas. This was the most personal and the water was unreal. Already planning my return.",
+      author: 'Sandra R.',
+      location: 'Miami, FL',
+    },
+  ],
+  'sunset-cruise': [
+    {
+      quote:
+        'We popped champagne as the sun went down over the Caribbean. I proposed right there on the boat. She said yes. René made it perfect.',
+      author: 'Daniel M.',
+      location: 'New York, NY',
+    },
+    {
+      quote:
+        "I wasn't expecting much from a sunset cruise but this completely rewrote what that means. The colors, the calm water — I didn't want it to end.",
+      author: 'Priya K.',
+      location: 'Toronto, Canada',
+    },
+    {
+      quote:
+        'Our group of 6 did this on our last night in Belize. Everyone agreed it was the best night of the whole trip. Worth every penny.',
+      author: 'The Ortega Family',
+      location: 'San Diego, CA',
+    },
+  ],
+  'blue-hole-adventure': [
+    {
+      quote:
+        "You hear about the Blue Hole, you see photos — nothing prepares you. Looking down into that dark blue is something I'll carry forever.",
+      author: 'Thomas W.',
+      location: 'London, UK',
+    },
+    {
+      quote:
+        'The boat ride alone is worth it. Two hours across open water to get there, and you feel every mile. Then you see it.',
+      author: 'Camille D.',
+      location: 'Paris, France',
+    },
+    {
+      quote: "Rene's crew knew every reef on the way back. We snorkeled three spots after the Blue Hole. Full day, full value.",
+      author: 'Kevin & Amy S.',
+      location: 'Austin, TX',
+    },
+  ],
+  'blue-hole': [
+    {
+      quote:
+        "You hear about the Blue Hole, you see photos — nothing prepares you. Looking down into that dark blue is something I'll carry forever.",
+      author: 'Thomas W.',
+      location: 'London, UK',
+    },
+    {
+      quote:
+        'The boat ride alone is worth it. Two hours across open water to get there, and you feel every mile. Then you see it.',
+      author: 'Camille D.',
+      location: 'Paris, France',
+    },
+    {
+      quote: "Rene's crew knew every reef on the way back. We snorkeled three spots after the Blue Hole. Full day, full value.",
+      author: 'Kevin & Amy S.',
+      location: 'Austin, TX',
+    },
+  ],
+  'secret-beach': [
+    {
+      quote:
+        "This ended up being the highlight of our whole Belize trip. The water at Secret Beach looks photoshopped. It's that clear.",
+      author: 'Mia L.',
+      location: 'Atlanta, GA',
+    },
+    {
+      quote:
+        'Kids loved it, adults loved it. The boat ride over is half the fun. We stayed at the beach bars way longer than planned.',
+      author: 'The Williams Family',
+      location: 'Phoenix, AZ',
+    },
+    {
+      quote:
+        "Go slow — that's the vibe and they mean it. Turquoise water, cold drink, nothing to do. Exactly what I needed.",
+      author: 'James O.',
+      location: 'Seattle, WA',
+    },
+  ],
+  'custom-charter': [
+    {
+      quote:
+        'Absolutely unreal day. We did spearfishing, snorkeled Hol Chan, hand-fed tarpons, and finished with a beach BBQ. Rene made it feel like his island.',
+      author: 'Carlos M.',
+      location: 'Dallas, TX',
+    },
+    {
+      quote:
+        "I've done a lot of charters. This was the first time the captain actually felt like a friend. He took us places no tour would go.",
+      author: 'Rachel B.',
+      location: 'Boston, MA',
+    },
+    {
+      quote:
+        "The beach BBQ alone was worth the trip. Fresh catch, lobster, ceviche on a deserted beach. I genuinely didn't want to leave.",
+      author: 'The Park Family',
+      location: 'Los Angeles, CA',
+    },
+  ],
 };
 
 function formatMoney(amount: number) {
@@ -168,31 +336,9 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
   const tour = tours.find((t) => t.slug === slug);
   if (!tour) notFound();
 
-  const activities = itineraryActivitiesBySlug[slug] || [];
-  const videoUrl =
-    TOUR_VIDEOS[slug] ||
-    activities[0]?.videoUrl ||
-    'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/renes-custom-adventures.mp4';
-
-  const videoUrls =
-    slug === 'deep-sea-fishing'
-      ? [
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep-sea-fishing.mp4',
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/deep%20sea%20fishing.mp4',
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/luxury/deep-sea-fishing.mp4',
-          'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev/hero/renes-custom-adventures.mp4',
-        ]
-      : undefined;
-
-  const highlights = tour.features.slice(0, 4);
   const addOns = TOUR_ADDONS;
 
-  const heroKeywordsBySlug: Partial<Record<string, string[]>> = {
-    'deep-sea-fishing': ['deep', 'sea', 'offshore', 'fishing', 'tuna', 'wahoo', 'dorado', 'marlin'],
-    'sunset-cruise': ['sunset', 'golden', 'cruise', 'romantic'],
-    'blue-hole': ['blue', 'hole', 'reef', 'snorkel', 'full', 'day'],
-    'secret-beach': ['secret', 'beach', 'shallow', 'turquoise', 'bar'],
-  };
+  const lowestPrice = tour.fullDayPrice ? Math.min(tour.price, tour.fullDayPrice) : tour.price;
 
   const fallbackGallery = [
     tour.imageUrl,
@@ -204,57 +350,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900">
-      <section className="relative z-0">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-white" />
-        </div>
-
-        <div className="relative mx-auto w-full max-w-screen-2xl px-4 pt-24 pb-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-2 text-white backdrop-blur-md">
-                <PartyPopper className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.3em]">Adventure</span>
-              </div>
-
-              <h1 className="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight text-white">{tour.title}</h1>
-              <p className="mt-4 text-lg md:text-2xl text-white/90 max-w-2xl">{tour.description}</p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                {highlights.map((h) => (
-                  <span
-                    key={h}
-                    className="px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white/90 text-sm"
-                  >
-                    ✓ {h}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-7 flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
-                  <Anchor className="h-4 w-4" /> Book 1-{tour.maxGuests} guests instantly
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
-                  <Waves className="h-4 w-4" /> Private charter
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-white/90 text-sm backdrop-blur-md">
-                  <ShieldCheck className="h-4 w-4" /> Local crew
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10">
-            <TourHeroMedia
-              videoUrl={videoUrl}
-              videoUrls={videoUrls}
-              keywords={heroKeywordsBySlug[slug] || [slug]}
-              fallbackImages={fallbackGallery}
-            />
-          </div>
-        </div>
-      </section>
+      <TourHeroMedia tour={tour} lowestPrice={lowestPrice} fallbackImages={fallbackGallery} />
 
       <TourInteractivePortals tour={tour} addOns={addOns} />
 
@@ -267,19 +363,31 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Discovery Summary</div>
                 <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">A day that feels like a documentary</h2>
                 <div className="mt-5 grid gap-4 text-lg text-slate-700 leading-relaxed">
-                  <p>{tour.description}</p>
+                  <p className="whitespace-pre-line">{TOUR_STORY[slug] ?? TOUR_STORY['custom-charter']}</p>
                 </div>
               </div>
             </section>
 
             <div className="h-10" />
 
-            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-sky-50" />
+            <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#060608] p-8 shadow-sm">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black via-black to-slate-900" />
               <div className="relative">
                 <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Why Unforgettable</div>
-                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You feel it in your chest</h2>
-                <p className="mt-5 text-lg text-slate-700 leading-relaxed">Belize hits different: private water, fewer crowds, and the kind of day you can only get with a local captain who knows where the story is hiding.</p>
+                {(() => {
+                  const whyCopy = WHY_COPY[slug] ?? WHY_COPY['custom-charter'];
+                  return (
+                    <>
+                      <h2
+                        className="text-3xl md:text-4xl font-bold text-white mb-3"
+                        style={{ fontFamily: 'Playfair Display, serif' }}
+                      >
+                        {whyCopy.headline}
+                      </h2>
+                      <p className="text-white/60 text-base max-w-2xl leading-relaxed">{whyCopy.sub}</p>
+                    </>
+                  );
+                })()}
 
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
@@ -315,7 +423,10 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <div className="h-10" />
 
-            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <section
+              id="highlights"
+              className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+            >
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-amber-50" />
               <div className="relative">
                 <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Your Day. Your Boat. Your Adventure.</div>
@@ -421,10 +532,11 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <div className="h-10" />
 
-            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section id="pricing" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Pricing Information</div>
               <div className="mt-3 text-slate-700">
-                All prices are for up to 4 passengers. Additional passengers are $75 USD per person (maximum 8 passengers). For groups larger than 8, please contact us for custom pricing.
+                Your private crew, your pace — for up to 4 guests. Bringing more friends? Add up to 4 more at $75/person.
+                <div className="mt-2 text-slate-700">Rates shown do not include 12.5% tax, 6% service fee, or gratuity for your crew.</div>
               </div>
               <div className="mt-4 text-slate-700">
                 From <span className="text-3xl font-black text-amber-600">{formatMoney(tour.price)}</span>
@@ -433,23 +545,41 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <div className="h-10" />
 
-            <section>
+            <section id="reviews">
+              {(() => {
+                const reviews = REVIEWS[slug] ?? REVIEWS['custom-charter'];
+                return (
+                  <>
               <div className="max-w-3xl">
                 <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Real Stories</div>
                 <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Guest Experiences</h2>
               </div>
               <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="text-amber-400 font-bold mb-4">★★★★★</div>
-                    <div className="text-slate-800 font-semibold mb-4">“Absolutely unreal day. Private, premium, and the water looked edited.”</div>
-                    <div className="text-sm text-slate-600">
-                      <div className="font-extrabold text-slate-900">Guest</div>
-                      <div>San Pedro, Belize</div>
+                {reviews.map((review, i) => (
+                  <div
+                    key={i}
+                    className="bg-gray-900 border border-white/15 rounded-2xl p-6 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex gap-0.5 mb-4">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <span key={s} className="text-amber-400 text-base">
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-white text-sm leading-relaxed italic">&quot;{review.quote}&quot;</p>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <p className="text-white font-bold text-sm">{review.author}</p>
+                      <p className="text-emerald-400 text-xs mt-0.5">{review.location}</p>
                     </div>
                   </div>
                 ))}
               </div>
+                  </>
+                );
+              })()}
             </section>
           </div>
 

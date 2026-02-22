@@ -8,8 +8,6 @@ import {
   Anchor,
   Calendar,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   CheckCircle2,
   Crown,
   Flame,
@@ -42,10 +40,6 @@ function formatMoney(amount: number) {
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
-}
-
-function uniq<T>(arr: T[]) {
-  return Array.from(new Set(arr));
 }
 
 function getWhatsAppNumberClient(): string {
@@ -178,10 +172,6 @@ function useAssetImages({
   return images;
 }
 
-function useHeroImages({ keywords, fallbackImages }: { keywords: string[]; fallbackImages: string[] }) {
-  return useAssetImages({ keywords, fallbackImages, limit: 5 });
-}
-
 export function TourGuestGallery({
   keywords,
   fallbackImages,
@@ -282,143 +272,125 @@ export function TourGuestGallery({
 }
 
 export function TourHeroMedia({
-  videoUrl,
-  videoUrls,
-  keywords,
+  tour,
+  lowestPrice,
   fallbackImages,
 }: {
-  videoUrl: string;
-  videoUrls?: string[];
-  keywords: string[];
+  tour: Tour;
+  lowestPrice: number;
   fallbackImages: string[];
 }) {
-  const images = useHeroImages({ keywords, fallbackImages });
-  const [active, setActive] = useState<{ type: 'video' } | { type: 'image'; src: string }>({ type: 'video' });
-  const candidates = useMemo(() => {
-    const base = (videoUrls && videoUrls.length ? videoUrls : [videoUrl]).filter(Boolean);
-    const augmented: string[] = [...base];
-
-    const hasDeepSea = base.some((u) => u.toLowerCase().includes('deep-sea-fishing') || u.toLowerCase().includes('deep%20sea%20fishing'));
-    if (hasDeepSea) {
-      for (const u of base) {
-        if (!u) continue;
-        if (!u.toLowerCase().includes('/hero/')) continue;
-        const prefix = u.slice(0, u.toLowerCase().indexOf('/hero/') + '/hero/'.length);
-        augmented.push(`${prefix}Deep Sea Fishing.mp4`);
-        augmented.push(`${prefix}Deep%20Sea%20Fishing.mp4`);
-      }
+  const heroImage = fallbackImages?.[0] || tour.imageUrl;
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const handleCheckout = async () => {
+    try {
+      setCheckoutLoading(true);
+      document.getElementById('tour-pricing-slot')?.scrollIntoView({ behavior: 'smooth' });
+    } finally {
+      setCheckoutLoading(false);
     }
-
-    return uniq(augmented);
-  }, [videoUrl, videoUrls]);
-  const [candidateIndex, setCandidateIndex] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const safeCandidateIndex = candidates.length ? Math.min(candidateIndex, candidates.length - 1) : 0;
-
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.playbackRate = 0.5;
-  }, [candidateIndex]);
-
-  const scrollBy = (dir: -1 | 1) => {
-    const el = document.getElementById('tour-hero-thumbs');
-    if (!el) return;
-    el.scrollBy({ left: dir * 280, behavior: 'smooth' });
   };
 
   return (
-    <div>
-      <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/25 bg-black/10 shadow-2xl">
-        <div className="relative aspect-[16/9] w-full">
-          {active.type === 'video' ? (
-            <video
-              ref={videoRef}
-              key={candidates[safeCandidateIndex] || videoUrl}
-              src={candidates[safeCandidateIndex] || videoUrl}
-              className="h-full w-full object-cover"
-              playsInline
-              autoPlay
-              muted
-              loop
-              onLoadedMetadata={(e) => {
-                e.currentTarget.playbackRate = 0.5;
-                console.log('Video loaded, playback set to 0.5x');
-              }}
-              onError={() => {
-                // Silently try next video candidate
-                if (safeCandidateIndex < candidates.length - 1) {
-                  setCandidateIndex((i) => i + 1);
-                }
-              }}
-            />
-          ) : (
-            <Image src={active.src} alt="" fill className="object-cover" sizes="100vw" priority />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-        </div>
+    <section id="hero" className="relative w-full h-screen min-h-[700px] flex items-end">
+      <img
+        src={heroImage}
+        alt={tour.title}
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        onError={(e) => {
+          const t = e.target as HTMLImageElement;
+          if (!t.dataset.fallback) {
+            t.dataset.fallback = '1';
+            t.src = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg';
+          }
+        }}
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+      <div className="absolute top-24 right-6 z-10 bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4 text-right">
+        <p className="text-white/50 text-xs uppercase tracking-widest">Starting at</p>
+        <p className="text-amber-300 text-3xl font-extrabold">{formatMoney(lowestPrice)}</p>
+        <p className="text-white/40 text-xs mt-0.5">Up to 4 guests</p>
       </div>
 
-      <div className="mt-4 relative">
-        <button
-          type="button"
-          onClick={() => scrollBy(-1)}
-          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur-md hover:bg-black/45 transition"
-          aria-label="Scroll left"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollBy(1)}
-          className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur-md hover:bg-black/45 transition"
-          aria-label="Scroll right"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-20">
+        <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase
+                     text-emerald-300 bg-black/50 border border-emerald-400/40
+                     px-4 py-1.5 rounded-full mb-5 backdrop-blur-sm">
+          Adventure
+        </span>
 
-        <div id="tour-hero-thumbs" className="flex gap-3 overflow-x-auto pb-2 pr-2">
-          <button
-            type="button"
-            onClick={() => setActive({ type: 'video' })}
-            className={`relative h-[120px] w-[200px] shrink-0 overflow-hidden rounded-2xl border bg-white/10 backdrop-blur-md transition ${
-              active.type === 'video' ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-white/20 hover:border-white/40'
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-slate-900/20 to-transparent" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="rounded-full border border-white/25 bg-black/35 px-4 py-2 text-white font-extrabold text-sm">
-                Video
-              </div>
-            </div>
-          </button>
+        <h1
+          className="text-6xl md:text-8xl font-extrabold text-white mb-4 leading-none"
+          style={{
+            fontFamily: 'Playfair Display, Georgia, serif',
+            textShadow: '0 4px 40px rgba(0,0,0,0.9)',
+          }}
+        >
+          {tour.title}
+        </h1>
 
-          {images.map((src, idx) => (
-            <button
-              key={`${src}-${idx}`}
-              type="button"
-              onClick={() => setActive({ type: 'image', src })}
-              className={`relative h-[120px] w-[200px] shrink-0 overflow-hidden rounded-2xl border transition ${
-                active.type === 'image' && active.src === src
-                  ? 'border-amber-400 ring-2 ring-amber-400/30'
-                  : 'border-white/20 hover:border-white/40'
-              }`}
+        <p
+          className="text-xl md:text-2xl text-white font-medium max-w-2xl mb-8 leading-relaxed"
+          style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
+        >
+          {tour.description}
+        </p>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          {tour.features.slice(0, 4).map((item, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-1.5 text-sm text-white
+                                  bg-black/50 backdrop-blur-sm border border-white/20
+                                  px-3 py-1.5 rounded-full font-medium"
             >
-              <Image
-                src={src}
-                alt=""
-                fill
-                className="object-cover hover:scale-[1.05] transition-transform duration-500"
-                sizes="200px"
-                onError={() => {
-                  console.error('Hero image failed to load:', src);
-                }}
-              />
-              <div className="absolute inset-0 bg-black/10" />
-            </button>
+              <span className="text-emerald-400">✓</span> {item}
+            </span>
           ))}
         </div>
+
+        <div className="flex flex-wrap gap-3 mb-8">
+          {['Book 1–8 guests instantly', 'Private charter', 'Native local crew'].map((b) => (
+            <span
+              key={b}
+              className="text-xs text-white/90 bg-black/50 backdrop-blur-sm
+                                  border border-white/20 px-3 py-1.5 rounded-full font-semibold"
+            >
+              {b}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleCheckout}
+            disabled={checkoutLoading}
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full
+                   bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black
+                   font-bold text-base tracking-wide transition-all duration-300
+                   hover:shadow-[0_0_40px_rgba(251,191,36,0.5)] hover:-translate-y-0.5"
+          >
+            {checkoutLoading ? (
+              <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+            ) : (
+              '🔒 Book This Charter'
+            )}
+          </button>
+          <Link
+            href="/#adventure-grid"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full
+                   bg-white/10 hover:bg-white/20 text-white font-semibold text-base
+                   border border-white/30 hover:border-white/60 backdrop-blur-sm
+                   transition-all duration-300"
+          >
+            View All Tours
+          </Link>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -450,6 +422,9 @@ type TourLandingContextValue = {
   setQtyFor: (id: string, nextQty: number) => void;
   onSelectAddOn: (item: AddOnUiItem) => void;
   selectedAddOns: { item: AddOnUiItem; qty: number; lineTotal: number }[];
+  bbqOn: boolean;
+  bbqOverage: number;
+  bbqCost: number;
   basePrice: number;
   extraPassengerPrice: number;
   addOnsTotal: number;
@@ -526,23 +501,6 @@ export function TourLandingLightProvider({
         }
       }
 
-      // Beach BBQ extra guest is derived: only when BBQ base is selected
-      if ((next['beach-bbq-base'] || 0) > 0) {
-        const desired = Math.max(0, clamped - includedGuests);
-        if (desired === 0) {
-          if (next['beach-bbq-extra-guest']) {
-            delete next['beach-bbq-extra-guest'];
-            changed = true;
-          }
-        } else if (next['beach-bbq-extra-guest'] !== desired) {
-          next['beach-bbq-extra-guest'] = desired;
-          changed = true;
-        }
-      } else if (next['beach-bbq-extra-guest']) {
-        delete next['beach-bbq-extra-guest'];
-        changed = true;
-      }
-
       return changed ? next : prev;
     });
   };
@@ -564,26 +522,32 @@ export function TourLandingLightProvider({
 
       if (current > 0) {
         delete copy[item.id];
-        if (item.id === 'beach-bbq-base') delete copy['beach-bbq-extra-guest'];
+        return copy;
+      }
+
+      if (item.id === 'beach-bbq') {
+        copy[item.id] = 1;
         return copy;
       }
 
       // all add-ons start at guest count
       copy[item.id] = defaultQtyForSelection(item, guests);
 
-      // selecting BBQ base should auto-derive the extra guest line
-      if (item.id === 'beach-bbq-base') {
-        const desired = Math.max(0, guests - includedGuests);
-        if (desired > 0) copy['beach-bbq-extra-guest'] = desired;
-        else delete copy['beach-bbq-extra-guest'];
-      }
-
       return copy;
     });
   };
 
+  const bbqOn = (qtyById['beach-bbq'] || 0) > 0;
+  const bbqAllowedByTour = tour.slug === 'secret-beach' || tour.slug === 'deep-sea-fishing';
+  const bbqAvailable = bbqAllowedByTour;
+  const bbqEnabled = bbqAvailable && bbqOn;
+  const bbqBase = bbqEnabled ? 75 : 0;
+  const bbqOverage = bbqEnabled ? Math.max(0, guests - includedGuests) * 25 : 0;
+  const bbqCost = bbqBase + bbqOverage;
+
   const selectedAddOns = useMemo(() => {
     return uiAddOns
+      .filter((item) => item.id !== 'beach-bbq')
       .map((item) => {
         const qty = qtyById[item.id] || 0;
         const lineTotal = addOnLineTotal(item, qty);
@@ -598,16 +562,20 @@ export function TourLandingLightProvider({
         tourTitle: tour.title,
         guests,
         day,
-        addOns: selectedAddOns.map((x) => ({ title: x.item.title, qty: x.qty })),
+        addOns: [
+          ...selectedAddOns.map((x) => ({ title: x.item.title, qty: x.qty })),
+          ...(bbqEnabled ? [{ title: 'Beach BBQ', qty: 1 }] : []),
+        ],
       }),
-    [day, guests, selectedAddOns, tour.title],
+    [bbqEnabled, day, guests, selectedAddOns, tour.title],
   );
 
   const basePrice = day === 'full' && tour.hasFullDay ? (tour.fullDayPrice ?? tour.price) : tour.price;
   const extraPassengerPrice =
     guests > includedGuests ? (guests - includedGuests) * additionalGuestPrice : 0;
-  const addOnsTotal = selectedAddOns.reduce((sum, x) => sum + x.lineTotal, 0);
-  const subtotal = basePrice + extraPassengerPrice + addOnsTotal;
+  const standardAddOnsTotal = selectedAddOns.reduce((sum, x) => sum + x.lineTotal, 0);
+  const addOnsTotal = standardAddOnsTotal + bbqCost;
+  const subtotal = basePrice + extraPassengerPrice + standardAddOnsTotal + bbqCost;
 
   const tax = Math.round(subtotal * 0.125);
   const serviceFee = Math.round(subtotal * 0.06);
@@ -626,6 +594,9 @@ export function TourLandingLightProvider({
     setQtyFor,
     onSelectAddOn,
     selectedAddOns,
+    bbqOn: bbqEnabled,
+    bbqOverage,
+    bbqCost,
     basePrice,
     extraPassengerPrice,
     addOnsTotal,
@@ -642,119 +613,216 @@ export function TourLandingLightProvider({
 }
 
 export function TourPricingPanel() {
-  const { tour, whatsappUrl, guests, setGuestsAndSyncAddOns, day, setDay, estimatedTotal, setQuote } = useTourLanding();
-  const hasToggle = tour.hasHalfDay && tour.hasFullDay;
+  const {
+    tour,
+    whatsappUrl,
+    guests,
+    setGuestsAndSyncAddOns,
+    day,
+    setDay,
+    qtyById,
+    setQtyFor,
+    uiAddOns,
+    bbqOn,
+    subtotal,
+    tax,
+    serviceFee,
+  } = useTourLanding();
+
+  const hasBothDurations = tour.hasHalfDay && tour.hasFullDay;
+  const isFullDay = day === 'full';
+  const basePrice = isFullDay && tour.hasFullDay ? (tour.fullDayPrice ?? tour.price) : tour.price;
+  const checkoutLabel = `${tour.title}${hasBothDurations ? ` – ${isFullDay ? 'Full Day' : 'Half Day'}` : ''}`;
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const handleCheckout = async () => {
+    try {
+      setCheckoutLoading(true);
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const incrementAddon = (item: AddOnUiItem) => {
+    const current = qtyById[item.id] ?? 0;
+    const next = current > 0 ? current + 1 : defaultQtyForSelection(item, guests);
+    setQtyFor(item.id, next);
+  };
+
+  const decrementAddon = (id: string) => {
+    const current = qtyById[id] ?? 0;
+    setQtyFor(id, Math.max(0, current - 1));
+  };
+
+  const bbqActive = bbqOn;
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Pricing</div>
-          <div className="mt-2 flex items-end gap-3">
-            <div className="text-4xl font-extrabold text-slate-900">{formatMoney(day === 'full' && tour.hasFullDay ? (tour.fullDayPrice ?? tour.price) : tour.price)}</div>
-            {hasToggle ? (
-              <div className="pb-1 text-sm font-semibold text-slate-600">{day === 'full' ? 'Full-day' : 'Half-day'}</div>
-            ) : null}
-          </div>
-          {hasToggle ? (
-            <div className="mt-2 text-sm text-slate-700">
-              Half-day: <span className="font-extrabold text-slate-900">{formatMoney(tour.price)}</span>
-              <span className="mx-2 text-slate-300">|</span>
-              Full-day:{' '}
-              <span className="font-extrabold text-slate-900">{formatMoney(tour.fullDayPrice ?? tour.price)}</span>
-            </div>
-          ) : null}
-        </div>
-
-        {hasToggle ? (
-          <div className="shrink-0">
-            <div className="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1">
-              <button
-                type="button"
-                onClick={() => setDay('half')}
-                className={`h-10 px-4 rounded-xl text-sm font-extrabold transition ${
-                  day === 'half' ? 'bg-white shadow-sm border border-slate-200 text-slate-900' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Half-day
-              </button>
-              <button
-                type="button"
-                onClick={() => setDay('full')}
-                className={`h-10 px-4 rounded-xl text-sm font-extrabold transition ${
-                  day === 'full' ? 'bg-white shadow-sm border border-slate-200 text-slate-900' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Full-day
-              </button>
-            </div>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="mt-6 grid gap-3">
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black border border-black/10 hover:brightness-105 transition flex items-center justify-center"
-        >
-          Book This Adventure
-        </a>
-
-        <Link
-          href="/checkout"
-          className="h-14 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition flex items-center justify-center"
-        >
-          Checkout
-        </Link>
-      </div>
-
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-[#F8FAFC] px-4 py-3">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-xs uppercase tracking-[0.35em] text-slate-600">Book 1-{tour.maxGuests} guests instantly</div>
-            <div className="mt-2 text-sm font-semibold text-slate-900">
-              {guests} guest{guests === 1 ? '' : 's'}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setGuestsAndSyncAddOns(guests - 1)}
-              className="h-10 w-10 rounded-xl bg-white text-slate-900 font-black border border-slate-200 hover:bg-slate-50 transition"
-            >
-              −
-            </button>
-            <button
-              type="button"
-              onClick={() => setGuestsAndSyncAddOns(guests + 1)}
-              className="h-10 w-10 rounded-xl bg-white text-slate-900 font-black border border-slate-200 hover:bg-slate-50 transition"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="text-xs text-slate-600">
-            Base includes {tour.includedGuests}. Extra guest: {formatMoney(tour.additionalGuestPrice)} each.
-          </div>
+    <div className="rounded-3xl border border-white/10 bg-[#060608] p-6 shadow-2xl">
+      {hasBothDurations && (
+        <div className="grid grid-cols-2 gap-2 mb-4">
           <button
             type="button"
-            onClick={() => setQuote((p) => ({ ...p, open: true, success: false, error: null }))}
-            className="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition"
+            onClick={() => setDay('half')}
+            className={`py-2 rounded-xl text-sm font-semibold transition-all ${
+              !isFullDay ? 'bg-amber-400 text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
           >
-            9+ Guests? Get Custom Quote
+            Half Day
+          </button>
+          <button
+            type="button"
+            onClick={() => setDay('full')}
+            className={`py-2 rounded-xl text-sm font-semibold transition-all ${
+              isFullDay ? 'bg-amber-400 text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+          >
+            Full Day
+          </button>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between py-3 border-b border-white/10 mb-3">
+        <span className="text-white/70 text-sm">Guests</span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setGuestsAndSyncAddOns(Math.max(1, guests - 1))}
+            className="w-6 h-6 rounded-full border border-white/20 text-white hover:border-white/40 flex items-center justify-center text-sm"
+          >
+            −
+          </button>
+          <span className="text-white font-bold w-4 text-center">{guests}</span>
+          <button
+            type="button"
+            onClick={() => setGuestsAndSyncAddOns(Math.min(8, guests + 1))}
+            className="w-6 h-6 rounded-full border border-white/20 text-white hover:border-white/40 flex items-center justify-center text-sm"
+          >
+            +
           </button>
         </div>
       </div>
 
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-        <div className="text-xs uppercase tracking-[0.35em] text-slate-600">Estimated total</div>
-        <div className="mt-2 text-3xl font-extrabold text-slate-900">{formatMoney(estimatedTotal)}</div>
-        <div className="mt-2 text-xs text-slate-600">Includes estimated tax + service fee.</div>
+      <div className="flex justify-between text-sm font-bold text-white mb-1">
+        <span className="min-w-0 truncate">{checkoutLabel}</span>
+        <span>{formatMoney(basePrice)}</span>
       </div>
+
+      {guests > 4 && (
+        <div className="flex justify-between text-sm text-white/70 mt-1">
+          <span>Additional Guests ({guests - 4} @ $75.00)</span>
+          <span>{formatMoney(Math.max(0, guests - 4) * 75)}</span>
+        </div>
+      )}
+
+      {uiAddOns
+        .filter((a) => a.id !== 'beach-bbq')
+        .map((a) => {
+          const qty = qtyById[a.id] ?? 0;
+          return (
+            <div
+              key={a.id}
+              className={`flex items-center justify-between gap-2 py-1.5 transition-opacity ${
+                qty > 0 ? 'opacity-100' : 'opacity-30 hover:opacity-60'
+              }`}
+            >
+              <span className="text-xs text-white/70 flex-1 min-w-0 truncate">
+                {qty > 0 && <span className="text-emerald-400 mr-1">✓</span>}
+                {a.title}
+              </span>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => decrementAddon(a.id)}
+                  className="w-5 h-5 rounded-full border border-white/20 text-white/60 hover:text-white flex items-center justify-center text-xs"
+                >
+                  −
+                </button>
+                <span className="text-white text-xs w-4 text-center">{qty}</span>
+                <button
+                  type="button"
+                  onClick={() => incrementAddon(a)}
+                  className="w-5 h-5 rounded-full border border-white/20 text-white/60 hover:text-white flex items-center justify-center text-xs"
+                >
+                  +
+                </button>
+                <span className="text-white/60 text-xs w-14 text-right">
+                  {qty > 0 ? formatMoney(a.price * qty) : `$${a.price}`}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+
+      {bbqActive && (
+        <>
+          <div className="flex justify-between text-sm text-white/70 mt-1">
+            <span>
+              <span className="text-emerald-400">✓</span> Beach BBQ (up to 4 guests)
+            </span>
+            <span>$75.00</span>
+          </div>
+          {guests > 4 && (
+            <div className="flex justify-between text-sm text-white/50 mt-1">
+              <span className="pl-3">Extra guests ({guests - 4} @ $25.00)</span>
+              <span>{formatMoney((guests - 4) * 25)}</span>
+            </div>
+          )}
+        </>
+      )}
+
+      <div className="border-t border-white/10 mt-3 pt-3 space-y-1">
+        <div className="flex justify-between text-sm text-white/60">
+          <span>Subtotal</span>
+          <span>{formatMoney(subtotal)}</span>
+        </div>
+        <div className="flex justify-between text-sm text-white/60">
+          <span>Tax (12.5%)</span>
+          <span>{formatMoney(tax)}</span>
+        </div>
+        <div className="flex justify-between text-sm text-white/60">
+          <span>Service Fee (6%)</span>
+          <span>{formatMoney(serviceFee)}</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleCheckout}
+        disabled={checkoutLoading}
+        className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all"
+      >
+        {checkoutLoading ? (
+          <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+        ) : (
+          <>🔒 Book This Charter</>
+        )}
+      </button>
+
+      <div className="mt-3 space-y-1.5">
+        {['Bank-level encryption', 'All major cards accepted', 'Instant confirmation'].map((t) => (
+          <div key={t} className="flex items-center gap-2 text-xs text-white/40">
+            <span className="text-emerald-400">✓</span>
+            {t}
+          </div>
+        ))}
+      </div>
+
+      {guests >= 8 && (
+        <div className="mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-2">
+          <p className="text-white/40 text-xs">Travelling with 9 or more?</p>
+          <a
+            href="https://wa.me/5016273556"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-center px-4 py-2.5 rounded-xl border border-white/20
+                   text-white/70 hover:text-white hover:border-white/40 text-sm
+                   font-semibold transition-all bg-white/5 hover:bg-white/10"
+          >
+            Get Custom Quote →
+          </a>
+        </div>
+      )}
     </div>
   );
 }
@@ -828,7 +896,18 @@ function AddOnCard({ item }: { item: AddOnUiItem }) {
 }
 
 export function TourAddOnsPanel() {
-  const { uiAddOns, basePrice, extraPassengerPrice, addOnsTotal, subtotal, tax, serviceFee, estimatedTotal } = useTourLanding();
+  const { tour, day, uiAddOns, qtyById, setQtyFor, guests, bbqOn, bbqCost, basePrice, extraPassengerPrice, addOnsTotal, subtotal, tax, serviceFee, estimatedTotal } = useTourLanding();
+
+  const bbqAddon = uiAddOns.find((a) => a.id === 'beach-bbq');
+  const bbqAllowedByTour = tour.slug === 'secret-beach' || tour.slug === 'deep-sea-fishing';
+  const isFullDay = day === 'full';
+  const bbqAvailable = bbqAllowedByTour;
+  const bbqHidden = !bbqAvailable || tour.slug === 'sunset-cruise' || tour.slug === 'blue-hole' || tour.slug === 'blue-hole-adventure';
+
+  const toggleBBQ = () => {
+    const next = (qtyById['beach-bbq'] || 0) > 0 ? 0 : 1;
+    setQtyFor('beach-bbq', next);
+  };
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -848,9 +927,76 @@ export function TourAddOnsPanel() {
 
       <div className="mt-6 -mx-6 px-6">
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {uiAddOns.map((item) => (
-            <AddOnCard key={item.id} item={item} />
-          ))}
+          {tour.slug === 'custom-charter' ? (
+            isFullDay ? (
+              <div className="min-w-[290px] shrink-0 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
+                <div className="flex items-start gap-2 text-sm text-emerald-800">
+                  <span>✓</span>
+                  <span>
+                    <strong>Beach BBQ included</strong> with your Full Day charter — fresh catch, lobster &amp; conch when in season, ceviche, and local sides.
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="min-w-[290px] shrink-0 rounded-3xl border border-slate-200 bg-white p-5">
+                <p className="text-slate-500 text-sm italic">
+                  Beach BBQ is not available on Half Day charters due to time constraints.
+                </p>
+              </div>
+            )
+          ) : null}
+
+          {!bbqHidden && bbqAddon ? (
+            <div className="w-[290px] shrink-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-amber-500 to-amber-600 shadow-sm">
+                      <AddOnIcon name={bbqAddon.icon} className="h-5 w-5 text-white" />
+                    </span>
+                    <div className="font-extrabold text-slate-900 text-sm leading-tight">{bbqAddon.title}</div>
+                  </div>
+                  <div className="mt-1 text-xs text-slate-600">$75 base + $25 / guest over 4</div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Total</div>
+                  <div className="mt-1 text-sm font-extrabold text-slate-900">{bbqOn ? formatMoney(bbqCost) : formatMoney(75)}</div>
+                </div>
+              </div>
+
+              {bbqOn && tour.slug === 'deep-sea-fishing' ? (
+                <div className="mt-3 flex items-start gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  <span>⚠️</span>
+                  <span>Adding BBQ will reduce fishing time. Your captain will confirm details.</span>
+                </div>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={toggleBBQ}
+                className={[
+                  'mt-4 w-full py-2 rounded-xl text-sm font-bold transition-all',
+                  bbqOn
+                    ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
+                    : 'bg-white/5 border border-slate-200 text-slate-700 hover:bg-slate-50',
+                ].join(' ')}
+              >
+                {bbqOn ? '✓ BBQ Added' : 'Add Beach BBQ'}
+              </button>
+
+              {bbqOn && guests > 4 ? (
+                <p className="text-xs text-emerald-700 text-center mt-2">
+                  $75 base + {guests - 4} guests × $25 = {formatMoney(bbqCost)}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
+          {uiAddOns
+            .filter((item) => item.id !== 'beach-bbq')
+            .map((item) => (
+              <AddOnCard key={item.id} item={item} />
+            ))}
         </div>
       </div>
 
@@ -894,6 +1040,9 @@ export function TourOrderSummaryPanel() {
     guests,
     setGuestsAndSyncAddOns,
     selectedAddOns,
+    bbqOn,
+    bbqOverage,
+    bbqCost,
     basePrice,
     extraPassengerPrice,
     subtotal,
@@ -905,6 +1054,8 @@ export function TourOrderSummaryPanel() {
 
   const hasToggle = tour.hasHalfDay && tour.hasFullDay;
   const isFullDay = day === 'full';
+  const moneyWithCents = (amount: number) =>
+    `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const toggleFullDay = () => {
     setDay(isFullDay ? 'half' : 'full');
   };
@@ -1009,6 +1160,36 @@ export function TourOrderSummaryPanel() {
 
           <div className="mt-5 text-xs uppercase tracking-[0.35em] text-slate-600">Add-ons</div>
           <div className="mt-3 grid gap-3">
+            {bbqOn ? (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-extrabold text-emerald-900 text-sm">
+                      <span className="text-emerald-600">✓</span> Beach BBQ (up to 4 guests)
+                    </div>
+                  </div>
+                  <div className="font-extrabold text-emerald-900 text-sm">{moneyWithCents(75)}</div>
+                </div>
+                {bbqOverage > 0 ? (
+                  <div className="mt-1 flex items-start justify-between gap-3 text-sm">
+                    <div className="text-emerald-900/70 pl-3">
+                      Extra guests ({guests - 4} @ {moneyWithCents(25)})
+                    </div>
+                    <div className="font-extrabold text-emerald-900/80">{moneyWithCents(bbqOverage)}</div>
+                  </div>
+                ) : null}
+
+                {tour.slug === 'deep-sea-fishing' ? (
+                  <div className="mt-2 flex items-start gap-2 text-xs text-amber-700">
+                    <span>⚠️</span>
+                    <span>Adding BBQ will reduce fishing time. Your captain will confirm details.</span>
+                  </div>
+                ) : null}
+
+                <div className="mt-2 text-xs text-emerald-800">BBQ Total: {moneyWithCents(bbqCost)}</div>
+              </div>
+            ) : null}
+
             {selectedAddOns.length ? (
               selectedAddOns.map(({ item, qty, lineTotal }) => (
                 <div key={item.id} className="rounded-2xl border border-slate-200 bg-white px-3 py-3">
@@ -1029,9 +1210,9 @@ export function TourOrderSummaryPanel() {
                   ) : null}
                 </div>
               ))
-            ) : (
+            ) : !bbqOn ? (
               <div className="text-sm text-slate-600">No add-ons selected yet.</div>
-            )}
+            ) : null}
           </div>
 
           <div className="mt-5 border-t border-slate-200 pt-4">

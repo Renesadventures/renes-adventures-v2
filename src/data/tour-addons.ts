@@ -14,23 +14,14 @@ export interface TourAddOn {
 
 export const TOUR_ADDONS: TourAddOn[] = [
   {
-    id: 'beach-bbq-base',
-    title: 'Beach BBQ (up to 4 guests)',
+    id: 'beach-bbq',
+    title: 'Beach BBQ',
     description: 'Fresh catch, lobster and conch when in season, ceviche, potatoes, vegetables, rice',
     price: 75,
     category: 'experience',
     pricingType: 'flat',
     specialInstructions: 'Lobster and conch availability is seasonal',
     icon: 'Flame',
-  },
-  {
-    id: 'beach-bbq-extra-guest',
-    title: 'Beach BBQ - Additional Guest',
-    description: 'Per guest beyond 4',
-    price: 25,
-    category: 'experience',
-    pricingType: 'per-guest',
-    icon: 'UserPlus',
   },
   {
     id: 'snorkel-gear',

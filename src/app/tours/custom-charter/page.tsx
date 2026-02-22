@@ -466,7 +466,7 @@ export default function CustomCharterPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900 pb-24">
-      <section className="relative">
+      <section id="hero" className="relative">
         <div className="absolute inset-0">
           <video
             key={selectedVideo}
@@ -744,7 +744,7 @@ export default function CustomCharterPage() {
             </div>
           </section>
 
-          <section className="mx-auto w-full pb-16">
+          <section id="build-your-day" className="mx-auto w-full pb-16">
             <div className="rounded-[2.5rem] border border-slate-200 bg-white p-7 md:p-10 shadow-sm">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-5">
@@ -898,7 +898,7 @@ export default function CustomCharterPage() {
             </div>
           </section>
 
-          <section className="mx-auto w-full pb-16">
+          <section id="addons" className="mx-auto w-full pb-16">
             <div className="max-w-3xl">
               <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Add-Ons Supermarket</div>
               <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You&apos;re already out here. Go bigger.</h2>
@@ -1101,7 +1101,7 @@ export default function CustomCharterPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
+      <section id="guarantee" className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
         <div className="rounded-[2.5rem] border border-amber-200 bg-amber-50 p-8 md:p-10">
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-3xl bg-white border border-amber-200 flex items-center justify-center text-amber-800">
