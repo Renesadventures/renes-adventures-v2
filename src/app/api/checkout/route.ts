@@ -3,17 +3,17 @@ import Stripe from 'stripe';
 
 export const runtime = 'nodejs';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
-if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY is not set');
-}
-
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2026-01-28.clover',
-});
-
 export async function POST(req: NextRequest) {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!stripeSecretKey) {
+    return NextResponse.json({ error: 'STRIPE_SECRET_KEY is not set' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2026-01-28.clover',
+  });
+
   try {
     const { lineItems, guestCount, duration, tourName } = await req.json();
 
