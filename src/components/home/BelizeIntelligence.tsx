@@ -70,7 +70,7 @@ function useGuideContent(base: string) {
         id: 'legal',
         title: 'Legal & Immigration',
         icon: 'shield',
-        imageSrc: '/images/renes-activities/legal-&-immigration.png',
+        imageSrc: '/images/renes-activities/legal-and-immigration.png',
         freePreview: 'Visa requirements and basic entry info.',
         fullTopics: [
           'Visa-free countries list and stay duration limits',
@@ -87,7 +87,7 @@ function useGuideContent(base: string) {
         id: 'safety',
         title: 'Health & Safety',
         icon: 'heart',
-        imageSrc: '/images/renes-activities/health-&-safety.png',
+        imageSrc: '/images/renes-activities/health-and-safety.png',
         freePreview: 'General health advisory and sunscreen tips.',
         fullTopics: [
           'Required & recommended vaccinations with timing',
@@ -105,7 +105,7 @@ function useGuideContent(base: string) {
         id: 'dont',
         title: "Don't Do This in Belize",
         icon: 'alert',
-        imageSrc: "/images/renes-activities/don't-do-this-in-belize.png",
+        imageSrc: "/images/renes-activities/dont-do-this-in-belize.png",
         freePreview: 'Common tourist mistakes to avoid.',
         fullTopics: [
           'Tourist scams: taxi overcharges, fake tour operators, beach vendors',
@@ -244,14 +244,15 @@ function GuideModal({
                 This section + 4 more in the complete guide
               </div>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
+            <a
+              href="https://whop.com/renes-adventures"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group relative inline-flex w-full items-center justify-center rounded-full bg-amber-500 px-6 py-3.5 text-sm font-semibold text-black shadow-[0_18px_60px_rgba(245,158,11,0.25)] transition-all duration-300 hover:bg-amber-400"
             >
               <span className="absolute -inset-1 rounded-full bg-amber-500/25 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative">Get Complete Belize Survival Kit — $20</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
