@@ -26,7 +26,7 @@ import {
 import { buildWhatsAppTourLink, getWhatsAppLink } from '@/lib/utils/whatsapp-link';
 import { getTourBySlug, tours } from '@/data/tours';
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 type ActivityKey =
   | 'deep-sea-trolling'
@@ -173,7 +173,7 @@ export default function CustomCharterPage() {
         title: 'Deep Sea Fishing',
         shortLabel: 'Deep Sea',
         icon: <Fish className="h-5 w-5 text-sky-600" />,
-        image: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
+        image: `${base}/images/Deep-sea-fishing.jpeg`,
         video: `${base}/hero/deep-sea-fIshing.mp4`,
         minutes: 90,
         description:
@@ -184,7 +184,7 @@ export default function CustomCharterPage() {
         title: 'Reef Fishing',
         shortLabel: 'Reef',
         icon: <Waves className="h-5 w-5 text-emerald-600" />,
-        image: `${base}/images/renes-activities/offshore-fishing-2024-10-15-06-43-13-utc.jpg`,
+        image: `${base}/images/offshore-fishing-2024-10-15-06-43-13-utc.jpg`,
         video: `${base}/hero/Reef Fishing.mp4`,
         minutes: 75,
         description:
@@ -195,7 +195,7 @@ export default function CustomCharterPage() {
         title: 'Speargun Fishing',
         shortLabel: 'Speargun',
         icon: <LifeBuoy className="h-5 w-5 text-indigo-600" />,
-        image: `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`,
+        image: `${base}/images/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`,
         video: `${base}/luxury/deep-sea-fishing.mp4`,
         minutes: 75,
         description: 'Dive. Hunt. Surface. Repeat. This is primal. You vs. fish. No rods. No rules. Just skill.',
@@ -205,7 +205,7 @@ export default function CustomCharterPage() {
         title: 'Hol Chan Marine Reserve',
         shortLabel: 'Hol Chan',
         icon: <Anchor className="h-5 w-5 text-cyan-600" />,
-        image: `${base}/images/renes-activities/colorful-sea-life-underwater-shallow-underwater-s-2025-02-18-05-18-34-utc.jpg`,
+        image: `${base}/images/colorful-sea-life-underwater-shallow-underwater-s-2025-02-18-05-18-34-utc.jpg`,
         video: `${base}/luxury/Secrete Beach 5.mp4`,
         minutes: 90,
         description:
@@ -226,7 +226,7 @@ export default function CustomCharterPage() {
         title: 'Lobster Mission (Seasonal)',
         shortLabel: 'Lobster',
         icon: <Shell className="h-5 w-5 text-red-600" />,
-        image: `${base}/images/renes-activities/live-big-lobster-in-the-hands-of-people-selective-2024-12-19-13-46-57-utc.JPG`,
+        image: `${base}/images/live-big-lobster-in-the-hands-of-people-selective-2024-12-19-13-46-57-utc.JPG`,
         video: `${base}/luxury/Lobster Fishing 1.mp4`,
         minutes: 75,
         description: 'Seasonal lobster mission—quick, clean, and unforgettable. Catch it. Cook it. Eat it on the sand.',
@@ -236,7 +236,7 @@ export default function CustomCharterPage() {
         title: 'Caye Caulker',
         shortLabel: 'Caye Caulker',
         icon: <Map className="h-5 w-5 text-purple-600" />,
-        image: `${base}/images/renes-activities/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
+        image: `${base}/images/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
         video: `${base}/luxury/Secrete Island 2.mp4`,
         minutes: 75,
         description:
@@ -247,7 +247,7 @@ export default function CustomCharterPage() {
         title: 'Beach BBQ',
         shortLabel: 'BBQ',
         icon: <Flame className="h-5 w-5 text-orange-600" />,
-        image: `${base}/images/renes-activities/barbecue-chicken-meat-on-grill-2025-03-08-13-06-23-utc.jpg`,
+        image: `${base}/images/barbecue-chicken-meat-on-grill-2025-03-08-13-06-23-utc.jpg`,
         video: `${base}/hero/beach-bbq.mp4`,
         minutes: 90,
         description: 'White sand. Grilled lobster. Rum punch. Hammock time. This is the pause that makes the action sweeter.',
@@ -257,7 +257,7 @@ export default function CustomCharterPage() {
         title: 'Snorkeling',
         shortLabel: 'Snorkel',
         icon: <Waves className="h-5 w-5 text-teal-600" />,
-        image: `${base}/images/renes-activities/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
+        image: `${base}/images/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
         video: `${base}/luxury/Reef Fishing 6.mp4`,
         minutes: 60,
         description: 'Coral gardens. Tropical fish in every color. Underwater caves. The barrier reef is your aquarium.',
@@ -1179,19 +1179,19 @@ export default function CustomCharterPage() {
               name: 'Alyssa M.',
               stars: '★★★★★',
               quote: 'The tarpon exploded on the surface. We screamed. We laughed. It felt unreal.',
-              photo: `${base}/images/renes-activities/happy-female-with-a-caught-fish-in-one-hand-and-ho-2025-02-02-21-04-23-utc.jpg`,
+              photo: `${base}/images/happy-female-with-a-caught-fish-in-one-hand-and-ho-2025-02-02-21-04-23-utc.jpg`,
             },
             {
               name: 'Jordan K.',
               stars: '★★★★★',
               quote: 'Hol Chan was pure magic. Rays under our fins. Turtles surfacing for air. We will never forget it.',
-              photo: `${base}/images/renes-activities/happy-young-woman-showcasing-her-catch-on-a-sunny-2025-04-05-03-50-43-utc.jpg`,
+              photo: `${base}/images/happy-young-woman-showcasing-her-catch-on-a-sunny-2025-04-05-03-50-43-utc.jpg`,
             },
             {
               name: 'Mia & Theo',
               stars: '★★★★★',
               quote: 'Beach BBQ with fresh catch. Rum punch. Sunset on the ride back. Best day of our lives.',
-              photo: `${base}/images/renes-activities/millennial-women-reeling-in-the-fish-2024-11-30-20-54-55-utc.jpg`,
+              photo: `${base}/images/millennial-women-reeling-in-the-fish-2024-11-30-20-54-55-utc.jpg`,
             },
           ].map((r) => (
             <article key={r.name} className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">

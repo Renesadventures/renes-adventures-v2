@@ -258,7 +258,7 @@ function getStaticForecast(): ForecastDay[] {
 /* ------------------------------------------------------------------ */
 
 export default function ConditionsWidget() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+  const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
   /* --- Live weather fetch ----------------------------------------- */
   const [liveForecast, setLiveForecast] = useState<ForecastDay[] | null>(null);
@@ -328,10 +328,10 @@ export default function ConditionsWidget() {
     () => [
       { id: 'vid-secret-beach-5', type: 'video', src: `${base}/luxury/Secrete%20Beach%205.mp4`, label: 'Secret Beach' },
       { id: 'vid-reef-fishing-xxx', type: 'video', src: `${base}/luxury/reef-fishing%20xxx.mp4`, label: 'Reef Fishing' },
-      { id: 'vid-lobster-1', type: 'video', src: '/videos/luxury/lobster.mp4', label: 'Lobster' },
+      { id: 'vid-lobster-1', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/lobster.mp4', label: 'Lobster' },
       { id: 'vid-deep-sea-5', type: 'video', src: `${base}/luxury/Deep%20Sea%20Fishing%205.mp4`, label: 'Deep Sea' },
-      { id: 'img-nature', type: 'video', src: '/videos/luxury/girl-snorkeling.mov', label: 'Snorkel' },
-      { id: 'img-blue-hole-iconic', type: 'image', src: `${base}/images/renes-activities/Blue-Hole-Iconic.jpeg`, label: 'Blue Hole' },
+      { id: 'img-nature', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/girl-snorkeling.mov', label: 'Snorkel' },
+      { id: 'img-blue-hole-iconic', type: 'image', src: `${base}/images/Blue-Hole-Iconic.jpeg`, label: 'Blue Hole' },
     ],
     [base]
   );

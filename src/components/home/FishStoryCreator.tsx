@@ -226,8 +226,8 @@ const MOCK_STORY: GeneratedStory = {
 /* ------------------------------------------------------------------ */
 
 export default function FishStoryCreator() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-  const placeholderSrc = `${base}/images/renes-activities/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
+  const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
+  const placeholderSrc = `${base}/images/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`;
 
   /* --- File state ------------------------------------------------- */
   const [file, setFile] = useState<File | null>(null);

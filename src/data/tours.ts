@@ -73,7 +73,7 @@ export type TourGearItem = {
   };
 };
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 export const tourGear: TourGearItem[] = [
   {
@@ -224,14 +224,14 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
       title: 'Speargun Fishing',
       description: 'Start with speargun fishing — target fresh catch for the beach BBQ.',
       keywords: ['spearfishing', 'spear', 'speargun', 'fish', 'catch', 'reef'],
-      videoUrl: `${base}/videos/luxury/deep-sea-fishing.mp4`,
+      videoUrl: `${base}/deep-sea-fishing.mp4`,
     },
     {
       id: 'conch-hunt',
       title: 'Conch Hunt',
       description: 'If conditions allow, we hunt conch and prep it island-style for ceviche.',
       keywords: ['conch', 'ceviche', 'shell', 'snorkel', 'reef'],
-      videoUrl: `${base}/videos/luxury/Conch Fishing 1.mp4`,
+      videoUrl: `${base}/Conch Fishing 1.mp4`,
       season: {
         startMonthDay: '10-01',
         endMonthDay: '06-30',
@@ -242,7 +242,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
       title: 'Lobster Mission (Seasonal)',
       description: 'Seasonal lobster missionΓÇöquick, clean, and unforgettable.',
       keywords: ['lobster', 'reef', 'snorkel', 'dive', 'catch'],
-      videoUrl: `${base}/videos/luxury/Lobster Fishing 1.mp4`,
+      videoUrl: `${base}/Lobster Fishing 1.mp4`,
       season: {
         startMonthDay: '06-15',
         endMonthDay: '02-14',
@@ -254,49 +254,49 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
       description: 'Snorkel Hol ChanΓÇöone of BelizeΓÇÖs most iconic reef zones.',
       note: '($15 Ranger Fee paid directly to ranger)',
       keywords: ['hol', 'chan', 'snorkel', 'reef', 'coral', 'underwater'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.49 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.49 PM.mp4`,
     },
     {
       id: 'shark-ray-alley',
       title: 'Shark Ray Alley',
       description: 'Up-close encounters with rays and sharks in crystal water.',
       keywords: ['shark', 'ray', 'snorkel', 'underwater', 'reef'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.42 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.42 PM.mp4`,
     },
     {
       id: 'caye-caulker-stop',
       title: 'Caye Caulker Stop',
       description: 'Dock in, explore, and catch the island pulseΓÇöeasy and fun.',
       keywords: ['island', 'dock', 'caye', 'caulker', 'tropical', 'boat'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.41 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.41 PM.mp4`,
     },
     {
       id: 'high-dive',
       title: 'The High Dive (Optional)',
       description: 'The famous high diveΓÇöif you want the adrenaline moment.',
       keywords: ['jump', 'dive', 'adrenaline', 'island', 'ocean'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.44 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.44 PM.mp4`,
     },
     {
       id: 'tarpon-feeding',
       title: 'Tarpon Feeding',
       description: 'Hand-feed tarpon and watch the water explode.',
       keywords: ['tarpon', 'feeding', 'fish', 'action', 'jump'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.45 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.45 PM.mp4`,
     },
     {
       id: 'seahorse-spotting',
       title: 'Seahorse Spotting',
       description: 'A quiet, magical stopΓÇöspot seahorses in the grass beds.',
       keywords: ['seahorse', 'snorkel', 'underwater', 'grass', 'mangrove'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-12-17 at 12.22.36 PM.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.36 PM.mp4`,
     },
     {
       id: 'beach-bbq-feast',
       title: 'Private Beach BBQ Feast',
       description: 'Mayan-style BBQ on the sandΓÇöfresh catch, ceviche, and island time.',
       keywords: ['bbq', 'beach', 'grill', 'ceviche', 'lobster', 'food'],
-      videoUrl: `${base}/videos/luxury/WhatsApp Video 2025-09-26 at 20.28.36_7a150342.mp4`,
+      videoUrl: `${base}/WhatsApp Video 2025-09-26 at 20.28.36_7a150342.mp4`,
     },
   ],
 };

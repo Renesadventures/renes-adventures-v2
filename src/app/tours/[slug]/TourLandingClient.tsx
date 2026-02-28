@@ -11,7 +11,7 @@ import { financialAddOnsBySlug, tours } from '@/data/tours';
 import BookingEngine from '@/components/booking/BookingEngine';
 import BrochureCta from './BrochureCta';
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 type VideoItem = {
   id: string;
@@ -75,8 +75,8 @@ export default function TourLandingClient({
     () => [
       { id: 'reef-fishing', label: 'Reef Fishing', src: `${base}/videos/hero/reef-fishing.mp4` },
       { id: 'spearfishing', label: 'Spearfishing', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
-      { id: 'lobster', label: 'Lobster', src: `${base}/videos/luxury/Lobster Fishing 1.mp4` },
-      { id: 'conch', label: 'Conch', src: `${base}/videos/luxury/Conch Fishing 1.mp4` },
+      { id: 'lobster', label: 'Lobster', src: `${base}/Lobster Fishing 1.mp4` },
+      { id: 'conch', label: 'Conch', src: `${base}/Conch Fishing 1.mp4` },
       { id: 'snorkel', label: 'Snorkel', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
       { id: 'hol-chan', label: 'Hol Chan', src: `${base}/videos/hero/renes-custom-adventures.mp4` },
       { id: 'shark-ray-alley', label: 'Shark Ray Alley', src: `${base}/videos/hero/renes-custom-adventures.mp4` },

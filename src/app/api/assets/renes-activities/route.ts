@@ -7,6 +7,8 @@ type AssetListResponse = {
   source: 'renes-activities' | 'fallback';
 };
 
+const R2_IMAGES_BASE = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images';
+
 const FALLBACK_IMAGES = [
   '/images/tours/deep-sea-fishing.jpg',
   '/images/tours/reef-fishing.jpg',
@@ -25,7 +27,7 @@ export async function GET() {
       .filter((e) => e.isFile())
       .map((e) => e.name)
       .filter((n) => /\.(jpe?g|png|webp)$/i.test(n))
-      .map((n) => `/images/renes-activities/${n}`);
+      .map((n) => `${R2_IMAGES_BASE}/${n}`);
 
     if (images.length === 0) {
       const payload: AssetListResponse = { images: FALLBACK_IMAGES, source: 'fallback' };

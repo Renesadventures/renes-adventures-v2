@@ -14,7 +14,7 @@ type StoryItem = {
   accentBg: string;
 };
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 export default function StoryWall() {
   const stories = useMemo<StoryItem[]>(
@@ -32,7 +32,7 @@ export default function StoryWall() {
       },
       {
         id: 2,
-        videoSrc: '/videos/luxury/star-fish.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/star-fish.mp4',
         caption: 'Golden Hour',
         guest: 'Jake & Marina',
         narrative:
@@ -43,7 +43,7 @@ export default function StoryWall() {
       },
       {
         id: 3,
-        videoSrc: '/videos/luxury/beach-bbq.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/beach-bbq.mov',
         caption: 'Feast Mode Activated',
         guest: 'Danny R.',
         narrative:
@@ -65,7 +65,7 @@ export default function StoryWall() {
       },
       {
         id: 5,
-        videoSrc: '/videos/luxury/grilling-hot-dogs-beach-bbq.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/grilling-hot-dogs-beach-bbq.mov',
         caption: 'Beach Vibes Only',
         guest: 'The Rivera Crew',
         narrative:
@@ -76,7 +76,7 @@ export default function StoryWall() {
       },
       {
         id: 6,
-        videoSrc: '/videos/luxury/sunset-proposal.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-proposal.mov',
         caption: "Captain's Call",
         guest: 'Emmy & Daniel',
         narrative:
@@ -98,7 +98,7 @@ export default function StoryWall() {
       },
       {
         id: 8,
-        videoSrc: '/videos/luxury/deep-sea-fishing-two.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/deep-sea-fishing-two.mp4',
         caption: 'Trophy Time',
         guest: 'Big Mike',
         narrative:
@@ -109,7 +109,7 @@ export default function StoryWall() {
       },
       {
         id: 9,
-        videoSrc: '/videos/luxury/speargun-one.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/speargun-one.mp4',
         caption: 'Once More With Feeling',
         guest: 'Sofia & Leo',
         narrative:

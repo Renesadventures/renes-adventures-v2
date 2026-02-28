@@ -44,7 +44,7 @@ function pickMediaForActivity(activity: TourActivity): MediaSet {
 
   const keywords = (activity.keywords || []).map((k) => k.toLowerCase());
 
-  const renesOnly = allImages.filter((src) => src.includes(`${base}/images/renes-activities/`));
+  const renesOnly = allImages.filter((src) => src.includes(`${base}/images/`));
 
   const matches = (src: string) => {
     const s = src.toLowerCase();

@@ -18,7 +18,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-blue-500',
     title: 'The Great Blue Hole',
     tagline: 'A 300-metre ocean wonder beneath the surface',
-    videoSrc: '/videos/luxury/blue-hole-two.mp4',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/blue-hole-two.mp4',
   },
   {
     id: 'scuba',
@@ -26,7 +26,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-cyan-500',
     title: 'Scuba Diving Belize',
     tagline: 'Caribbean waters await below',
-    videoSrc: '/videos/luxury/speargun-one.mp4',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/speargun-one.mp4',
   },
   {
     id: 'must-dos',
@@ -34,7 +34,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-amber-500',
     title: 'Belize Must-Dos',
     tagline: 'The experiences you cannot leave without',
-    videoSrc: '/videos/luxury/custom-adventure.mp4',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/custom-adventure.mp4',
   },
   {
     id: 'xibalba',
@@ -42,7 +42,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-purple-500',
     title: 'Portals to Xibalba',
     tagline: 'Walk through 1,000-year-old Maya ceremonies',
-    videoSrc: '/videos/luxury/sunset.mov',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset.mov',
   },
   {
     id: 'go-slow',
@@ -50,7 +50,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-emerald-500',
     title: 'Go Slow',
     tagline: 'No cars. No clocks. Just Caribbean.',
-    videoSrc: '/videos/luxury/secrete-beach.mp4',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/secrete-beach.mp4',
   },
   {
     id: 'reef',
@@ -58,7 +58,7 @@ const CARDS: VideoCard[] = [
     categoryColor: 'bg-teal-500',
     title: 'The Living Reef',
     tagline: "World's 2nd largest barrier reef system",
-    videoSrc: '/videos/luxury/girl-snorkeling.mov',
+    videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/girl-snorkeling.mov',
   },
 ];
 

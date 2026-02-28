@@ -22,7 +22,7 @@ export default function AdventureGrid() {
         title: 'Deep Sea Fishing',
         price: 900,
         tagline: 'Big game beyond the reef',
-        videoSrc: '/videos/luxury/deep-sea-fishing.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/deep-sea-fishing.mp4',
         imageSrc: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
         href: '/tours/deep-sea-fishing',
       },
@@ -31,8 +31,8 @@ export default function AdventureGrid() {
         title: 'Sunset Cruise',
         tagline: 'Golden hour with champagne',
         price: 350,
-        videoSrc: '/videos/luxury/sunset-cruise.mov',
-        imageSrc: '/images/renes-activities/sunset-your-perfect-belize-day.jpg',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-cruise.mov',
+        imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/sunset-your-perfect-belize-day.jpg',
         href: '/tours/sunset-cruise',
       },
       {
@@ -40,7 +40,7 @@ export default function AdventureGrid() {
         title: 'Blue Hole',
         price: 900,
         tagline: 'UNESCO diving legend',
-        videoSrc: '/videos/luxury/blue-hole-two.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/blue-hole-two.mp4',
         imageSrc: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',
         href: '/tours/blue-hole',
       },
@@ -49,7 +49,7 @@ export default function AdventureGrid() {
         title: 'Secret Beach',
         price: 600,
         tagline: 'Hidden paradise',
-        videoSrc: '/videos/luxury/secrete-beach.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/secrete-beach.mp4',
         imageSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
         href: '/tours/secret-beach',
       },
@@ -77,7 +77,7 @@ export default function AdventureGrid() {
                   <div className="relative w-full aspect-video min-h-[400px] md:min-h-[500px] overflow-hidden rounded-2xl shadow-2xl">
                     <video
                       suppressHydrationWarning
-                      src="/videos/luxury/custom-adventure.mp4"
+                      src="https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/custom-adventure.mp4"
                       autoPlay
                       muted
                       loop

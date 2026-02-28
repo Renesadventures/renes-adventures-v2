@@ -25,6 +25,10 @@ dist
 .turbo
 .vercel
 
+# media — served from Cloudflare R2, not git
+/public/videos/
+/public/images/renes-activities/
+
 # misc
 .DS_Store
 *.pem

@@ -7,7 +7,7 @@ import assetManifest from '@/data/asset-manifest.json';
 import { buildLiasTaleForAsset } from '@/lib/utils/lia-tales';
 import { useSound } from '@/components/audio/SoundProvider';
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '600'] });
 
@@ -85,7 +85,7 @@ export default function FishStoryEngine() {
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const renesActivitiesOnly = fromManifest.filter((src) => src.includes(`${base}/images/renes-activities/`));
+    const renesActivitiesOnly = fromManifest.filter((src) => src.includes(`${base}/images/`));
     const isCatchShot = (src: string) => {
       const s = src.toLowerCase();
       return (

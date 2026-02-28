@@ -8,7 +8,7 @@ import { useSound } from '@/components/audio/SoundProvider';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 interface WeatherDay {
   date: string;
@@ -176,9 +176,9 @@ export function WeatherOpportunitySection() {
   const captainAdvice = intelligence.captainAdvice;
 
   const captainsChoiceVideoUrl = useMemo(() => {
-    if (intelligence.speciesKey === 'snook') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
-    if (intelligence.speciesKey === 'wahoo') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
-    if (intelligence.speciesKey === 'tarpon') return `${base}/videos/luxury/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'snook') return `${base}/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'wahoo') return `${base}/deep-sea-fishing.mp4`;
+    if (intelligence.speciesKey === 'tarpon') return `${base}/deep-sea-fishing.mp4`;
     return FALLBACK_VIDEO_SRC;
   }, [FALLBACK_VIDEO_SRC, intelligence.speciesKey]);
 
@@ -187,7 +187,7 @@ export function WeatherOpportunitySection() {
       ? (assetManifest.images.filter((s) => typeof s === 'string') as string[])
       : [];
 
-    const pool = list.filter((src) => src.includes(`${base}/images/renes-activities/`));
+    const pool = list.filter((src) => src.includes(`${base}/images/`));
     const seen = new Set<string>();
     const out: string[] = [];
     for (const src of pool) {

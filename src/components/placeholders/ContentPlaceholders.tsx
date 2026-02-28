@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import TourCards from '@/components/tours/TourCards';
 import LuxuryGallery from '@/components/ui/luxury-gallery';
 
-const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
 export function BoatGalleryPlaceholder() {
   return (
@@ -63,7 +63,7 @@ export function BoatGalleryPlaceholder() {
                   items={[
                     {
                       type: 'video',
-                      src: `${base}/videos/luxury/25-foot-center-console.mp4`,
+                      src: `${base}/25-foot-center-console.mp4`,
                       fallbackSrc: `${base}/images/tours/full-day-ultimate.jpg`,
                       alt: 'Meet Your Vessel - B-roll',
                     },

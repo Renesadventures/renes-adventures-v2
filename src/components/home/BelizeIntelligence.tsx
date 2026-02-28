@@ -46,14 +46,14 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /*  Guide content — what each section covers                           */
 /* ------------------------------------------------------------------ */
 
-function useGuideContent(base: string) {
+function useGuideContent() {
   return useMemo<GuideSection[]>(
     () => [
       {
         id: 'prep',
         title: 'Pre-Trip Preparation',
         icon: 'calendar',
-        imageSrc: '/images/renes-activities/pre-trip-preparation.png',
+        imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/pre-trip-preparation.png',
         freePreview: 'Basic packing list and weather overview for your visit dates.',
         fullTopics: [
           'Month-by-month weather calendar with best activity windows',
@@ -70,7 +70,7 @@ function useGuideContent(base: string) {
         id: 'legal',
         title: 'Legal & Immigration',
         icon: 'shield',
-        imageSrc: '/images/renes-activities/legal-and-immigration.png',
+        imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/legal-and-immigration.png',
         freePreview: 'Visa requirements and basic entry info.',
         fullTopics: [
           'Visa-free countries list and stay duration limits',
@@ -87,7 +87,7 @@ function useGuideContent(base: string) {
         id: 'safety',
         title: 'Health & Safety',
         icon: 'heart',
-        imageSrc: '/images/renes-activities/health-and-safety.png',
+        imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/health-and-safety.png',
         freePreview: 'General health advisory and sunscreen tips.',
         fullTopics: [
           'Required & recommended vaccinations with timing',
@@ -105,7 +105,7 @@ function useGuideContent(base: string) {
         id: 'dont',
         title: "Don't Do This in Belize",
         icon: 'alert',
-        imageSrc: "/images/renes-activities/dont-do-this-in-belize.png",
+        imageSrc: "https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/dont-do-this-in-belize.png",
         freePreview: 'Common tourist mistakes to avoid.',
         fullTopics: [
           'Tourist scams: taxi overcharges, fake tour operators, beach vendors',
@@ -123,7 +123,7 @@ function useGuideContent(base: string) {
         id: 'survival',
         title: 'Belize Survival Kit',
         icon: 'compass',
-        imageSrc: '/images/renes-activities/belize-survival-kit.png',
+        imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/belize-survival-kit.png',
         freePreview: 'Top 5 things every visitor should know.',
         fullTopics: [
           'Accommodations guide: best value by area and budget tier',
@@ -138,7 +138,7 @@ function useGuideContent(base: string) {
           'Golf cart rental prices vary 40% between vendors. We include the best-rated rental with the lowest rate, direct contact included.',
       },
     ],
-    [base]
+    []
   );
 }
 
@@ -265,8 +265,7 @@ function GuideModal({
 /* ------------------------------------------------------------------ */
 
 export default function BelizeIntelligence() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-  const guideSections = useGuideContent(base);
+  const guideSections = useGuideContent();
 
   /* --- Form state ------------------------------------------------- */
   const interests = useMemo<Array<{ id: InterestId; label: string }>>(
