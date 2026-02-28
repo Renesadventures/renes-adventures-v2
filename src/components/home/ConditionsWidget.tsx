@@ -326,12 +326,12 @@ export default function ConditionsWidget() {
   /* --- Gallery state ---------------------------------------------- */
   const gallery = useMemo<GalleryItem[]>(
     () => [
-      { id: 'vid-secret-beach-5', type: 'video', src: `${base}/luxury/Secrete%20Beach%205.mp4`, label: 'Secret Beach' },
-      { id: 'vid-reef-fishing-xxx', type: 'video', src: `${base}/luxury/reef-fishing%20xxx.mp4`, label: 'Reef Fishing' },
+      { id: 'vid-secret-beach-5', type: 'video', src: `${base}/secrete-beach-three.mp4`, label: 'Secret Beach' },
+      { id: 'vid-reef-fishing-xxx', type: 'video', src: `${base}/deep-sea-fishing.mp4`, label: 'Reef Fishing' },
       { id: 'vid-lobster-1', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/lobster.mp4', label: 'Lobster' },
-      { id: 'vid-deep-sea-5', type: 'video', src: `${base}/luxury/Deep%20Sea%20Fishing%205.mp4`, label: 'Deep Sea' },
+      { id: 'vid-deep-sea-5', type: 'video', src: `${base}/deep-sea-fishing-two.mp4`, label: 'Deep Sea' },
       { id: 'img-nature', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/girl-snorkeling.mov', label: 'Snorkel' },
-      { id: 'img-blue-hole-iconic', type: 'image', src: `${base}/images/Blue-Hole-Iconic.jpeg`, label: 'Blue Hole' },
+      { id: 'img-blue-hole-iconic', type: 'video', src: `${base}/blue-hole-two.mp4`, label: 'Blue Hole' },
     ],
     [base]
   );

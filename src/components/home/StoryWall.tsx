@@ -21,7 +21,7 @@ export default function StoryWall() {
     () => [
       {
         id: 1,
-        videoSrc: `${base}/luxury/Deep Sea Fishing 5.mp4`,
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/deep-sea-fishing.mp4',
         caption: 'The Moment It Hit',
         guest: 'Jake & Maria',
         narrative:
@@ -54,7 +54,7 @@ export default function StoryWall() {
       },
       {
         id: 4,
-        videoSrc: `${base}/luxury/Reef Fishing 6.mp4`,
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/coral-reef.mp4',
         caption: 'Into the blue',
         guest: 'Aisha & Dev',
         narrative:
@@ -87,7 +87,7 @@ export default function StoryWall() {
       },
       {
         id: 7,
-        videoSrc: `${base}/hero/blue-hole.mp4`,
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/blue-hole-two.mp4',
         caption: 'Pure Belize',
         guest: 'The Patels',
         narrative:

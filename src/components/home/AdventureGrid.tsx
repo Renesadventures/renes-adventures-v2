@@ -31,7 +31,7 @@ export default function AdventureGrid() {
         title: 'Sunset Cruise',
         tagline: 'Golden hour with champagne',
         price: 350,
-        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-cruise.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset.mov',
         imageSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/sunset-your-perfect-belize-day.jpg',
         href: '/tours/sunset-cruise',
       },
