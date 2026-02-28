@@ -294,6 +294,22 @@ function SidePanel({
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={onClose} />
 
+      <div
+        className={`fixed top-0 ${side === 'right' ? 'left-0' : 'right-0'} 
+                    w-[50vw] h-[100vh] z-[45] pointer-events-none overflow-hidden`}
+      >
+        <video
+          key={chapter.video}
+          src={chapter.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          suppressHydrationWarning
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
+
       {/* Panel */}
       <div
         ref={panelRef}
