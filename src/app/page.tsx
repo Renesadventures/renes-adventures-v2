@@ -6,7 +6,7 @@ import BelizeIntelligence from '@/components/home/BelizeIntelligence';
 import FishStoryCreator from '@/components/home/FishStoryCreator';
 import StoryWall from '@/components/home/StoryWall';
 import VesselShowcase from '@/components/home/VesselShowcase';
-import BelizeLifestyle from '@/components/home/BelizeLifestyle';
+import BelizeDiscovery from '@/components/home/BelizeDiscovery';
 import SunsetRitualCTA from '@/components/home/SunsetRitualCTA';
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ export default function Home() {
       <FishStoryCreator />
       <StoryWall />
       <VesselShowcase />
-      <BelizeLifestyle />
+      <BelizeDiscovery />
       <BelizeIntelligence />
       <SunsetRitualCTA />
     </>

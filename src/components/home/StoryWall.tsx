@@ -22,7 +22,7 @@ export default function StoryWall() {
       {
         id: 1,
         videoSrc: `${base}/luxury/Deep Sea Fishing 5.mp4`,
-        caption: 'The moment it hit',
+        caption: 'The Moment It Hit',
         guest: 'Jake & Maria',
         narrative:
           "The rod bent in half. Maria screamed. I grabbed the fighting belt and held on. Forty minutes later, a 45-lb mahi surfaced — neon green under the Caribbean sun. Captain René just nodded and said 'That's Belize.' We cried. Not kidding.",
@@ -32,19 +32,19 @@ export default function StoryWall() {
       },
       {
         id: 2,
-        videoSrc: `${base}/luxury/Secrete Beach 5.mp4`,
-        caption: 'Golden hour magic',
-        guest: 'The Thompsons',
+        videoSrc: '/videos/luxury/star-fish.mp4',
+        caption: 'Golden Hour',
+        guest: 'Jake & Marina',
         narrative:
-          "The kids found starfish in knee-deep water. My wife was floating on her back with her eyes closed, smiling for the first time in months. No WiFi. No schedule. Just warm water and the sound of absolutely nothing. Secret Beach broke us open.",
+          "She stopped mid-stride. The water barely reached her knees.\nShe reached down and came up with a starfish — red as a flare, wide as her hand.\nThat's the thing about Belize. The magic finds you.",
         avatar: '🌅',
         accent: 'text-rose-300',
         accentBg: 'from-rose-600/90 via-pink-700/85 to-rose-900/90',
       },
       {
         id: 3,
-        videoSrc: `${base}/luxury/Lobster Fishing 1.mp4`,
-        caption: 'Feast mode activated',
+        videoSrc: '/videos/luxury/beach-bbq.mov',
+        caption: 'Feast Mode Activated',
         guest: 'Danny R.',
         narrative:
           "René dove under and came up with two lobsters the size of my forearm. We grilled them on a sandbar beach with lime and butter. I've eaten at Michelin restaurants in New York. This was better. Fight me.",
@@ -65,22 +65,22 @@ export default function StoryWall() {
       },
       {
         id: 5,
-        videoSrc: `${base}/hero/beach-bbq.mp4`,
-        caption: 'Beach vibes only',
-        guest: 'Chris & Jen',
+        videoSrc: '/videos/luxury/grilling-hot-dogs-beach-bbq.mov',
+        caption: 'Beach Vibes Only',
+        guest: 'The Rivera Crew',
         narrative:
-          "The fire was going. The fish was sizzling. Someone handed me a Belikin. I looked around — my best friends, a private island, a sunset turning the sky into watercolors. I said out loud: 'I'm never leaving.' I meant it.",
+          "Hotdogs on the grill. Smoke rising over turquoise water.\nSomeone cracked a Belikin. Nobody had anywhere to be.\nThe best beach days are the ones nobody plans.",
         avatar: '🏖️',
         accent: 'text-orange-300',
         accentBg: 'from-orange-600/90 via-amber-700/85 to-orange-900/90',
       },
       {
         id: 6,
-        videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        caption: "Captain's call",
-        guest: 'Marcus W.',
+        videoSrc: '/videos/luxury/sunset-proposal.mov',
+        caption: "Captain's Call",
+        guest: 'Emmy & Daniel',
         narrative:
-          "René cut the engine right as the sun touched the water. Nobody spoke. The sky turned from gold to pink to violet in ten minutes. He poured rum punches. I proposed to my girlfriend right there on the bow. She said yes before I finished the sentence.",
+          "He didn't say a word. Just took her hand and turned her toward the sun.\nThe sky went amber, then crimson, then something without a name.\nShe knew before he asked. The answer was already yes.",
         avatar: '⚓',
         accent: 'text-violet-300',
         accentBg: 'from-violet-600/90 via-purple-800/85 to-violet-950/90',
@@ -98,8 +98,8 @@ export default function StoryWall() {
       },
       {
         id: 8,
-        videoSrc: `${base}/luxury/deep-sea-fishing.mp4`,
-        caption: 'Trophy time',
+        videoSrc: '/videos/luxury/deep-sea-fishing-two.mp4',
+        caption: 'Trophy Time',
         guest: 'Big Mike',
         narrative:
           "Three hours offshore. Rod doubles over. The reel is SCREAMING. I fought that wahoo for 25 minutes, arms shaking, legs braced. When it surfaced — 55 pounds of silver lightning. René hooked me up with a mount shop. That fish is on my wall now.",
@@ -109,8 +109,8 @@ export default function StoryWall() {
       },
       {
         id: 9,
-        videoSrc: `${base}/luxury/Lobster Fishing 1.mp4`,
-        caption: 'Once more with feeling',
+        videoSrc: '/videos/luxury/speargun-one.mp4',
+        caption: 'Once More With Feeling',
         guest: 'Sofia & Leo',
         narrative:
           "Our third trip with René. Every time we say it can't get better. Every time it does. This time Leo speargunned his own dinner. He's twelve. The look on his face when he surfaced holding that fish — that's the photo on our Christmas card.",
@@ -376,6 +376,7 @@ export default function StoryWall() {
               <video
                 key={activeStory.id}
                 src={activeStory.videoSrc}
+                suppressHydrationWarning
                 autoPlay
                 loop
                 playsInline

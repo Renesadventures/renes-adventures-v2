@@ -76,6 +76,7 @@ export default function AdventureGrid() {
                 <div className="relative aspect-video min-h-[400px] md:min-h-[500px] overflow-hidden rounded-2xl shadow-2xl">
                   <div className="relative w-full aspect-video min-h-[400px] md:min-h-[500px] overflow-hidden rounded-2xl shadow-2xl">
                     <video
+                      suppressHydrationWarning
                       src="/videos/luxury/custom-adventure.mp4"
                       autoPlay
                       muted
@@ -170,6 +171,7 @@ export default function AdventureGrid() {
 
                   {/* Video — fades in on hover */}
                   <video
+                    suppressHydrationWarning
                     src={t.videoSrc}
                     autoPlay muted loop playsInline
                     className="absolute inset-0 w-full h-full object-cover 

@@ -1,200 +1,304 @@
 'use client';
 
+import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import { Anchor, LifeBuoy, Ruler, ShieldCheck, Users, Volume2 } from 'lucide-react';
+
+type MediaItem =
+  | { type: 'video'; src: string; label: string }
+  | { type: 'image'; src: string; alt: string; label: string };
+
+const MEDIA: MediaItem[] = [
+  {
+    type: 'video',
+    src: '/videos/luxury/vessel-section-video.mp4',
+    label: 'The Vessel',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/captain-rene.jpeg',
+    alt: 'Captain René',
+    label: 'Captain René',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-one.jpeg',
+    alt: 'The boat',
+    label: 'The Boat',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-two.jpeg',
+    alt: 'Boat on the water',
+    label: 'On the Water',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-three.jpeg',
+    alt: 'Boat at sea',
+    label: 'Open Sea',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-deck.jpeg',
+    alt: 'Boat deck',
+    label: 'The Deck',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-deck-two.jpg',
+    alt: 'Boat deck view',
+    label: 'Deck View',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-cabin.jpg',
+    alt: 'Boat cabin',
+    label: 'The Cabin',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-deep-sea-fishing.jpg',
+    alt: 'Deep sea fishing from the boat',
+    label: 'Deep Sea',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-snorkeling.jpg',
+    alt: 'Snorkeling from the boat',
+    label: 'Snorkeling',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-family-sunset.png',
+    alt: 'Family on the boat at sunset',
+    label: 'Sunset Family',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-sunset.png',
+    alt: 'Boat at sunset',
+    label: 'Golden Hour',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/boat-no-background.png',
+    alt: 'The vessel',
+    label: 'Full View',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/beach-bon-fire.jpg',
+    alt: 'Beach bonfire',
+    label: 'Beach Bonfire',
+  },
+  {
+    type: 'image',
+    src: '/images/renes-activities/beach-bon-fire-two.jpg',
+    alt: 'Beach bonfire night',
+    label: 'Fire & Feast',
+  },
+];
+
+const SPECS = [
+  { label: 'Vessel', value: 'White 25 ft Center Console' },
+  { label: 'Capacity', value: 'Up to 8 Guests' },
+  { label: 'Amenities', value: 'Ice Cooler · Sound System · Shade' },
+  { label: 'Safety', value: 'Life Jackets · First Aid · Marine Radio' },
+];
 
 export default function VesselShowcase() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
+  const [activeIndex, setActiveIndex] = useState(0);
+  const filmstripRef = useRef<HTMLDivElement>(null);
 
-  const vesselTourVideoSrc = `${base}/luxury/vessel-tour.mp4`;
+  const active = MEDIA[activeIndex];
 
-  const gallery = useMemo(
-    () => [
-      {
-        id: 'exterior',
-        label: 'Exterior',
-        src: `${base}/images/renes-activities/luxury-vacation-cook-islands-south-pacific-oce-2025-03-18-14-51-35-utc.jpg`,
-      },
-      {
-        id: 'cabin',
-        label: 'Cabin',
-        src: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
-      },
-      {
-        id: 'deck',
-        label: 'Deck',
-        src: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
-      },
-      {
-        id: 'captain',
-        label: 'Captain',
-        src: `${base}/images/renes-activities/amazing-sunset-on-the-sea-tropical-beach-2025-03-31-18-23-15-utc.jpg`,
-      },
-      {
-        id: 'setup',
-        label: 'Fishing Setup',
-        src: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
-      },
-      {
-        id: 'sunset',
-        label: 'Sunset View',
-        src: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
-      },
-    ],
-    [base]
-  );
+  function scrollFilmstrip(dir: 'left' | 'right') {
+    if (filmstripRef.current) {
+      filmstripRef.current.scrollBy({
+        left: dir === 'right' ? 300 : -300,
+        behavior: 'smooth',
+      });
+    }
+  }
 
-  const [selected, setSelected] = useState<{ type: 'video' | 'image'; src: string }>({
-    type: 'video',
-    src: vesselTourVideoSrc,
-  });
+  function goTo(index: number) {
+    setActiveIndex(index);
+    const thumb = filmstripRef.current?.children[index] as HTMLElement;
+    thumb?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
 
   return (
-    <section id="vessel-showcase" className="w-full bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[60%_40%] lg:items-stretch">
-          <div className="rounded-3xl bg-white ring-1 ring-slate-200 shadow-[0_20px_70px_rgba(15,23,42,0.10)] overflow-hidden">
-            <div className="relative aspect-[16/10] min-h-[360px] bg-slate-100">
-              {selected.type === 'video' ? (
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 h-full w-full object-cover"
-                >
-                  <source src={selected.src} type="video/mp4" />
-                </video>
-              ) : (
-                <Image
-                  src={selected.src}
-                  alt="Rene's vessel"
-                  fill
-                  sizes="(min-width: 1024px) 60vw, 100vw"
-                  className="object-cover"
-                />
-              )}
+    <section id="vessel" className="bg-[#060608] py-20 px-4 md:px-8">
+      <div className="max-w-6xl mx-auto">
 
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-slate-950/10" />
-
-              <div className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white ring-1 ring-white/15 backdrop-blur">
-                <Anchor className="h-4 w-4 text-amber-300" />
-                The Vessel
-              </div>
-            </div>
-
-            <div className="border-t border-slate-200 bg-white p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
-                  Gallery
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelected({ type: 'video', src: vesselTourVideoSrc })}
-                  className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition-colors duration-300 hover:bg-slate-900"
-                >
-                  Play Vessel Tour
-                </button>
-              </div>
-
-              <div className="mt-3 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] [scrollbar-color:rgba(15,23,42,0.35)_rgba(0,0,0,0.06)]">
-                {gallery.map((g) => {
-                  const active = selected.type === 'image' && selected.src === g.src;
-                  return (
-                    <button
-                      key={g.id}
-                      type="button"
-                      onClick={() => setSelected({ type: 'image', src: g.src })}
-                      className={`group shrink-0 rounded-2xl border bg-white transition-all duration-300 hover:scale-[1.02] ${
-                        active ? 'border-amber-500' : 'border-slate-200 hover:border-slate-300'
-                      }`}
-                      aria-label={`View ${g.label}`}
-                    >
-                      <div className="relative h-20 w-32 overflow-hidden rounded-2xl">
-                        <Image src={g.src} alt="" fill sizes="128px" className="object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                        <div className="absolute left-2 bottom-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/90">
-                          {g.label}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-3xl bg-white ring-1 ring-slate-200 shadow-[0_18px_60px_rgba(15,23,42,0.08)] p-6 sm:p-8 flex flex-col justify-between">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-serif tracking-tight text-slate-950">
-                Built for Belize
-              </h2>
-              <p className="mt-2 text-sm sm:text-base text-slate-700">
-                Clean comfort. Captain-grade capability. The right size for serious days on the water.
-              </p>
-
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-                  <div className="flex items-center gap-2 text-slate-900">
-                    <Ruler className="h-5 w-5 text-sky-800" />
-                    <div className="text-sm font-semibold">Length</div>
-                  </div>
-                  <div className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950">35 ft</div>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-                  <div className="flex items-center gap-2 text-slate-900">
-                    <Users className="h-5 w-5 text-sky-800" />
-                    <div className="text-sm font-semibold">Capacity</div>
-                  </div>
-                  <div className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950">8 guests</div>
-                </div>
-
-                <div className="col-span-2 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-                  <div className="flex items-center gap-2 text-slate-900">
-                    <Volume2 className="h-5 w-5 text-sky-800" />
-                    <div className="text-sm font-semibold">Amenities</div>
-                  </div>
-                  <div className="mt-2 text-sm text-slate-700">
-                    Ice cooler, sound system, shade cover
-                  </div>
-                </div>
-
-                <div className="col-span-2 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-                  <div className="flex items-center gap-2 text-slate-900">
-                    <ShieldCheck className="h-5 w-5 text-sky-800" />
-                    <div className="text-sm font-semibold">Safety</div>
-                  </div>
-                  <div className="mt-2 text-sm text-slate-700">Life jackets, first aid, radio</div>
-                </div>
-
-                <div className="col-span-2 rounded-2xl bg-slate-950 p-4 ring-1 ring-slate-900">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-white">
-                      <LifeBuoy className="h-5 w-5 text-amber-300" />
-                      <div className="text-sm font-semibold">Onboard Ready</div>
-                    </div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.25em] text-white/70">Included</div>
-                  </div>
-                  <div className="mt-2 text-sm text-white/75">
-                    Comfort + safety are standard—so your day feels effortless.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 rounded-2xl bg-sky-50 p-4 ring-1 ring-sky-100">
-              <div className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-900/70">
-                Captain Tip
-              </div>
-              <div className="mt-2 text-sm text-slate-700">
-                The best days are planned around wind and tide. Pick your vibe—we&apos;ll pick the route.
-              </div>
-            </div>
-          </div>
+        {/* Header */}
+        <div className="text-center mb-10">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase text-amber-400 mb-3">
+            BUILT FOR BELIZE
+          </p>
+          <h2
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+            style={{ fontFamily: 'Playfair Display, Georgia, serif' }}
+          >
+            The Vessel &amp; Her Captain
+          </h2>
+          <p className="text-white/50 text-sm max-w-xl mx-auto leading-relaxed">
+            A 25-foot center console built for the Caribbean — fast enough to reach
+            the Blue Hole, shallow enough to anchor at Secret Beach.
+          </p>
         </div>
+
+        {/* ── MAIN FRAME ── */}
+        <div
+          className="relative rounded-2xl overflow-hidden bg-black mb-4"
+          style={{ aspectRatio: '16/9' }}
+        >
+          {active.type === 'video' ? (
+            <video
+              key="vessel-video"
+              src={active.src}
+              suppressHydrationWarning
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Image
+              key={active.src}
+              src={(active as Extract<MediaItem, { type: 'image' }>).src}
+              alt={(active as Extract<MediaItem, { type: 'image' }>).alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 1152px"
+            />
+          )}
+
+          {/* Label */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-6 py-5">
+            <span className="text-white font-semibold text-sm tracking-wide">
+              {active.label}
+            </span>
+            <span className="text-white/40 text-xs ml-3">
+              {activeIndex + 1} / {MEDIA.length}
+            </span>
+          </div>
+
+          {/* Prev arrow on main frame */}
+          <button
+            onClick={() => goTo((activeIndex - 1 + MEDIA.length) % MEDIA.length)}
+            aria-label="Previous"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full
+                       bg-black/60 hover:bg-black/90 text-white flex items-center
+                       justify-center transition-all backdrop-blur-sm text-xl font-light"
+          >
+            ‹
+          </button>
+
+          {/* Next arrow on main frame */}
+          <button
+            onClick={() => goTo((activeIndex + 1) % MEDIA.length)}
+            aria-label="Next"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full
+                       bg-black/60 hover:bg-black/90 text-white flex items-center
+                       justify-center transition-all backdrop-blur-sm text-xl font-light"
+          >
+            ›
+          </button>
+        </div>
+
+        {/* ── FILMSTRIP ── */}
+        <div className="relative flex items-center gap-2">
+
+          {/* Left scroll arrow */}
+          <button
+            onClick={() => scrollFilmstrip('left')}
+            aria-label="Scroll left"
+            className="flex-shrink-0 w-9 h-9 rounded-full bg-white/10 hover:bg-amber-400
+                       text-white hover:text-black flex items-center justify-center
+                       transition-all text-lg"
+          >
+            ‹
+          </button>
+
+          {/* Thumbnails */}
+          <div
+            ref={filmstripRef}
+            className="flex gap-2 overflow-x-auto flex-1 py-1"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {MEDIA.map((item, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-200
+                            ${activeIndex === i
+                              ? 'ring-2 ring-amber-400 scale-105 opacity-100'
+                              : 'opacity-50 hover:opacity-80'
+                            }`}
+                style={{ width: 110, height: 70 }}
+              >
+                {item.type === 'video' ? (
+                  <>
+                    <video
+                      src={item.src}
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <div className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center">
+                        <span className="text-black text-[10px] ml-0.5">▶</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Image
+                    src={(item as Extract<MediaItem, { type: 'image' }>).src}
+                    alt={(item as Extract<MediaItem, { type: 'image' }>).alt}
+                    fill
+                    className="object-cover"
+                    sizes="110px"
+                  />
+                )}
+                {/* Active underline */}
+                {activeIndex === i && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Right scroll arrow */}
+          <button
+            onClick={() => scrollFilmstrip('right')}
+            aria-label="Scroll right"
+            className="flex-shrink-0 w-9 h-9 rounded-full bg-white/10 hover:bg-amber-400
+                       text-white hover:text-black flex items-center justify-center
+                       transition-all text-lg"
+          >
+            ›
+          </button>
+        </div>
+
+        {/* ── SPECS BAR ── */}
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {SPECS.map((spec) => (
+            <div
+              key={spec.label}
+              className="bg-white/5 border border-white/10 rounded-xl p-4 text-center"
+            >
+              <p className="text-white/40 text-[11px] uppercase tracking-widest mb-1">
+                {spec.label}
+              </p>
+              <p className="text-white text-sm font-semibold leading-snug">
+                {spec.value}
+              </p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

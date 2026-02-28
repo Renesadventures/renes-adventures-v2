@@ -328,9 +328,9 @@ export default function ConditionsWidget() {
     () => [
       { id: 'vid-secret-beach-5', type: 'video', src: `${base}/luxury/Secrete%20Beach%205.mp4`, label: 'Secret Beach' },
       { id: 'vid-reef-fishing-xxx', type: 'video', src: `${base}/luxury/reef-fishing%20xxx.mp4`, label: 'Reef Fishing' },
-      { id: 'vid-lobster-1', type: 'video', src: `${base}/luxury/Lobster%20FIshing%201.mp4`, label: 'Lobster' },
+      { id: 'vid-lobster-1', type: 'video', src: '/videos/luxury/lobster.mp4', label: 'Lobster' },
       { id: 'vid-deep-sea-5', type: 'video', src: `${base}/luxury/Deep%20Sea%20Fishing%205.mp4`, label: 'Deep Sea' },
-      { id: 'img-nature', type: 'image', src: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`, label: 'Snorkel' },
+      { id: 'img-nature', type: 'video', src: '/videos/luxury/girl-snorkeling.mov', label: 'Snorkel' },
       { id: 'img-blue-hole-iconic', type: 'image', src: `${base}/images/renes-activities/Blue-Hole-Iconic.jpeg`, label: 'Blue Hole' },
     ],
     [base]
@@ -538,6 +538,7 @@ export default function ConditionsWidget() {
                         <video
                           key={selected.src}
                           ref={mainVideoRef}
+                          suppressHydrationWarning
                           autoPlay
                           muted
                           loop
@@ -619,6 +620,7 @@ export default function ConditionsWidget() {
                             </div>
                           ) : item.type === 'video' ? (
                             <video
+                              suppressHydrationWarning
                               autoPlay muted loop playsInline preload="metadata"
                               onLoadedMetadata={(e) => { e.currentTarget.playbackRate = 0.5; }}
                               onError={() => markFailed(item.id)}
