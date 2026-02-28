@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { ShieldCheck, Star } from 'lucide-react';
 
 type QuickPick = {
@@ -16,8 +15,6 @@ type QuickPick = {
 };
 
 export default function AdventureGrid() {
-  const base = 'https://pub-39d09253e0da4d8692ce0c9eca5f1367.r2.dev';
-
   const quickPicks = useMemo<QuickPick[]>(
     () => [
       {
@@ -25,111 +22,40 @@ export default function AdventureGrid() {
         title: 'Deep Sea Fishing',
         price: 900,
         tagline: 'Big game beyond the reef',
-        videoSrc: `${base}/hero/deep-sea-fIshing.mp4`,
-        imageSrc: `${base}/images/renes-activities/Deep-sea-fishing.jpeg`,
+        videoSrc: '/videos/luxury/deep-sea-fishing.mp4',
+        imageSrc: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
         href: '/tours/deep-sea-fishing',
       },
       {
-        id: 'sunset-ritual',
-        title: 'Sunset Ritual',
+        id: 'sunset-cruise',
+        title: 'Sunset Cruise',
         tagline: 'Golden hour with champagne',
         price: 350,
-        videoSrc: `${base}/hero/sunset-ritual.mp4`,
-        imageSrc: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
+        videoSrc: '/videos/luxury/sunset-cruise.mov',
+        imageSrc: '/images/renes-activities/sunset-your-perfect-belize-day.jpg',
         href: '/tours/sunset-cruise',
       },
       {
         id: 'blue-hole',
-        title: 'Blue Hole Adventure',
+        title: 'Blue Hole',
         price: 900,
         tagline: 'UNESCO diving legend',
-        videoSrc: `${base}/hero/blue-hole.mp4`,
-        imageSrc: `${base}/images/renes-activities/Blue-Hole-Iconic.jpeg`,
+        videoSrc: '/videos/luxury/blue-hole-two.mp4',
+        imageSrc: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',
         href: '/tours/blue-hole',
       },
       {
         id: 'secret-beach',
-        title: 'Secret Beach Escape',
+        title: 'Secret Beach',
         price: 600,
         tagline: 'Hidden paradise',
-        videoSrc: `${base}/hero/secret-beach.mp4`,
-        imageSrc: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
+        videoSrc: '/videos/luxury/secrete-beach.mp4',
+        imageSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
         href: '/tours/secret-beach',
       },
     ],
-    [base]
+    []
   );
-
-  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const stopTimeouts = useRef<Record<string, number | null>>({});
-  const [failedPreviewIds, setFailedPreviewIds] = useState<Record<string, true>>({});
-  const [readyPreviewIds, setReadyPreviewIds] = useState<Record<string, true>>({});
-
-  const markPreviewFailed = (id: string) => {
-    setFailedPreviewIds((prev) => {
-      if (prev[id]) return prev;
-      return { ...prev, [id]: true };
-    });
-  };
-
-  const markPreviewReady = (id: string) => {
-    setReadyPreviewIds((prev) => {
-      if (prev[id]) return prev;
-      return { ...prev, [id]: true };
-    });
-  };
-
-  useEffect(() => {
-    const timeouts = stopTimeouts.current;
-    return () => {
-      Object.values(timeouts).forEach((t) => {
-        if (t) window.clearTimeout(t);
-      });
-    };
-  }, []);
-
-  const playPreview = (id: string) => {
-    const el = videoRefs.current[id];
-    if (!el) return;
-
-    try {
-      el.currentTime = 0;
-      el.muted = true;
-      const p = el.play();
-      if (p && typeof (p as Promise<void>).catch === 'function') {
-        (p as Promise<void>).catch(() => {
-          // suppress autoplay errors
-        });
-      }
-    } catch {
-      // suppress
-    }
-
-    if (stopTimeouts.current[id]) window.clearTimeout(stopTimeouts.current[id] as number);
-    stopTimeouts.current[id] = window.setTimeout(() => {
-      try {
-        el.pause();
-        el.currentTime = 0;
-      } catch {
-        // suppress
-      }
-    }, 3000);
-  };
-
-  const stopPreview = (id: string) => {
-    const el = videoRefs.current[id];
-    if (!el) return;
-
-    if (stopTimeouts.current[id]) window.clearTimeout(stopTimeouts.current[id] as number);
-    stopTimeouts.current[id] = null;
-
-    try {
-      el.pause();
-      el.currentTime = 0;
-    } catch {
-      // suppress
-    }
-  };
 
   return (
     <section id="adventure-grid" className="w-full bg-gradient-to-b from-amber-50 via-sky-50 to-emerald-50">
@@ -148,30 +74,17 @@ export default function AdventureGrid() {
             <div className="flex flex-col lg:flex-row lg:items-stretch lg:min-h-[500px]">
               <div className="relative w-full lg:w-[60%] flex-shrink-0">
                 <div className="relative aspect-video min-h-[400px] md:min-h-[500px] overflow-hidden rounded-2xl shadow-2xl">
-                  {/* Background image (always visible) */}
-                  <Image
-                    src={`${base}/images/renes-activities/luxury-vacation-cook-islands-south-pacific-oce-2025-03-18-14-51-35-utc.jpg`}
-                    alt="Full Day Custom Adventure"
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 60vw, 100vw"
-                    className="object-cover"
-                  />
-
-                  {/* Video overlay (plays on load) */}
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="absolute inset-0 z-10 h-full w-full object-cover"
-                  >
-                    <source src={`${base}/hero/renes-custom-adventures.mp4`} type="video/mp4" />
-                  </video>
-
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+                  <div className="relative w-full aspect-video min-h-[400px] md:min-h-[500px] overflow-hidden rounded-2xl shadow-2xl">
+                    <video
+                      src="/videos/luxury/custom-adventure.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -245,36 +158,24 @@ export default function AdventureGrid() {
               <div
                 key={t.id}
                 className="group rounded-3xl overflow-hidden border border-black/5 bg-white/70 ring-1 ring-black/5 shadow-[0_18px_60px_rgba(15,23,42,0.10)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_22px_70px_rgba(245,158,11,0.18)]"
-                onMouseEnter={() => playPreview(t.id)}
-                onMouseLeave={() => stopPreview(t.id)}
               >
                 <div className="relative aspect-[4/5]">
-                  <Image
+                  {/* Static thumbnail — fades out on hover */}
+                  <img
                     src={t.imageSrc}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
+                    alt={t.title}
+                    className="absolute inset-0 w-full h-full object-cover 
+                               transition-opacity duration-500 group-hover:opacity-0"
                   />
 
+                  {/* Video — fades in on hover */}
                   <video
-                    ref={(el) => {
-                      videoRefs.current[t.id] = el;
-                    }}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    poster={t.imageSrc}
-                    onCanPlay={() => markPreviewReady(t.id)}
-                    onError={() => markPreviewFailed(t.id)}
-                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-                      failedPreviewIds[t.id] || !readyPreviewIds[t.id]
-                        ? 'opacity-0'
-                        : 'opacity-0 group-hover:opacity-100'
-                    }`}
-                  >
-                    <source src={t.videoSrc} type="video/mp4" />
-                  </video>
+                    src={t.videoSrc}
+                    autoPlay muted loop playsInline
+                    className="absolute inset-0 w-full h-full object-cover 
+                               opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    onError={(e) => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+                  />
 
                   <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
