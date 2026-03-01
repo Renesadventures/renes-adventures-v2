@@ -210,15 +210,15 @@ async function renderPoster(
 /* ------------------------------------------------------------------ */
 
 const MOCK_STORY: GeneratedStory = {
-  title: 'The Beast From Beyond the Reef',
+  title: 'The Sharks Came to Us',
   story:
-    'The line screamed off the reel as the mahi-mahi broke the surface in a blaze of neon green and gold. Captain René cut the engine and the Caribbean went silent — just the rod bend, the salt spray, and the sound of a legend being born off the coast of Ambergris Caye.',
+    "She didn't move. None of us did. Captain René had cut \nthe engine at a spot he'd never marked on any map — \nhe just knew. Within minutes, nurse sharks appeared \nalongside the hull, slow and unbothered, circling as if \nthe boat had always belonged there. Every guest on board \nwent silent. No one reached for their phone. Some things \nyou just have to feel. Every single guest said the same \nthing on the way back: that was the moment.",
   caption:
     "When the ocean sends a message, you answer. 40lb mahi on the deep drop — Captain René called the spot. 🔥🎣",
   hashtags:
     '#RenesAdventures #BelizeFishing #AmbergrisCaye #MahiMahi #DeepSeaFishing #CaribbeanLife #SportFishing #BelizeTravel',
   narration:
-    'The line screamed. Forty pounds of mahi-mahi exploded from the deep, painting the Caribbean in neon gold. Captain René just smiled — he knew these waters would deliver.',
+    "I've anchored at that spot a hundred times. The sharks \ndon't come because we feed them. They come because the \nwater is right and they're curious. When you see a child \nlean over the rail and watch them without fear — that's \nBelize doing what Belize does.",
 };
 
 /* ------------------------------------------------------------------ */
@@ -453,7 +453,7 @@ export default function FishStoryCreator() {
 
   /* --- Render ---------------------------------------------------- */
   return (
-    <section className="w-full bg-gradient-to-b from-sky-950 via-teal-800 to-emerald-200">
+    <section id="fish-story-lab" className="w-full bg-gradient-to-b from-sky-950 via-teal-800 to-emerald-200">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="rounded-3xl bg-white/75 ring-1 ring-black/5 shadow-[0_22px_70px_rgba(15,23,42,0.18)] overflow-hidden">
           <div className="grid grid-cols-1 gap-0 lg:grid-cols-[55%_45%]">
@@ -724,10 +724,20 @@ export default function FishStoryCreator() {
 
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/10" />
 
-                        {/* Gold frame overlay */}
-                        <div className="absolute inset-0 p-4">
-                          <div className="h-full w-full rounded-2xl bg-gradient-to-br from-amber-200 via-amber-500 to-yellow-200 p-[3px]">
-                            <div className="h-full w-full rounded-2xl ring-1 ring-white/40" />
+                        <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                          <img
+                            src="https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/Poster_Gemini.png"
+                            alt="Your adventure poster"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">
+                              Poster Preview
+                            </p>
+                            <p className="text-white/80 text-[10px]">
+                              Your adventure. Your legend. Your poster.
+                            </p>
                           </div>
                         </div>
 

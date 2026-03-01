@@ -15,8 +15,8 @@ export default function SiteNav() {
         { label: 'Experiences', href: '#adventure-grid', scroll: true },
         { label: 'Conditions', href: '#weather-intelligence', scroll: true },
         { label: 'Stories', href: '#story-wall', scroll: true },
-        { label: 'Vessel', href: '#vessel-showcase', scroll: true },
-        { label: 'Belize Guide', href: '#belize-lifestyle', scroll: true },
+        { label: 'Vessel', href: '#vessel', scroll: true },
+        { label: 'Belize Guide', href: '#belize-discovery', scroll: true },
       ];
 
     if (pathname === '/tours/custom-charter')

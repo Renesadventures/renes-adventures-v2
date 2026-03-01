@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 
@@ -257,7 +257,7 @@ function ChapterCard({
       {/* Sound indicator on hover */}
       <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
         <div className="bg-black/60 backdrop-blur-sm rounded-full px-2 py-1">
-          <span className="text-white text-[10px]">🔊</span>
+          <span className="text-white text-[10px]">≡ƒöè</span>
         </div>
       </div>
     </div>
@@ -462,7 +462,7 @@ export default function BelizeDiscovery() {
                        text-sm border border-white/20 hover:border-white/40
                        transition-all backdrop-blur-sm"
           >
-            <span>💬</span> Ask Lia — Your Belize Expert
+            🎙️ Ask Lia — Your Belize Expert
           </button>
         </div>
       </div>

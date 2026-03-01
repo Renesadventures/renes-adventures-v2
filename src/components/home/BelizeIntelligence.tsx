@@ -162,9 +162,11 @@ function SectionIcon({ kind, className }: { kind: GuideSection['icon']; classNam
 function GuideModal({
   section,
   onClose,
+  onCheckout,
 }: {
   section: GuideSection;
   onClose: () => void;
+  onCheckout: () => void;
 }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
@@ -237,22 +239,25 @@ function GuideModal({
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="mt-6 flex flex-col gap-3">
-            <div className="text-center">
-              <div className="text-xs text-white/50">
-                This section + 4 more in the complete guide
-              </div>
-            </div>
-            <a
-              href="https://whop.com/renes-adventures"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative inline-flex w-full items-center justify-center rounded-full bg-amber-500 px-6 py-3.5 text-sm font-semibold text-black shadow-[0_18px_60px_rgba(245,158,11,0.25)] transition-all duration-300 hover:bg-amber-400"
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                setTimeout(() => {
+                  onCheckout();
+                }, 100);
+              }}
+              className="w-full inline-flex items-center justify-center
+                         rounded-full bg-amber-500 px-6 py-4 text-base
+                         font-semibold text-black shadow-lg transition-colors
+                         duration-300 hover:bg-amber-400"
             >
-              <span className="absolute -inset-1 rounded-full bg-amber-500/25 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <span className="relative">Get Complete Belize Survival Kit — $20</span>
-            </a>
+              🧭 Get Complete Survival Kit — $20
+            </button>
+            <p className="text-center text-white/40 text-xs mt-3">
+              Includes all 5 sections · Instant delivery
+            </p>
           </div>
         </div>
       </div>
@@ -318,6 +323,69 @@ export default function BelizeIntelligence() {
     if (selectedCount < 1) return 'Please select at least one interest.';
     return null;
   }, [name, email, visitDate, selectedCount]);
+
+  const handlePaidCheckout = async () => {
+    const err = validate();
+    if (err) {
+      setError(err);
+      return;
+    }
+
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const selectedList = Object.entries(selectedInterests)
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+
+      await fetch('/api/belize-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          visitDate,
+          interests: selectedList,
+          tier: 'paid',
+          type: 'belize-survival-kit',
+        }),
+      });
+
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lineItems: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: { name: 'Belize Survival Kit' },
+                unit_amount: 20 * 100,
+              },
+              quantity: 1,
+            },
+          ],
+          guestCount: 1,
+          duration: 'N/A',
+          tourName: 'Belize Survival Kit',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data?.error || 'Checkout failed. Please try again.');
+      }
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (tier: 'free' | 'paid', e?: FormEvent) => {
     if (e) e.preventDefault();
@@ -404,7 +472,7 @@ export default function BelizeIntelligence() {
                     {submitted === 'free' && (
                       <button
                         type="button"
-                        onClick={() => handleSubmit('paid')}
+                        onClick={handlePaidCheckout}
                         className="mt-6 inline-flex items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-amber-500/20 transition-colors duration-300 hover:bg-amber-400"
                       >
                         Upgrade to Complete Kit — $20
@@ -519,7 +587,7 @@ export default function BelizeIntelligence() {
                       <button
                         type="button"
                         disabled={isSubmitting}
-                        onClick={() => handleSubmit('paid')}
+                        onClick={handlePaidCheckout}
                         className="group relative inline-flex w-full items-center justify-center rounded-full bg-amber-500 px-6 py-4 text-base font-semibold text-black shadow-[0_18px_60px_rgba(245,158,11,0.25)] transition-all duration-300 hover:bg-amber-400 disabled:opacity-60"
                       >
                         <span className="absolute -inset-1 rounded-full bg-amber-500/25 blur-lg motion-safe:animate-pulse" />
@@ -633,6 +701,7 @@ export default function BelizeIntelligence() {
         <GuideModal
           section={activeSection}
           onClose={() => setActiveModal(null)}
+          onCheckout={handlePaidCheckout}
         />
       )}
     </>
