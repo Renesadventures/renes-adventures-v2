@@ -43,7 +43,7 @@ export default function StoryWall() {
       },
       {
         id: 3,
-        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/beach-bbq.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/beach-bbq.mp4',
         caption: 'Feast Mode Activated',
         guest: 'Danny R.',
         narrative:
@@ -54,7 +54,7 @@ export default function StoryWall() {
       },
       {
         id: 4,
-        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/coral-reef.mp4',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/deep-sea-fishing.mp4',
         caption: 'Into the blue',
         guest: 'Aisha & Dev',
         narrative:
@@ -65,7 +65,7 @@ export default function StoryWall() {
       },
       {
         id: 5,
-        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/grilling-hot-dogs-beach-bbq.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/grilling-hot-dogs-beach-bbq.mp4',
         caption: 'Beach Vibes Only',
         guest: 'The Rivera Crew',
         narrative:
@@ -76,7 +76,7 @@ export default function StoryWall() {
       },
       {
         id: 6,
-        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-proposal.mov',
+        videoSrc: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-proposal.mp4',
         caption: "Captain's Call",
         guest: 'Emmy & Daniel',
         narrative:
@@ -153,9 +153,10 @@ export default function StoryWall() {
           const video = videoRefs.current[storyId];
           if (!video) continue;
 
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.05) {
             const dataSrc = video.getAttribute('data-src');
-            if (dataSrc && !video.src) {
+            if (dataSrc && !video.getAttribute('data-loaded')) {
+              video.setAttribute('data-loaded', 'true');
               video.src = dataSrc;
               video.load();
             }
@@ -170,7 +171,7 @@ export default function StoryWall() {
           }
         }
       },
-      { threshold: [0, 0.3, 0.7] }
+      { threshold: [0, 0.05, 0.5] }
     );
 
     for (const el of cardRefs.current) {
@@ -230,6 +231,7 @@ export default function StoryWall() {
                   <div className="absolute inset-0 [backface-visibility:hidden] rounded-2xl overflow-hidden border border-white/10 bg-black shadow-2xl">
                     <video
                       ref={(el) => { videoRefs.current[storyKey] = el; }}
+                      suppressHydrationWarning
                       muted
                       loop
                       playsInline
