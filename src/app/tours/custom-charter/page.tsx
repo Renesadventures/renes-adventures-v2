@@ -13,13 +13,13 @@ import {
   Flame,
   Footprints,
   Glasses,
-  LifeBuoy,
   Map,
   PartyPopper,
   Shell,
   ShieldCheck,
   Sun,
   Wind,
+  Zap,
   Waves,
 } from 'lucide-react';
 
@@ -49,6 +49,10 @@ type Activity = {
   video: string;
   minutes: number;
   description: string;
+  included: string[];
+  bestConditions: string;
+  renesTip: string;
+  gallery: string[];
 };
 
 type AddOnId =
@@ -173,94 +177,164 @@ export default function CustomCharterPage() {
         title: 'Deep Sea Fishing',
         shortLabel: 'Deep Sea',
         icon: <Fish className="h-5 w-5 text-sky-600" />,
-        image: `${base}/images/Deep-sea-fishing.jpeg`,
-        video: `${base}/hero/deep-sea-fIshing.mp4`,
+        image: `${base}/images/boat-deep-sea-fishing.jpg`,
+        video: `${base}/deep-sea-fishing-two.mp4`,
         minutes: 90,
         description:
-          'The reel screams. Your arms burn. The water explodes 50 yards out. Mahi-mahi. Wahoo. Barracuda. This is big game fishing—Belize style.',
+          'The reel screams. Your arms burn. The water explodes 50 yards out. Mahi-mahi. Wahoo. Barracuda. Big game fishing — Belize style.',
+        included: ['Heavy tackle rods & reels', 'Live bait', 'Ice cooler', 'Captain René expertise', 'Fish cleaning on board'],
+        bestConditions: 'Calm to moderate seas. Best May–October for mahi-mahi. Wahoo peaks November–March.',
+        renesTip: 'We head 12 miles offshore before sunrise. The fish are there before the tourists wake up. Bring dramamine if you feel the swell.',
+        gallery: [
+          `${base}/deep-sea-fishing.mp4`,
+          `${base}/deep-sea-fishing-two.mp4`,
+          `${base}/speargun-one.mp4`,
+        ],
       },
       {
         id: 'reef-fishing',
         title: 'Reef Fishing',
-        shortLabel: 'Reef',
+        shortLabel: 'Reef Fishing',
         icon: <Waves className="h-5 w-5 text-emerald-600" />,
-        image: `${base}/images/offshore-fishing-2024-10-15-06-43-13-utc.jpg`,
-        video: `${base}/hero/Reef Fishing.mp4`,
+        image: `${base}/images/boat-snorkeling.jpg`,
+        video: `${base}/coral-reef.mp4`,
         minutes: 75,
         description:
-          "Snappers. Groupers. Jacks. The reef is alive. Light tackle. Fast action. Dinner's in the cooler before lunch.",
+          'Snappers. Groupers. Jacks. The reef is alive. Light tackle. Fast action. Dinner is in the cooler before lunch.',
+        included: ['Light tackle rods', 'Bait & lures', 'Ice cooler', 'Local reef knowledge', 'Fish cleaning'],
+        bestConditions: 'Works in almost any weather. Best on incoming tide. Perfect for beginners and families.',
+        renesTip: 'I know every reef structure from here to Mexico. We do not fish the tourist spots. We fish where the fish actually are.',
+        gallery: [
+          `${base}/coral-reef.mp4`,
+          `${base}/nurse-sharks-and-stingrays.mp4`,
+          `${base}/star-fish.mp4`,
+        ],
       },
       {
         id: 'spearfishing',
         title: 'Speargun Fishing',
         shortLabel: 'Speargun',
-        icon: <LifeBuoy className="h-5 w-5 text-indigo-600" />,
-        image: `${base}/images/man-holding-fresh-caught-mahi-mahi-on-ocean-boat-2025-01-07-04-47-33-utc.jpg`,
-        video: `${base}/luxury/deep-sea-fishing.mp4`,
-        minutes: 75,
-        description: 'Dive. Hunt. Surface. Repeat. This is primal. You vs. fish. No rods. No rules. Just skill.',
+        icon: <Zap className="h-5 w-5 text-orange-500" />,
+        image: `${base}/images/boat-one.jpeg`,
+        video: `${base}/speargun-one.mp4`,
+        minutes: 90,
+        description: 'Freedive. Stalk. Strike. The oldest form of fishing in Belize. You hunt your dinner on the reef.',
+        included: ['Spearguns & bands', 'Mask, fins & wetsuit', 'Safety buoy', 'Captain-guided dive spots', 'Fish cleaning'],
+        bestConditions: 'Best visibility April–June. Calm seas required. 10+ ft visibility ideal.',
+        renesTip: 'I grew up doing this. The secret is patience — you wait until the fish forgets you are there. Then you move.',
+        gallery: [
+          `${base}/speargun-one.mp4`,
+          `${base}/deep-sea-fishing.mp4`,
+          `${base}/girl-snorkeling.mov`,
+        ],
       },
       {
         id: 'hol-chan',
         title: 'Hol Chan Marine Reserve',
         shortLabel: 'Hol Chan',
-        icon: <Anchor className="h-5 w-5 text-cyan-600" />,
-        image: `${base}/images/colorful-sea-life-underwater-shallow-underwater-s-2025-02-18-05-18-34-utc.jpg`,
-        video: `${base}/luxury/Secrete Beach 5.mp4`,
+        icon: <Shell className="h-5 w-5 text-blue-500" />,
+        image: `${base}/images/boat-snorkeling.jpg`,
+        video: `${base}/hol-chan-marine.mp4`,
         minutes: 90,
-        description:
-          "Swim with nurse sharks. Stingrays glide under your fins. Sea turtles surface for air. This is the Caribbean's underwater cathedral.",
+        description: 'Nurse sharks. Sting rays. Sea turtles. 400 species of fish. Hol Chan is the most biodiverse marine reserve in the Caribbean.',
+        included: ['Snorkel gear', 'Life vests', 'Marine guide', 'Hol Chan entry fee ($15 — paid on site)', 'Shark Ray Alley stop'],
+        bestConditions: 'Year-round. Morning visits have best visibility and fewer crowds. Water temp 78–84°F.',
+        renesTip: 'People are scared of the sharks until they are in the water. Then they never want to leave. The nurse sharks are as curious about you as you are about them.',
+        gallery: [
+          `${base}/hol-chan-marine.mp4`,
+          `${base}/nurse-sharks-and-stingrays.mp4`,
+          `${base}/boy-woman-snorkeling.mp4`,
+        ],
       },
       {
         id: 'conch-hunt',
-        title: 'Conch Hunt (Seasonal)',
-        shortLabel: 'Conch',
-        icon: <Shell className="h-5 w-5 text-amber-600" />,
-        image: 'https://images.unsplash.com/photo-1516683037151-9a17603a8dc7?w=1200&q=80',
-        video: `${base}/luxury/Conch Fishing 1.mp4`,
-        minutes: 75,
-        description: 'If conditions allow, we hunt conch and prep it island-style for ceviche. Fresh, clean, unreal.',
+        title: 'Conch Hunt',
+        shortLabel: 'Conch Hunt',
+        icon: <Shell className="h-5 w-5 text-pink-500" />,
+        image: `${base}/images/boat-cabin.jpg`,
+        video: `${base}/conch-custom-adventure-landing-page.mp4`,
+        minutes: 60,
+        description: 'Wade into knee-deep water. Find them by the dozens. Crack them open on the boat. Eat them with lime and hot sauce. This is Belize.',
+        included: ['Wading gear', 'Conch cracking demo', 'Fresh ceviche prep on board', 'Cooler with ice', 'Lime and hot sauce'],
+        bestConditions: 'Seasonal — June 15 to February 14. Shallow flats on calm days. Best in the morning.',
+        renesTip: 'You think you have seen conch in a restaurant. You have not had conch until you crack it yourself twenty minutes after it came off the sand.',
+        gallery: [
+          `${base}/conch-custom-adventure-landing-page.mp4`,
+          `${base}/secrete-beach.mp4`,
+          `${base}/star-fish.mp4`,
+        ],
       },
       {
         id: 'lobster-mission',
-        title: 'Lobster Mission (Seasonal)',
+        title: 'Lobster Mission',
         shortLabel: 'Lobster',
-        icon: <Shell className="h-5 w-5 text-red-600" />,
-        image: `${base}/images/live-big-lobster-in-the-hands-of-people-selective-2024-12-19-13-46-57-utc.JPG`,
-        video: `${base}/luxury/Lobster Fishing 1.mp4`,
-        minutes: 75,
-        description: 'Seasonal lobster mission—quick, clean, and unforgettable. Catch it. Cook it. Eat it on the sand.',
+        icon: <Fish className="h-5 w-5 text-red-500" />,
+        image: `${base}/images/boat-deck.jpeg`,
+        video: `${base}/lobster-mission.mp4`,
+        minutes: 90,
+        description: "Freedive the reef. Find the lobster in the crevices. Bring them up. Grill them on the beach with butter and lime. This is René's church.",
+        included: ['Snorkel gear', 'Tickle sticks & nets', 'Beach BBQ setup', 'Butter, lime, seasoning', 'Chef René on the grill'],
+        bestConditions: 'Seasonal — June 15 to February 14. Best early season for size and abundance.',
+        renesTip: 'Lobster season opening day is my favorite day of the year. The whole island goes in the water at dawn. It is like a holiday nobody outside Belize knows about.',
+        gallery: [
+          `${base}/lobster-mission.mp4`,
+          `${base}/lobster.mp4`,
+          `${base}/grill-lobster.mov`,
+        ],
       },
       {
         id: 'caye-caulker',
-        title: 'Caye Caulker',
+        title: 'Caye Caulker Day',
         shortLabel: 'Caye Caulker',
-        icon: <Map className="h-5 w-5 text-purple-600" />,
-        image: `${base}/images/caye-caulker-belize-2025-03-27-00-09-41-utc.jpg`,
-        video: `${base}/luxury/Secrete Island 2.mp4`,
-        minutes: 75,
-        description:
-          "Feed tarpon. Spot seahorses. Walk the famous 'Split.' This is where locals go to escape.",
+        icon: <Anchor className="h-5 w-5 text-teal-500" />,
+        image: `${base}/images/boat-family-sunset.png`,
+        video: `${base}/caye-caulker.mp4`,
+        minutes: 120,
+        description: 'Go Slow. The sign at the dock says it. The whole island lives it. No cars. No rush. Just turquoise water, cold Belikins, and the Split.',
+        included: ['Round trip boat transport', 'Village walking tour', 'Time at The Split', 'Snorkel stop en route', 'Local lunch recommendation'],
+        bestConditions: 'Year-round. Mornings for smooth water crossing. Weekdays for fewer crowds.',
+        renesTip: 'Caye Caulker is what Ambergris Caye used to be. I take people there so they understand what the whole island was like before the tourists. Worth every minute of the ride.',
+        gallery: [
+          `${base}/caye-caulker.mp4`,
+          `${base}/san-pedro-at-dawn.mp4`,
+          `${base}/secrete-beach-two.mp4`,
+        ],
       },
       {
         id: 'beach-bbq',
         title: 'Beach BBQ',
-        shortLabel: 'BBQ',
-        icon: <Flame className="h-5 w-5 text-orange-600" />,
-        image: `${base}/images/barbecue-chicken-meat-on-grill-2025-03-08-13-06-23-utc.jpg`,
-        video: `${base}/hero/beach-bbq.mp4`,
+        shortLabel: 'Beach BBQ',
+        icon: <Flame className="h-5 w-5 text-orange-400" />,
+        image: `${base}/images/boat-sunset.png`,
+        video: `${base}/beach-bbq.mp4`,
         minutes: 90,
-        description: 'White sand. Grilled lobster. Rum punch. Hammock time. This is the pause that makes the action sweeter.',
+        description: 'Fresh catch. Open fire. White sand. The ocean at your feet. No restaurant in the world serves this view.',
+        included: ['Fresh catch of the day', 'Lobster & conch when in season', 'Ceviche', 'Potatoes, vegetables, rice', 'Plates, cutlery, drinks cooler'],
+        bestConditions: 'Full day charters only. Not available on half-day. Weather must permit beach landing.',
+        renesTip: 'We cook what we catch that morning. If we do not catch enough, I bring backup. Nobody goes hungry on my boat.',
+        gallery: [
+          `${base}/beach-bbq.mp4`,
+          `${base}/grilling-hot-dogs-beach-bbq.mp4`,
+          `${base}/secrete-beach-three.mp4`,
+        ],
       },
       {
         id: 'snorkeling',
         title: 'Snorkeling',
-        shortLabel: 'Snorkel',
-        icon: <Waves className="h-5 w-5 text-teal-600" />,
-        image: `${base}/images/aerial-view-of-barrier-reef-caribbean-sea-2025-04-03-09-24-41-utc.jpg`,
-        video: `${base}/luxury/Reef Fishing 6.mp4`,
-        minutes: 60,
-        description: 'Coral gardens. Tropical fish in every color. Underwater caves. The barrier reef is your aquarium.',
+        shortLabel: 'Snorkeling',
+        icon: <Waves className="h-5 w-5 text-cyan-500" />,
+        image: `${base}/images/boat-snorkeling.jpg`,
+        video: `${base}/boy-woman-snorkeling.mp4`,
+        minutes: 75,
+        description: 'No certification needed. No experience needed. Just a mask and fins and a reef that has been growing for 10,000 years.',
+        included: ['Mask, fins & snorkel', 'Life vest option', 'Reef orientation briefing', 'Multiple reef stops', 'Marine life ID guide'],
+        bestConditions: 'Year-round. April–June for peak visibility. Mornings always clearest.',
+        renesTip: 'I have taken 70-year-olds who have never snorkeled before. Within ten minutes they are pointing at things like children. The reef does that to people.',
+        gallery: [
+          `${base}/boy-woman-snorkeling.mp4`,
+          `${base}/girl-snorkeling.mov`,
+          `${base}/nurse-sharks-and-stingrays.mp4`,
+        ],
       },
     ],
     []
@@ -272,6 +346,7 @@ export default function CustomCharterPage() {
 
   const [selectedVideo, setSelectedVideo] = useState(() => `${base}/hero/renes-custom-adventures.mp4`);
   const [selectedVideoLabel, setSelectedVideoLabel] = useState(() => heroClips[0]?.label || 'Custom Charter');
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 
   const [selectedActivities, setSelectedActivities] = useState<Record<ActivityKey, boolean>>(() => ({
     'deep-sea-trolling': false,
@@ -362,7 +437,7 @@ export default function CustomCharterPage() {
         imageSrc: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
       },
       {
-        slug: 'blue-hole-adventure',
+        slug: 'blue-hole',
         title: 'Blue Hole Adventure',
         price: tours.find((t) => t.slug === 'blue-hole-adventure')?.price ?? 600,
         imageSrc: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',
@@ -466,7 +541,7 @@ export default function CustomCharterPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900 pb-24">
-      <section id="hero" className="relative">
+      <section id="overview" className="relative">
         <div className="absolute inset-0">
           <video
             key={selectedVideo}
@@ -518,6 +593,8 @@ export default function CustomCharterPage() {
                           onClick={() => {
                             setSelectedVideo(clip.src);
                             setSelectedVideoLabel(clip.label);
+                            const act = activities.find((a) => a.id === clip.id);
+                            setSelectedActivity(act || null);
                           }}
                           className={`group relative overflow-hidden rounded-2xl border transition text-left h-20 sm:h-24 ${
                             active ? 'border-amber-300/80 ring-2 ring-amber-300/40' : 'border-white/20 hover:border-white/40'
@@ -637,6 +714,112 @@ export default function CustomCharterPage() {
         </div>
       </section>
 
+      {selectedActivity && (
+        <section className="w-full bg-gradient-to-b from-slate-950 to-slate-900 border-t border-white/5">
+          <div className="mx-auto max-w-6xl px-6 py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              
+              {/* Left — Info */}
+              <div>
+                <div className="text-amber-400 text-xs font-bold tracking-[0.3em] uppercase mb-4">
+                  NOW SELECTED
+                </div>
+                <h2
+                  className="text-4xl font-bold text-white mb-4 leading-tight"
+                  style={{ fontFamily: 'Playfair Display, Georgia, serif' }}
+                >
+                  {selectedActivity.title}
+                </h2>
+                <p className="text-white/70 text-lg leading-relaxed mb-8">
+                  {selectedActivity.description}
+                </p>
+
+                {/* What's Included */}
+                <div className="mb-8">
+                  <h3 className="text-white text-sm font-bold tracking-widest uppercase mb-4">
+                    What&apos;s Included
+                  </h3>
+                  <ul className="space-y-2">
+                    {selectedActivity.included.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-white/70 text-sm">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Best Conditions */}
+                <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10">
+                  <h3 className="text-white text-xs font-bold tracking-widest uppercase mb-2">
+                    Best Conditions
+                  </h3>
+                  <p className="text-white/60 text-sm leading-relaxed">
+                    {selectedActivity.bestConditions}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right — René's Tip + Gallery */}
+              <div>
+                {/* René's Tip */}
+                <div className="mb-8 p-6 rounded-2xl bg-amber-400/10 border border-amber-400/20">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className="w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40
+                              flex items-center justify-center text-amber-400 font-bold"
+                    >
+                      R
+                    </div>
+                    <div>
+                      <p className="text-white text-sm font-bold">Captain René</p>
+                      <p className="text-white/40 text-xs">San Pedro, Belize · 25 years on these waters</p>
+                    </div>
+                  </div>
+                  <blockquote className="text-white/80 text-sm leading-relaxed italic border-l-2 border-amber-400/50 pl-4">
+                    &quot;{selectedActivity.renesTip}&quot;
+                  </blockquote>
+                </div>
+
+                {/* Mini Gallery */}
+                <div>
+                  <h3 className="text-white text-xs font-bold tracking-widest uppercase mb-4">
+                    From This Charter
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {selectedActivity.gallery.map((src, i) => (
+                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden">
+                        {src.endsWith('.mp4') ? (
+                          <video
+                            src={src}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            suppressHydrationWarning
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        ) : (
+                          <video
+                            src={src}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            suppressHydrationWarning
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-16">
         <div className="lg:col-span-2">
           <section className="mx-auto w-full">
@@ -730,6 +913,7 @@ export default function CustomCharterPage() {
                           onClick={() => {
                             setSelectedVideo(a.video);
                             setSelectedVideoLabel(a.title);
+                            setSelectedActivity(a);
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
                           className="h-12 rounded-2xl px-5 font-extrabold uppercase tracking-[0.18em] text-xs border border-slate-200 bg-white hover:bg-slate-50 transition"
@@ -898,7 +1082,7 @@ export default function CustomCharterPage() {
             </div>
           </section>
 
-          <section id="addons" className="mx-auto w-full pb-16">
+          <section id="add-ons" className="mx-auto w-full pb-16">
             <div className="max-w-3xl">
               <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Add-Ons Supermarket</div>
               <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You&apos;re already out here. Go bigger.</h2>
@@ -1132,13 +1316,17 @@ export default function CustomCharterPage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-lg font-extrabold text-slate-900">Up to 8 guests</div>
             <div className="mt-3 text-slate-700 leading-relaxed">Book online instantly. Lock your date. Build your day.</div>
-            <button
-              type="button"
-              onClick={onOpenWhatsApp}
-              className="mt-5 h-12 w-full rounded-2xl bg-amber-400 text-slate-950 font-black hover:brightness-105 transition"
+            <a
+              href="#build-your-day"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('build-your-day')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center justify-center rounded-full bg-amber-500 
+               px-6 py-3 text-sm font-semibold text-black hover:bg-amber-400 transition"
             >
-              Book on WhatsApp
-            </button>
+              Book Online
+            </a>
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

@@ -685,7 +685,7 @@ export default function ConditionsWidget() {
 
                       <button
                         type="button"
-                        onClick={() => { window.dispatchEvent(new CustomEvent("lia:open", { detail: { message: `The weather looks good for ${pick.title}. ${pick.recommendation} — what should I know before I commit to this trip? What do guests usually ask you about this one?` } })); }}
+                        onClick={() => { window.dispatchEvent(new CustomEvent("lia:open", { detail: { message: `The weather looks good for ${pick.tourName}. ${pick.recommendation} — what should I know before I commit to this trip? What do guests usually ask you about this one?` } })); }}
                         className="group relative inline-flex items-center justify-center rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-lg shadow-amber-500/20 transition-all duration-300 hover:bg-amber-400"
                       >
                         <span className="absolute -inset-1 rounded-full bg-amber-500/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
