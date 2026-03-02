@@ -455,7 +455,7 @@ export default function BelizeDiscovery() {
           <button
             onClick={() => {
               const btn = document.querySelector('[data-lia-trigger]') as HTMLElement;
-              btn?.click();
+              window.dispatchEvent(new CustomEvent("lia:open",{detail:{message:"I just read about Belize and I am blown away. The Blue Hole, the ruins, lobster season. Where would you tell someone to start?"}}));
             }}
             className="inline-flex items-center gap-2 px-8 py-3 rounded-full
                        bg-white/5 hover:bg-white/10 text-white font-semibold

@@ -84,19 +84,7 @@ const MEDIA: MediaItem[] = [
     src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-no-background.png',
     alt: 'The vessel',
     label: 'Full View',
-  },
-  {
-    type: 'image',
-    src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/beach-bon-fire.jpg',
-    alt: 'Beach bonfire',
-    label: 'Beach Bonfire',
-  },
-  {
-    type: 'image',
-    src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/beach-bon-fire-two.jpg',
-    alt: 'Beach bonfire night',
-    label: 'Fire & Feast',
-  },
+  }
 ];
 
 const SPECS = [
