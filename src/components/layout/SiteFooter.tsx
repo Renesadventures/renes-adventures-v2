@@ -19,11 +19,11 @@ export default function SiteFooter() {
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Rene&apos;s Custom Adventure</span>
-                <span className="text-white/60 whitespace-nowrap">$600–$675</span>
+                <span className="text-white/60 whitespace-nowrap">$400&ndash;$675</span>
               </li>
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Deep Sea Fishing</span>
-                <span className="text-white/60 whitespace-nowrap">$600–$900</span>
+                <span className="text-white/60 whitespace-nowrap">$600&ndash;$900</span>
               </li>
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Sunset Cruise</span>
@@ -35,11 +35,11 @@ export default function SiteFooter() {
               </li>
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Secret Beach</span>
-                <span className="text-white/60 whitespace-nowrap">$400–$600</span>
+                <span className="text-white/60 whitespace-nowrap">$400&ndash;$600</span>
               </li>
             </ul>
             <div className="mt-5 text-white/50 text-xs leading-relaxed">
-              All prices for up to 4 guests · Additional guests $75/person (max 8)
+              All prices for up to 4 guests &middot; Additional guests $75/person (max 8)
               <br />
               Includes: water, sodas, snacks, rum punch, rods, tackle &amp; fishing licenses
               <br />
@@ -84,36 +84,31 @@ export default function SiteFooter() {
             <div className="text-xs uppercase tracking-[0.25em] text-emerald-400">Business Hours</div>
             <div className="mt-4 space-y-2 text-sm text-white/60">
               <div className="flex justify-between gap-4">
-                <span>Monday – Saturday:</span>
-                <span className="text-white/80 whitespace-nowrap">7:00 AM – 7:00 PM</span>
+                <span>Monday &ndash; Saturday:</span>
+                <span className="text-white/80 whitespace-nowrap">7:00 AM &ndash; 7:00 PM</span>
               </div>
               <div className="flex justify-between gap-4">
                 <span>Sunday:</span>
-                <span className="text-white/80 whitespace-nowrap">8:00 AM – 6:00 PM</span>
+                <span className="text-white/80 whitespace-nowrap">8:00 AM &ndash; 6:00 PM</span>
               </div>
             </div>
 
             <div className="mt-8 text-xs uppercase tracking-[0.25em] text-emerald-400">Cancellation Policy</div>
             <ul className="mt-4 space-y-2 text-sm text-white/60">
               <li>Free rescheduling with 48+ hours notice</li>
-              <li>Full refund with 48+ hours notice</li>
+              <li>Full credit transfer with 48+ hours notice</li>
+              <li>Weather cancellations are transferable &mdash; never lost</li>
               <li>No refunds within 48 hours of charter</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-white/50 text-xs">© 2025 Rene&apos;s Adventures. All rights reserved.</div>
+          <div className="text-white/50 text-xs">&copy; 2025 Rene&apos;s Adventures. All rights reserved.</div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-            <a href="/privacy-policy" className="text-white/60 hover:text-white transition">
-              Privacy Policy
-            </a>
-            <a href="/terms-of-service" className="text-white/60 hover:text-white transition">
-              Terms of Service
-            </a>
-            <a href="/cancellation-policy" className="text-white/60 hover:text-white transition">
-              Cancellation Policy
-            </a>
+            <a href="/privacy-policy" className="text-white/60 hover:text-white transition">Privacy Policy</a>
+            <a href="/terms-of-service" className="text-white/60 hover:text-white transition">Terms of Service</a>
+            <a href="/cancellation-policy" className="text-white/60 hover:text-white transition">Cancellation Policy</a>
           </div>
         </div>
       </div>
