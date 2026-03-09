@@ -3,6 +3,12 @@ import Stripe from 'stripe';
 
 export const runtime = 'nodejs';
 
+// Live Stripe Tax Rate IDs
+const TAX_RATES = [
+  'txr_1T9BaWF2SeVntE6bt6TCL56G', // Belize Sales Tax 12.5%
+  'txr_1T9BayF2SeVntE6b1i1GCC5C', // Card processing fee 6%
+];
+
 export async function POST(req: NextRequest) {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
@@ -17,10 +23,16 @@ export async function POST(req: NextRequest) {
   try {
     const { lineItems, guestCount, duration, tourName } = await req.json();
 
+    // Attach live tax rates to every line item so Stripe receipt shows correct breakdown
+    const lineItemsWithTax = lineItems.map((item: Record<string, unknown>) => ({
+      ...item,
+      tax_rates: TAX_RATES,
+    }));
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: lineItems,
+      line_items: lineItemsWithTax,
       metadata: {
         tourName,
         guestCount: String(guestCount),

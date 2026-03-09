@@ -60,7 +60,6 @@ type Activity = {
 type AddOnId =
   | 'bbq-extra-guest'
   | 'snorkel-gear'
-  | 'holchan-fee'
   | 'tshirt-adult'
   | 'tshirt-xxl'
   | 'tshirt-youth'
@@ -93,14 +92,7 @@ const ADDONS: AddOn[] = [
     price: 15,
     image: `${base}/images/snorkel-gear-rental.png`,
   },
-  {
-    id: 'holchan-fee',
-    label: 'Hol Chan Marine Reserve Fee',
-    note: 'Per person.',
-    noteHighlight: 'Paid directly to the ranger at time of boat entry — bring cash.',
-    price: 15,
-    image: `${base}/images/hol-chan-marine-reserve-fee.png`,
-  },
+
   { id: 'tshirt-adult', label: 'T-Shirt – Adult (S/M/L/XL)', note: 'Standard sizes.', price: 25 },
   { id: 'tshirt-xxl', label: 'T-Shirt – XXL / XXXL', note: 'Extended sizes.', price: 30 },
   { id: 'tshirt-youth', label: 'T-Shirt – Youth (S/M/L)', note: 'Kids sizes.', price: 20 },
@@ -132,7 +124,6 @@ function getTimelineColor(idx: number) {
 function getAddonDefault(id: AddOnId, guestCount: number, includedGuests: number): number {
   if (id === 'bbq-extra-guest') return Math.max(1, guestCount - includedGuests);
   if (id === 'snorkel-gear') return guestCount;
-  if (id === 'holchan-fee') return guestCount;
   return 1; // t-shirts, hats
 }
 
@@ -288,7 +279,7 @@ export default function CustomCharterPage() {
   const [guestCount, setGuestCount] = useState(4);
 
   const [addOnQty, setAddOnQty] = useState<Record<AddOnId, number>>({
-    'bbq-extra-guest': 0, 'snorkel-gear': 0, 'holchan-fee': 0,
+    'bbq-extra-guest': 0, 'snorkel-gear': 0,
     'tshirt-adult': 0, 'tshirt-xxl': 0, 'tshirt-youth': 0,
     'hat-standard': 0, 'hat-leather': 0,
   });
@@ -296,16 +287,12 @@ export default function CustomCharterPage() {
   function toggleAddon(id: AddOnId, checked: boolean) {
     setAddOnQty((prev) => ({ ...prev, [id]: checked ? getAddonDefault(id, guestCount, includedGuests) : 0 }));
     // Sync linked activity
-    if (id === 'holchan-fee') setSelectedActivities((prev) => ({ ...prev, 'hol-chan': checked }));
     if (id === 'snorkel-gear') setSelectedActivities((prev) => ({ ...prev, snorkeling: checked }));
     if (id === 'bbq-extra-guest' && checked) setSelectedActivities((prev) => ({ ...prev, 'beach-bbq': true }));
   }
 
   function toggleActivity(id: ActivityKey, checked: boolean) {
     setSelectedActivities((prev) => ({ ...prev, [id]: checked }));
-    if (id === 'hol-chan') {
-      setAddOnQty((prev) => ({ ...prev, 'holchan-fee': checked ? guestCount : 0 }));
-    }
     if (id === 'snorkeling') {
       setAddOnQty((prev) => ({ ...prev, 'snorkel-gear': checked ? guestCount : 0 }));
     }
@@ -347,7 +334,7 @@ export default function CustomCharterPage() {
 
   const youMightAlsoLike = useMemo<RelatedCard[]>(() => [
     { slug: 'deep-sea-fishing', title: 'Deep Sea Fishing', price: tours.find((t) => t.slug === 'deep-sea-fishing')?.price ?? 600, imageSrc: `${base}/images/boat-deep-sea-fishing.jpg` },
-    { slug: 'blue-hole', title: 'Blue Hole Adventure', price: tours.find((t) => t.slug === 'blue-hole-adventure')?.price ?? 900, imageSrc: `${base}/images/blue-hole-all-tours.jpg` },
+    { slug: 'blue-hole', title: 'Blue Hole Adventure', price: 0, imageSrc: `${base}/images/blue-hole-all-tours.jpg` },
     { slug: 'secret-beach', title: 'Secret Beach', price: tours.find((t) => t.slug === 'secret-beach')?.price ?? 400, imageSrc: `${base}/images/secrete-beach-all%20tours.png` },
   ], []);
 
@@ -402,7 +389,7 @@ export default function CustomCharterPage() {
             <video key={selectedVideo} src={selectedVideo} className="h-full w-full object-cover" playsInline autoPlay muted loop preload="metadata" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/15 to-white" />
           </div>
-          <div className="relative mx-auto w-full max-w-screen-2xl px-4 pt-28 pb-10">
+          <div className="relative mx-auto w-full max-w-screen-2xl px-4 pt-20 sm:pt-28 pb-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-7">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-2 text-white backdrop-blur-md">
@@ -419,12 +406,12 @@ export default function CustomCharterPage() {
                     <div className="mt-2 text-sm text-white/80">Tap a channel. The story changes.</div>
                   </div>
                   <div className="px-4 pb-4 md:px-5 md:pb-5">
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <div className="flex sm:grid sm:grid-cols-5 gap-3 overflow-x-auto pb-1 snap-x snap-mandatory sm:overflow-visible sm:pb-0">
                       {heroClips.map((clip) => {
                         const active = clip.src === selectedVideo;
                         return (
                           <button key={clip.id} type="button" onClick={() => { setSelectedVideo(clip.src); setSelectedVideoLabel(clip.label); setSelectedActivity(activities.find((a) => a.id === clip.id) ?? null); }}
-                            className={`group relative overflow-hidden rounded-2xl border transition text-left h-20 sm:h-24 ${active ? 'border-amber-300/80 ring-2 ring-amber-300/40' : 'border-white/20 hover:border-white/40'}`}>
+                            className={`group relative overflow-hidden rounded-2xl border transition text-left h-20 sm:h-24 shrink-0 w-32 sm:w-auto snap-start ${active ? 'border-amber-300/80 ring-2 ring-amber-300/40' : 'border-white/20 hover:border-white/40'}`}>
                             <Image src={clip.thumb} alt="" fill className="object-cover" sizes="(min-width: 640px) 20vw, 50vw" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
                             <div className="absolute left-2 right-2 bottom-2">
@@ -439,7 +426,7 @@ export default function CustomCharterPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <div className="rounded-2xl border border-white/20 bg-white/[0.04] backdrop-blur-sm p-5 md:p-6">
+                <div className="rounded-2xl border border-white/20 bg-white/[0.04] backdrop-blur-sm p-4 sm:p-5 md:p-6">
                   <div className="flex items-start justify-between gap-6">
                     <div>
                       <div className="text-xs uppercase tracking-[0.35em] text-white/80">Starting at</div>
@@ -448,8 +435,8 @@ export default function CustomCharterPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-xs uppercase tracking-[0.35em] text-white/80">Capacity</div>
-                      <div className="mt-2 text-sm font-semibold text-white">Up to 8 guests</div>
-                      <div className="mt-1 text-sm text-white/85">9+? Private fleet.</div>
+                      <div className="mt-2 text-sm font-semibold text-white">Designed for up to 8 guests</div>
+                      <div className="mt-1 text-sm text-white/85">Traveling with more? We&apos;ll arrange it.</div>
                     </div>
                   </div>
                   <div className="mt-6 grid grid-cols-2 gap-3">
@@ -546,6 +533,24 @@ export default function CustomCharterPage() {
         )}
 
         {/* ── MAIN CONTENT + SIDEBAR ── */}
+        {/* ── MOBILE BOOKING SUMMARY BAR ── */}
+        <div className="lg:hidden bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between gap-4 sticky top-14 z-50 shadow-sm">
+          <div>
+            <div className="text-xs text-slate-500 uppercase tracking-widest">Live Total</div>
+            <div className="text-xl font-extrabold text-amber-500">{formatMoney(liveTotal)}</div>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span className="font-semibold">{guestCount} guest{guestCount !== 1 ? 's' : ''}</span>
+            <span className="text-slate-300">·</span>
+            <span>{isFullDay ? 'Full Day' : 'Half Day'}</span>
+            {activityCount > 0 && <><span className="text-slate-300">·</span><span className="text-emerald-600 font-semibold">{activityCount} activities</span></>}
+          </div>
+          <button type="button" onClick={handleCheckout} disabled={checkoutLoading}
+            className="bg-amber-400 text-black font-bold text-xs px-4 py-2 rounded-full hover:bg-amber-300 transition disabled:opacity-60 shrink-0">
+            Book Now
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-16">
           <div className="lg:col-span-2">
 
@@ -557,7 +562,7 @@ export default function CustomCharterPage() {
                 <p className="mt-4 text-lg text-slate-700">You call the shots. Captain René handles the rest.</p>
               </div>
 
-              <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {[
                   { title: 'Maximum Overdrive', icon: <Flame className="h-5 w-5" />, body: 'Non-stop action. 5+ activities. Adrenaline on demand.' },
                   { title: 'The Explorer', icon: <Map className="h-5 w-5" />, body: 'Balanced pace. See everything. Savor the moments that matter.' },
@@ -577,7 +582,7 @@ export default function CustomCharterPage() {
                 {activities.map((a) => {
                   const checked = selectedActivities[a.id];
                   return (
-                    <article key={a.id} className={`group rounded-3xl border overflow-hidden shadow-sm transition ${checked ? 'border-emerald-400 ring-2 ring-emerald-400/20' : 'border-slate-200 bg-white'}`}>
+                    <article key={a.id} className={`group rounded-3xl border overflow-hidden shadow-sm transition ${a.id === 'beach-bbq' && !isFullDay ? 'border-slate-200 bg-white opacity-50 pointer-events-none' : checked ? 'border-emerald-400 ring-2 ring-emerald-400/20' : 'border-slate-200 bg-white'}`}>
                       <div className="relative h-44">
                         <Image src={a.image} alt={a.title} fill className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" sizes="(min-width: 1024px) 33vw, 50vw" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -593,14 +598,17 @@ export default function CustomCharterPage() {
                       <div className="bg-white p-5">
                         {a.id === 'hol-chan' && (
                           <div className="mb-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2">
-                            <p className="text-xs font-bold text-amber-700">Hol Chan fee: $15/person</p>
-                            <p className="text-[10px] text-amber-500 mt-0.5">Paid directly to ranger at boat entry — bring cash</p>
-                            {selectedActivities['hol-chan'] && addOnQty['holchan-fee'] > 0 && (
-                              <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ {addOnQty['holchan-fee']} × $15 added to checkout</p>
-                            )}
+                            <p className="text-xs font-bold text-amber-700">⚠️ $15/person park fee — not collected online</p>
+                            <p className="text-[10px] text-amber-600 mt-0.5">Bring cash. The park ranger collects this fee at boat entry and provides wristbands.</p>
                           </div>
                         )}
                         {a.id === 'beach-bbq' && isFullDay && <p className="text-xs text-emerald-600 font-semibold mb-2">✓ Included in your Full Day — no extra charge</p>}
+                        {a.id === 'beach-bbq' && !isFullDay && (
+                          <div className="mb-2 rounded-lg bg-slate-100 border border-slate-200 px-3 py-2">
+                            <p className="text-xs font-bold text-slate-500">⏱ Not available on Half Day</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">BBQ requires a full day charter. Upgrade to include it.</p>
+                          </div>
+                        )}
                         {a.id === 'beach-bbq' && !isFullDay && guestCount > includedGuests && selectedActivities['beach-bbq'] && addOnQty['bbq-extra-guest'] > 0 && (
                           <div className="mb-2 rounded-lg bg-orange-50 border border-orange-200 px-3 py-2">
                             <p className="text-xs font-bold text-orange-700">BBQ extra guests auto-added</p>
@@ -653,8 +661,8 @@ export default function CustomCharterPage() {
               {/* Don't see your adventure — colored */}
               <div className="mt-8 rounded-2xl bg-gradient-to-r from-teal-600 to-sky-700 p-6 flex items-center gap-4">
                 <div className="flex-1 min-w-0">
-                  <p className="font-extrabold text-white">Don&apos;t see your adventure?</p>
-                  <p className="text-sm text-white/80 mt-0.5">Mayan ruins, cave tubing, mainland tours — if it&apos;s in Belize, René can coordinate it.</p>
+                  <p className="font-extrabold text-white">Don&apos;t see your perfect adventure?</p>
+                  <p className="text-sm text-white/80 mt-0.5">Full-day private charters from $600 — Mexico Rocks, Caye Caulker, Bliss Beach, and custom destinations. Reach out and we&apos;ll plan it together.</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button type="button" onClick={onOpenWhatsApp} className="h-10 px-4 rounded-full bg-white text-teal-800 text-xs font-bold hover:bg-teal-50 transition">WhatsApp</button>
@@ -820,7 +828,7 @@ export default function CustomCharterPage() {
               { label: 'Light Jacket', icon: <Wind className="w-5 h-5 text-blue-300" />, image: `${base}/images/light-jacket-what-to-bring.jpg` },
               { label: 'Cash (for fees)', icon: <Banknote className="w-5 h-5 text-green-300" />, image: `${base}/images/cash-for-fees-what-to-bring.jpg` },
             ].map((item) => (
-              <div key={item.label} className="relative rounded-3xl overflow-hidden shadow-sm h-40 group">
+              <div key={item.label} className="relative rounded-3xl overflow-hidden shadow-sm h-36 sm:h-40 group">
                 <Image src={item.image} alt={item.label} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="25vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
                 <div className="absolute inset-0 flex flex-col justify-end p-4">
@@ -853,15 +861,15 @@ export default function CustomCharterPage() {
             <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Guest Info</div>
             <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Book fast. Or go massive.</h2>
           </div>
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="rounded-3xl bg-amber-400 p-6 shadow-sm">
-              <div className="text-lg font-extrabold text-slate-950">Up to 8 guests</div>
+              <div className="text-lg font-extrabold text-slate-950">Designed for up to 8 guests</div>
               <div className="mt-3 text-slate-900 leading-relaxed">Book online instantly. Lock your date. Build your day exactly the way you want it.</div>
               <a href="#build-your-day" onClick={(e) => { e.preventDefault(); scrollTo('build-your-day'); }} className="mt-5 inline-flex items-center justify-center rounded-full bg-slate-950 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800 transition">Book Online</a>
             </div>
             <div className="rounded-3xl bg-teal-500 p-6 shadow-sm">
-              <div className="text-lg font-extrabold text-white">9+ guests?</div>
-              <div className="mt-3 text-teal-50 leading-relaxed">Private fleet available. We coordinate. You just show up.</div>
+              <div className="text-lg font-extrabold text-white">Traveling with more than 8?</div>
+              <div className="mt-3 text-teal-50 leading-relaxed">Contact us via WhatsApp or email and we&apos;ll help arrange your trip.</div>
               <button type="button" onClick={onOpenWhatsAppLargeGroup} className="mt-5 h-12 w-full rounded-2xl bg-white text-teal-800 font-extrabold hover:bg-teal-50 transition text-sm">WhatsApp +501 627 3556</button>
             </div>
             <div className="rounded-3xl bg-gray-950 p-6 shadow-sm border border-white/10">
@@ -913,7 +921,7 @@ export default function CustomCharterPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   <div className="absolute left-5 right-5 bottom-4">
                     <div className="text-white font-extrabold leading-tight">{t.title}</div>
-                    <div className="mt-1 text-sm text-white/85">From {formatMoney(t.price)}</div>
+                    <div className="mt-1 text-sm text-white/85">{t.price === 0 ? 'Inquire for pricing' : `From ${formatMoney(t.price)}`}</div>
                   </div>
                 </div>
                 <div className="p-5">
@@ -926,7 +934,7 @@ export default function CustomCharterPage() {
       </main>
 
       {/* ── STICKY BOTTOM BAR ── */}
-      <div className={`fixed bottom-0 left-0 right-0 z-[60] bg-gray-950/95 backdrop-blur-md border-t border-white/20 px-6 py-4 flex items-center justify-between transition-transform duration-300 ${stickyVisible ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-[60] bg-gray-950/95 backdrop-blur-md border-t border-white/20 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between transition-transform duration-300 ${stickyVisible ? 'translate-y-0' : 'translate-y-full'}`}>
         <div>
           <div className="text-white font-bold text-sm">Custom Charter · {guestCount} Guest{guestCount !== 1 ? 's' : ''} · {isFullDay ? 'Full Day' : 'Half Day'}</div>
           <div className="text-white/55 text-xs">{activityCount} activities selected</div>
