@@ -1,1 +1,0 @@
-﻿const fs=require("fs");let s=fs.readFileSync("src/components/home/ConditionsWidget.tsx","utf8");s=s.replace("pick.title","pick.tourName");fs.writeFileSync("src/components/home/ConditionsWidget.tsx",s,"utf8");console.log("done");
