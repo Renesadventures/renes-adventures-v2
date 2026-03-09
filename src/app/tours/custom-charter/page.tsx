@@ -316,6 +316,7 @@ export default function CustomCharterPage() {
   const extraGuests = useMemo(() => Math.max(0, guestCount - includedGuests) * 75, [guestCount, includedGuests]);
   const addOnsTotal = useMemo(() => ADDONS.reduce((s, a) => s + a.price * addOnQty[a.id], 0), [addOnQty]);
   const subtotal = useMemo(() => basePrice + extraGuests + addOnsTotal, [addOnsTotal, basePrice, extraGuests]);
+  // Sequential tax per Chris Carter 3/9/2026: 12.5% on base, then 6% on base+tax
   const tax = useMemo(() => subtotal * 0.125, [subtotal]);
   const subtotalAfterTax = useMemo(() => subtotal + tax, [subtotal, tax]);
   const serviceFee = useMemo(() => subtotalAfterTax * 0.06, [subtotalAfterTax]);
@@ -796,7 +797,7 @@ export default function CustomCharterPage() {
 
                 <hr className="border-white/10 my-3" />
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Subtotal</span><span>{formatMoney(subtotal)}</span></div>
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
+                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Card Processing Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
 
                 <button onClick={handleCheckout} disabled={checkoutLoading} className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
