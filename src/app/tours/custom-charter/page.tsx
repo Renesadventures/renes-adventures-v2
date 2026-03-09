@@ -317,8 +317,9 @@ export default function CustomCharterPage() {
   const addOnsTotal = useMemo(() => ADDONS.reduce((s, a) => s + a.price * addOnQty[a.id], 0), [addOnQty]);
   const subtotal = useMemo(() => basePrice + extraGuests + addOnsTotal, [addOnsTotal, basePrice, extraGuests]);
   const tax = useMemo(() => subtotal * 0.125, [subtotal]);
-  const serviceFee = useMemo(() => subtotal * 0.06, [subtotal]);
-  const liveTotal = useMemo(() => subtotal + tax + serviceFee, [serviceFee, subtotal, tax]);
+  const subtotalAfterTax = useMemo(() => subtotal + tax, [subtotal, tax]);
+  const serviceFee = useMemo(() => subtotalAfterTax * 0.06, [subtotalAfterTax]);
+  const liveTotal = useMemo(() => subtotalAfterTax + serviceFee, [subtotalAfterTax, serviceFee]);
 
   const selectedActivityList = useMemo(() => activities.filter((a) => selectedActivities[a.id]), [activities, selectedActivities]);
 
@@ -795,8 +796,8 @@ export default function CustomCharterPage() {
 
                 <hr className="border-white/10 my-3" />
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Subtotal</span><span>{formatMoney(subtotal)}</span></div>
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Service Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
+                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
+                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Card Processing Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
 
                 <button onClick={handleCheckout} disabled={checkoutLoading} className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
                   {checkoutLoading ? <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" /> : <>🔒 Secure Checkout</>}

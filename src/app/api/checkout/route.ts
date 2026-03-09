@@ -3,12 +3,6 @@ import Stripe from 'stripe';
 
 export const runtime = 'nodejs';
 
-// Live Stripe Tax Rate IDs
-const TAX_RATES = [
-  'txr_1T9BaWF2SeVntE6bt6TCL56G', // Belize Sales Tax 12.5%
-  'txr_1T9BayF2SeVntE6b1i1GCC5C', // Card processing fee 6%
-];
-
 export async function POST(req: NextRequest) {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
@@ -23,16 +17,44 @@ export async function POST(req: NextRequest) {
   try {
     const { lineItems, guestCount, duration, tourName } = await req.json();
 
-    // Attach live tax rates to every line item so Stripe receipt shows correct breakdown
-    const lineItemsWithTax = lineItems.map((item: Record<string, unknown>) => ({
-      ...item,
-      tax_rates: TAX_RATES,
-    }));
+    // Calculate sequential taxes matching the website display:
+    // 1. Sum base line items
+    // 2. Apply 12.5% Belize Sales Tax on subtotal
+    // 3. Apply 6% Card Processing Fee on (subtotal + tax)
+    const baseSubtotal: number = lineItems.reduce(
+      (sum: number, item: { price_data: { unit_amount: number }; quantity: number }) =>
+        sum + item.price_data.unit_amount * item.quantity,
+      0
+    );
+
+    const taxAmount = Math.round(baseSubtotal * 0.125);
+    const afterTax = baseSubtotal + taxAmount;
+    const feeAmount = Math.round(afterTax * 0.06);
+
+    const allLineItems = [
+      ...lineItems,
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Belize Sales Tax (12.5%)' },
+          unit_amount: taxAmount,
+        },
+        quantity: 1,
+      },
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Card Processing Fee (6%)' },
+          unit_amount: feeAmount,
+        },
+        quantity: 1,
+      },
+    ];
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: lineItemsWithTax,
+      line_items: allLineItems,
       metadata: {
         tourName,
         guestCount: String(guestCount),
