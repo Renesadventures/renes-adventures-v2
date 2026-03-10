@@ -212,6 +212,30 @@ export const tours: Tour[] = [
       "Perfect for relaxation"
     ]
   },
+  {
+    id: "reef-fishing",
+    title: "Reef Fishing",
+    slug: "reef-fishing",
+    description: "Light tackle. Fast action. Snappers, groupers, and jacks on the Belize Barrier Reef. The reel never stops — dinner is in the cooler by noon.",
+    price: 400,
+    fullDayPrice: 600,
+    priceFullDay: 600,
+    duration: 'Half Day (4 hours)',
+    fullDayDuration: 'Full Day (8 hours)',
+    hasHalfDay: true,
+    hasFullDay: true,
+    maxGuests: 8,
+    includedGuests: 4,
+    additionalGuestPrice: 75,
+    imageUrl: '/images/tours/reef-fishing.jpg',
+    features: [
+      "Target snappers, groupers, and jacks",
+      "Light tackle — fast action fishing",
+      "Fish the Belize Barrier Reef",
+      "Fresh catch cleaned and prepped",
+      "All equipment and bait included"
+    ]
+  },
 ];
 
 export const getFeaturedTours = () => tours.slice(0, 3);
