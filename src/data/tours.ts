@@ -128,7 +128,7 @@ export const tours: Tour[] = [
     id: "deep-sea-fishing",
     title: "Deep Sea Fishing",
     slug: "deep-sea-fishing",
-    description: "Set out into the open waters for a thrilling offshore adventure...",
+    description: "The reef drops away. The water turns dark. Your rod bends before you're ready. This is offshore Belize — and the fish don't wait.",
     price: 600,
     fullDayPrice: 900,
     duration: 'Half Day (4 hours)',
@@ -140,17 +140,19 @@ export const tours: Tour[] = [
     additionalGuestPrice: 75,
     imageUrl: '/images/tours/deep-sea-fishing.jpg',
     features: [
-      "Experienced crew with all equipment",
-      "Target big game fish species",
-      "Bait and licenses included",
-      "Fresh catch cleaned and filleted"
+      "Target mahi-mahi, wahoo, and barracuda",
+      "Experienced captain who knows every drop-off",
+      "All rods, tackle, bait, and licenses included",
+      "Fresh catch cleaned, filleted, and yours to keep",
+      "Full cooler — water, sodas, rum punch, snacks",
+      "BBQ available as add-on"
     ]
   },
   {
     id: "sunset-cruise",
     title: "Sunset Cruise",
     slug: "sunset-cruise",
-    description: "Experience BelizeΓÇÖs famous sunsets from the best seat in the house ΓÇö the water.",
+    description: "Belize's famous sunsets from the best seat in the house — the water. Champagne optional. Agenda not required.",
     price: 350,
     fullDayPrice: null,
     duration: '2.5 Hours',
@@ -162,17 +164,19 @@ export const tours: Tour[] = [
     additionalGuestPrice: 75,
     imageUrl: '/images/tours/sunset-cruise.jpg',
     features: [
-      "Departure between 6-7 PM",
-      "Perfect for couples and friends",
-      "Champagne, wine, or beverages available",
-      "Optional waterfront stop"
+      "Departure between 6–7 PM — golden hour guaranteed",
+      "Perfect for couples, proposals, and celebrations",
+      "Champagne, wine, or beverages of your choice",
+      "Optional waterfront restaurant stop",
+      "2.5 hours on the water — no rush",
+      "Up to 8 guests — private charter"
     ]
   },
   {
     id: "blue-hole",
     title: "Blue Hole Adventure",
     slug: 'blue-hole',
-    description: "Visit the iconic Blue Hole, snorkel this world-class site, and explore surrounding reefs. Full-day adventure to one of Belize's most famous landmarks.",
+    description: "A perfect circle of darkness in the Caribbean. Three hundred feet deep. One of seven underwater wonders. Two hours from San Pedro — and a lifetime from ordinary.",
     price: 900,
     fullDayPrice: null,
     duration: 'Full Day (8 hours)',
@@ -184,17 +188,19 @@ export const tours: Tour[] = [
     additionalGuestPrice: 75,
     imageUrl: '/images/tours/hol-chan-snorkel.jpg',
     features: [
-      "Visit the iconic Blue Hole",
-      "Snorkel world-class site",
-      "Explore surrounding reefs",
-      "Full-day adventure"
+      "Visit the iconic Great Blue Hole",
+      "Snorkel crystal-clear reef systems en route",
+      "Full-day open-water adventure",
+      "Expert captain and crew the entire way",
+      "All gear, water, snacks, and rum punch included",
+      "Photography opportunities at every stop"
     ]
   },
   {
     id: "secret-beach",
     title: "Secret Beach",
     slug: "secret-beach",
-    description: "Visit the famous Secret Beach with crystal-clear turquoise waters. Beach bars and restaurants nearby, perfect for relaxation. Available as half-day or full-day trip.",
+    description: "Most tourists in San Pedro never find it. The ones who do never want to leave. Crystal water. Beach bars. A boat ride that's half the adventure.",
     price: 400,
     fullDayPrice: 600,
     duration: 'Half Day (4 hours)',
@@ -206,10 +212,12 @@ export const tours: Tour[] = [
     additionalGuestPrice: 75,
     imageUrl: '/images/tours/beach-bbq.jpg',
     features: [
-      "Visit the famous Secret Beach",
-      "Crystal-clear turquoise waters",
-      "Beach bars and restaurants nearby",
-      "Perfect for relaxation"
+      "Crystal-clear turquoise water — knee-deep for 100 yards",
+      "Beach bars and restaurants steps from the sand",
+      "Boat ride through the lagoon — scenic and fun",
+      "BBQ available as add-on",
+      "Perfect for couples, families, or groups",
+      "Half day or full day — your pace"
     ]
   },
   {
@@ -264,7 +272,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'lobster-mission',
       title: 'Lobster Mission (Seasonal)',
-      description: 'Seasonal lobster missionΓÇöquick, clean, and unforgettable.',
+      description: 'Seasonal lobster mission — quick, clean, and unforgettable.',
       keywords: ['lobster', 'reef', 'snorkel', 'dive', 'catch'],
       videoUrl: `${base}/Lobster Fishing 1.mp4`,
       season: {
@@ -275,7 +283,7 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'hol-chan-snorkel',
       title: 'Hol Chan Marine Reserve',
-      description: 'Snorkel Hol ChanΓÇöone of BelizeΓÇÖs most iconic reef zones.',
+      description: 'Snorkel Hol Chan — one of Belize\'s most iconic reef zones.',
       note: '($15 Ranger Fee paid directly to ranger)',
       keywords: ['hol', 'chan', 'snorkel', 'reef', 'coral', 'underwater'],
       videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.49 PM.mp4`,
@@ -290,14 +298,14 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'caye-caulker-stop',
       title: 'Caye Caulker Stop',
-      description: 'Dock in, explore, and catch the island pulseΓÇöeasy and fun.',
+      description: 'Dock in, explore, and catch the island pulse — easy and fun.',
       keywords: ['island', 'dock', 'caye', 'caulker', 'tropical', 'boat'],
       videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.41 PM.mp4`,
     },
     {
       id: 'high-dive',
       title: 'The High Dive (Optional)',
-      description: 'The famous high diveΓÇöif you want the adrenaline moment.',
+      description: 'The famous high dive — if you want the adrenaline moment.',
       keywords: ['jump', 'dive', 'adrenaline', 'island', 'ocean'],
       videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.44 PM.mp4`,
     },
@@ -311,14 +319,14 @@ export const tourActivitiesBySlug: Record<string, TourActivity[]> = {
     {
       id: 'seahorse-spotting',
       title: 'Seahorse Spotting',
-      description: 'A quiet, magical stopΓÇöspot seahorses in the grass beds.',
+      description: 'A quiet, magical stop — spot seahorses in the grass beds.',
       keywords: ['seahorse', 'snorkel', 'underwater', 'grass', 'mangrove'],
       videoUrl: `${base}/WhatsApp Video 2025-12-17 at 12.22.36 PM.mp4`,
     },
     {
       id: 'beach-bbq-feast',
       title: 'Private Beach BBQ Feast',
-      description: 'Mayan-style BBQ on the sandΓÇöfresh catch, ceviche, and island time.',
+      description: 'Mayan-style BBQ on the sand — fresh catch, ceviche, and island time.',
       keywords: ['bbq', 'beach', 'grill', 'ceviche', 'lobster', 'food'],
       videoUrl: `${base}/WhatsApp Video 2025-09-26 at 20.28.36_7a150342.mp4`,
     },

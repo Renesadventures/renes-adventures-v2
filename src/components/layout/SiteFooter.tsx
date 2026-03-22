@@ -31,7 +31,7 @@ export default function SiteFooter() {
               </li>
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Blue Hole Adventure</span>
-                <span className="text-white/60 whitespace-nowrap">$900</span>
+                <span className="text-white/60 whitespace-nowrap">Contact Us</span>
               </li>
               <li className="flex items-baseline justify-between gap-4">
                 <span className="text-white/80">Secret Beach</span>

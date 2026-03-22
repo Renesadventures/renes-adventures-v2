@@ -309,9 +309,18 @@ export function TourHeroMedia({
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
       <div className="absolute top-24 right-6 z-10 bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4 text-right">
-        <p className="text-white/50 text-xs uppercase tracking-widest">Starting at</p>
-        <p className="text-amber-300 text-3xl font-extrabold">{formatMoney(lowestPrice)}</p>
-        <p className="text-white/40 text-xs mt-0.5">Up to 4 guests</p>
+        {tour.slug === 'blue-hole' ? (
+          <>
+            <p className="text-amber-300 text-2xl font-extrabold">Contact for Pricing</p>
+            <p className="text-white/40 text-xs mt-0.5">WhatsApp or Email</p>
+          </>
+        ) : (
+          <>
+            <p className="text-white/50 text-xs uppercase tracking-widest">Starting at</p>
+            <p className="text-amber-300 text-3xl font-extrabold">{formatMoney(lowestPrice)}</p>
+            <p className="text-white/40 text-xs mt-0.5">Up to 4 guests</p>
+          </>
+        )}
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-20">
@@ -364,21 +373,35 @@ export function TourHeroMedia({
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={handleCheckout}
-            disabled={checkoutLoading}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full
-                   bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black
-                   font-bold text-base tracking-wide transition-all duration-300
-                   hover:shadow-[0_0_40px_rgba(251,191,36,0.5)] hover:-translate-y-0.5"
-          >
-            {checkoutLoading ? (
-              <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
-            ) : (
-              '🔒 Book This Charter'
-            )}
-          </button>
+          {tour.slug === 'blue-hole' ? (
+            <a
+              href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full
+                     bg-emerald-500 hover:bg-emerald-400 text-white
+                     font-bold text-base tracking-wide transition-all duration-300
+                     hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] hover:-translate-y-0.5"
+            >
+              💬 Inquire on WhatsApp
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={handleCheckout}
+              disabled={checkoutLoading}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full
+                     bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black
+                     font-bold text-base tracking-wide transition-all duration-300
+                     hover:shadow-[0_0_40px_rgba(251,191,36,0.5)] hover:-translate-y-0.5"
+            >
+              {checkoutLoading ? (
+                <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+              ) : (
+                '🔒 Book This Charter'
+              )}
+            </button>
+          )}
           <Link
             href="/#adventure-grid"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full
@@ -656,6 +679,41 @@ export function TourPricingPanel() {
   };
 
   const bbqActive = bbqOn;
+
+  // Blue Hole special case - inquiry only, no pricing calculator
+  if (tour.slug === 'blue-hole') {
+    return (
+      <div className="rounded-3xl border border-white/10 bg-[#060608] p-6 shadow-2xl">
+        <div className="text-center mb-6">
+          <div className="text-xs uppercase tracking-[0.35em] text-sky-400 mb-2">Pricing</div>
+          <div className="text-2xl font-extrabold text-white">Contact for Pricing</div>
+          <p className="text-white/60 text-sm mt-2">Designed for up to 8 guests</p>
+        </div>
+
+        <a
+          href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 flex items-center justify-center gap-2 transition-all mb-3"
+        >
+          💬 WhatsApp Us
+        </a>
+
+        <a
+          href="mailto:info@renesadventures.tours?subject=Blue%20Hole%20Inquiry"
+          className="w-full rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold py-3 flex items-center justify-center gap-2 transition-all"
+        >
+          ✉️ Email Us
+        </a>
+
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="text-white/40 text-xs text-center">
+            Full-day adventure to one of the world&apos;s most iconic dive sites
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-3xl border border-white/10 bg-[#060608] p-6 shadow-2xl">
@@ -966,8 +1024,8 @@ export function TourAddOnsPanel() {
 
               {bbqOn && tour.slug === 'deep-sea-fishing' ? (
                 <div className="mt-3 flex items-start gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                  <span>⚠️</span>
-                  <span>Adding BBQ will reduce fishing time. Your captain will confirm details.</span>
+                  <span>ℹ️</span>
+                  <span>Beach BBQ available as add-on. Your captain will confirm details.</span>
                 </div>
               ) : null}
 

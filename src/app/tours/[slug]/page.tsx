@@ -53,6 +53,10 @@ const WHY_COPY: Record<string, { headline: string; sub: string }> = {
     headline: 'Why People Fly Across the World for This',
     sub: 'There are seven underwater wonders of the world. One of them is two hours from San Pedro.',
   },
+  'blue-hole': {
+    headline: 'Why People Fly Across the World for This',
+    sub: 'There are seven underwater wonders of the world. One of them is two hours from San Pedro.',
+  },
   'secret-beach': {
     headline: 'Why the Locals Keep This One Quiet',
     sub: 'Most tourists never find it. You will — and you will understand immediately why it has that name.',
@@ -76,6 +80,13 @@ Some people take photos. Most just watch. Nobody talks much.
 They don't need to.`,
 
   'blue-hole-adventure': `You've seen the satellite image. The perfect circle of darkness in the middle of a turquoise sea.
+What the image doesn't tell you: it takes two hours to get there. Open ocean. Flying fish jumping the bow. Nothing on the horizon.
+Then it appears.
+You anchor at the edge. You look down. The water goes from clear to black in seconds.
+Three hundred meters of nothing below you.
+You jump anyway.`,
+
+  'blue-hole': `You've seen the satellite image. The perfect circle of darkness in the middle of a turquoise sea.
 What the image doesn't tell you: it takes two hours to get there. Open ocean. Flying fish jumping the bow. Nothing on the horizon.
 Then it appears.
 You anchor at the edge. You look down. The water goes from clear to black in seconds.
@@ -215,6 +226,226 @@ const REVIEWS: Record<string, { quote: string; author: string; location: string 
       location: 'Los Angeles, CA',
     },
   ],
+};
+
+const TOUR_WHY_CARDS: Record<string, { title: string; body: string; icon: string }[]> = {
+  'deep-sea-fishing': [
+    { title: 'The Drop-Off', body: 'We run past the reef to where the big fish hunt. Open water, no crowds, serious action.', icon: 'Fish' },
+    { title: 'Captain Knowledge', body: "René's crew knows every channel, every migration pattern. They don't guess — they know.", icon: 'ShieldCheck' },
+    { title: 'Your Catch, Your Story', body: 'We clean it, fillet it, bag it. Take it to a local restaurant or back to your kitchen.', icon: 'Camera' },
+  ],
+  'secret-beach': [
+    { title: 'The Water', body: 'So clear you can read the sand through six feet of it. Warm, shallow, and impossibly turquoise.', icon: 'Waves' },
+    { title: 'The Vibe', body: 'Beach bars with cold drinks. No agenda. No pressure. Just island time at its purest.', icon: 'Sun' },
+    { title: 'The Ride', body: 'Getting there is half the fun — a boat ride through the lagoon that most people say was the highlight.', icon: 'Anchor' },
+  ],
+  'blue-hole': [
+    { title: 'The Scale', body: 'Over 1,000 feet across and 400 feet deep. You can see it from space. You need to see it from the water.', icon: 'Waves' },
+    { title: 'The Journey', body: 'Two hours of open Caribbean. Flying fish, dolphins on good days. The ride is part of the story.', icon: 'Anchor' },
+    { title: 'The Reef Stops', body: "You don't just see the Hole. The crew stops at world-class reef on the way back. Full day, full value.", icon: 'Camera' },
+  ],
+  'sunset-cruise': [
+    { title: 'The Light', body: "Belize gets 300 days of sunshine. The last hour of each one paints the sky in colors that don't have names.", icon: 'Sun' },
+    { title: 'The Quiet', body: 'No itinerary. No stops unless you want one. Just open water and the kind of silence you forgot existed.', icon: 'Waves' },
+    { title: 'The Moment', body: "Whether it's a proposal, anniversary, or just a Tuesday — this is how you remember it.", icon: 'Camera' },
+  ],
+};
+
+const TOUR_FLOW: Record<string, { title: string; body: string }[]> = {
+  'deep-sea-fishing': [
+    { title: 'Launch', body: "Board at dawn. Gear is rigged. Cooler is full. The crew briefs you on what's running." },
+    { title: 'The Hunt', body: 'Past the reef, lines go in. First strike could come in minutes. Reel, fight, land, repeat.' },
+    { title: 'The Payoff', body: "Catch cleaned on the dock. Photos with your haul. The kind of day you don't shut up about." },
+  ],
+  'secret-beach': [
+    { title: 'Depart', body: 'Board the boat in San Pedro. The lagoon ride starts the day with wind and water.' },
+    { title: 'Arrive', body: 'Step off into knee-deep crystal. Pick your spot. Bar to the left, open water to the right.' },
+    { title: 'Stay', body: 'There is no rush. Swim, eat, drink, float. Time works differently here.' },
+  ],
+  'blue-hole': [
+    { title: 'Dawn', body: 'Early departure. The ocean is calm. Two hours of open water ahead.' },
+    { title: 'Arrival', body: "You see the color change from the boat. Dark blue, then darker. You're here." },
+    { title: 'Return', body: 'Reef stops on the way back. Snorkeling, photos, stories. You arrive home changed.' },
+  ],
+  'sunset-cruise': [
+    { title: 'Board', body: 'Step on around 6 PM. Drinks are ready. The crew knows the drill.' },
+    { title: 'Drift', body: 'Out past the docks, into open water. The sun starts its show. You watch.' },
+    { title: 'Return', body: 'The sky fades from gold to violet. You cruise back slow. Nobody wants it to end.' },
+  ],
+};
+
+const TOUR_GALLERY: Record<string, string[]> = {
+  'deep-sea-fishing': [
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/reef-fishing-custome-adventure.jpg',
+    '/images/tours/deep-sea-fishing.jpg',
+    '/images/tours/full-day-ultimate.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    '/images/tours/reef-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/reef-fishing-custome-adventure.jpg',
+    '/images/tours/deep-sea-fishing.jpg',
+    '/images/tours/full-day-ultimate.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    '/images/tours/reef-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/reef-fishing-custome-adventure.jpg',
+    '/images/tours/deep-sea-fishing.jpg',
+    '/images/tours/full-day-ultimate.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+  ],
+  'secret-beach': [
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    '/images/tours/beach-bbq.jpg',
+    '/images/tours/sunset-cruise.jpg',
+  ],
+  'blue-hole': [
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/hol-chan-snorkel.jpg',
+  ],
+  'sunset-cruise': [
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+    'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    '/images/tours/sunset-cruise.jpg',
+  ],
+};
+
+const TOUR_HERO_MEDIA: Record<string, { video: string; images: string[] }> = {
+  'deep-sea-fishing': {
+    video: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/deep-sea-fishing.mp4',
+    images: [
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/reef-fishing-custome-adventure.jpg',
+    ],
+  },
+  'secret-beach': {
+    video: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/secrete-beach.mp4',
+    images: [
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/secrete-beach-all%20tours.png',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    ],
+  },
+  'blue-hole': {
+    video: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/blue-hole-one.mp4',
+    images: [
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/blue-hole-all-tours.jpg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deep-sea-fishing.jpg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+    ],
+  },
+  'sunset-cruise': {
+    video: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/sunset-cruise.mp4',
+    images: [
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-family-sunset.png',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/captain-rene.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-deck.jpeg',
+      'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/boat-cabin.jpg',
+      '/images/tours/sunset-cruise.jpg',
+    ],
+  },
 };
 
 function formatMoney(amount: number) {
@@ -390,33 +621,24 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 })()}
 
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[
-                    {
-                      title: 'Golden Crew',
-                      icon: ShieldCheck,
-                      body: 'Local captains and mates who make the whole day feel effortless.',
-                    },
-                    {
-                      title: 'Iconic Water',
-                      icon: Waves,
-                      body: 'Belize colors that look edited—but they’re real.',
-                    },
-                    {
-                      title: 'Camera Moments',
-                      icon: Camera,
-                      body: 'We position you for the “wow” clip, not just the safe shot.',
-                    },
-                  ].map(({ title, icon: Icon, body }) => (
-                    <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200">
-                          <Icon className="h-5 w-5 text-amber-700" />
-                        </span>
-                        <div className="font-extrabold text-slate-900">{title}</div>
+                  {(TOUR_WHY_CARDS[slug] || [
+                    { title: 'Golden Crew', body: 'Local captains and mates who make the whole day feel effortless.', icon: 'ShieldCheck' },
+                    { title: 'Iconic Water', body: 'Belize colors that look edited—but they\'re real.', icon: 'Waves' },
+                    { title: 'Camera Moments', body: 'We position you for the "wow" clip, not just the safe shot.', icon: 'Camera' },
+                  ]).map(({ title, body, icon }) => {
+                    const IconComponent = icon === 'Fish' ? Fish : icon === 'ShieldCheck' ? ShieldCheck : icon === 'Waves' ? Waves : icon === 'Sun' ? Sun : icon === 'Anchor' ? Anchor : Camera;
+                    return (
+                      <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200">
+                            <IconComponent className="h-5 w-5 text-amber-700" />
+                          </span>
+                          <div className="font-extrabold text-slate-900">{title}</div>
+                        </div>
+                        <div className="mt-3 text-slate-700">{body}</div>
                       </div>
-                      <div className="mt-3 text-slate-700">{body}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </section>
@@ -436,20 +658,11 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                 </p>
 
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[
-                    {
-                      title: 'Start',
-                      body: 'Meet the crew, set the vibe, and head out into bright water.',
-                    },
-                    {
-                      title: 'Peak',
-                      body: 'Your highlights—hookups, reef time, beach bars, iconic Belize moments.',
-                    },
-                    {
-                      title: 'Finish',
-                      body: 'Slow cruise back—salt on your skin, camera roll full, already planning the next one.',
-                    },
-                  ].map((card, idx) => (
+                  {(TOUR_FLOW[slug] || [
+                    { title: 'Start', body: 'Meet the crew, set the vibe, and head out into bright water.' },
+                    { title: 'Peak', body: 'Your highlights—hookups, reef time, beach bars, iconic Belize moments.' },
+                    { title: 'Finish', body: 'Slow cruise back—salt on your skin, camera roll full, already planning the next one.' },
+                  ]).map((card, idx) => (
                     <div key={card.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center font-black text-amber-700">
@@ -468,7 +681,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <TourGuestGallery
               keywords={[slug, 'fishing', 'boat', 'belize']}
-              fallbackImages={[
+              fallbackImages={TOUR_GALLERY[slug] || [
                 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-80sj5WrGZF6Lfws1XtSJTW7tipz3D8.jpg',
                 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg',
                 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-10-30%20at%2017.18.05_2488a0f4-UQRhRgJ4vZ98QqcZtviUNwPdPwY6KR.jpg',
@@ -534,13 +747,42 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
 
             <section id="pricing" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Pricing Information</div>
-              <div className="mt-3 text-slate-700">
-                Your private crew, your pace — for up to 4 guests. Bringing more friends? Add up to 4 more at $75/person.
-                <div className="mt-2 text-slate-700">Rates shown do not include 12.5% tax, 6% service fee, or gratuity for your crew.</div>
-              </div>
-              <div className="mt-4 text-slate-700">
-                From <span className="text-3xl font-black text-amber-600">{formatMoney(tour.price)}</span>
-              </div>
+              {slug === 'blue-hole' ? (
+                <>
+                  <div className="mt-3 text-slate-700">
+                    Full-day adventure to one of the world&apos;s most iconic dive sites. Designed for up to 8 guests.
+                  </div>
+                  <div className="mt-4">
+                    <span className="text-2xl font-black text-amber-600">Contact for Pricing</span>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <a
+                      href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold transition"
+                    >
+                      💬 WhatsApp Us
+                    </a>
+                    <a
+                      href="mailto:info@renesadventures.tours?subject=Blue%20Hole%20Inquiry"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 font-bold transition"
+                    >
+                      ✉️ Email Us
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mt-3 text-slate-700">
+                    Your private crew, your pace — for up to 4 guests. Bringing more friends? Add up to 4 more at $75/person.
+                    <div className="mt-2 text-slate-700">Rates shown do not include 12.5% tax, 6% service fee, or gratuity for your crew.</div>
+                  </div>
+                  <div className="mt-4 text-slate-700">
+                    From <span className="text-3xl font-black text-amber-600">{formatMoney(tour.price)}</span>
+                  </div>
+                </>
+              )}
             </section>
 
             <div className="h-10" />
@@ -595,20 +837,43 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
         <div className="mx-auto w-full max-w-screen-2xl px-4">
           <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-10 shadow-sm text-center">
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Ready when you are</h2>
-            <p className="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">Lock in your date, choose your upgrades, and let the crew handle the rest.</p>
+            <p className="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+              {slug === 'blue-hole' ? 'Reach out to discuss your Blue Hole adventure.' : 'Lock in your date, choose your upgrades, and let the crew handle the rest.'}
+            </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="#tour-pricing-slot"
-                className="h-12 px-6 rounded-2xl bg-amber-400 text-slate-950 font-black border border-black/10 hover:brightness-105 transition inline-flex items-center justify-center"
-              >
-                View Pricing
-              </a>
-              <a
-                href="#tour-addons-slot"
-                className="h-12 px-6 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition inline-flex items-center justify-center"
-              >
-                Pick Add-Ons
-              </a>
+              {slug === 'blue-hole' ? (
+                <>
+                  <a
+                    href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-12 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black border border-emerald-600/20 transition inline-flex items-center justify-center"
+                  >
+                    Contact Us on WhatsApp
+                  </a>
+                  <a
+                    href="mailto:info@renesadventures.tours?subject=Blue%20Hole%20Inquiry"
+                    className="h-12 px-6 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition inline-flex items-center justify-center"
+                  >
+                    Email Us
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a
+                    href="#tour-pricing-slot"
+                    className="h-12 px-6 rounded-2xl bg-amber-400 text-slate-950 font-black border border-black/10 hover:brightness-105 transition inline-flex items-center justify-center"
+                  >
+                    View Pricing
+                  </a>
+                  <a
+                    href="#tour-addons-slot"
+                    className="h-12 px-6 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition inline-flex items-center justify-center"
+                  >
+                    Pick Add-Ons
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </div>
