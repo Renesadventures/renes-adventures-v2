@@ -10,6 +10,7 @@ export interface TourAddOn {
   pricingType: AddOnPricingType;
   specialInstructions?: string;
   icon: string;
+  image?: string;
 }
 
 export const TOUR_ADDONS: TourAddOn[] = [
@@ -22,6 +23,7 @@ export const TOUR_ADDONS: TourAddOn[] = [
     pricingType: 'flat',
     specialInstructions: 'Lobster and conch availability is seasonal',
     icon: 'Flame',
+    image: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/beach-bbq-extra-guest.png',
   },
   {
     id: 'snorkel-gear',
@@ -31,6 +33,7 @@ export const TOUR_ADDONS: TourAddOn[] = [
     category: 'gear',
     pricingType: 'per-guest',
     icon: 'Waves',
+    image: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/snorkel-gear-rental.png',
   },
   {
     id: 'hol-chan-fee',

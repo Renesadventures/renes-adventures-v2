@@ -50,6 +50,7 @@ type AddOnUiItem = {
   pricingType: AddOnPricingTypeUi;
   specialInstructions?: string;
   icon: TourAddOn['icon'];
+  image?: string;
 };
 
 function formatMoney(amount: number) {
@@ -92,6 +93,7 @@ function buildAddOnUi(addOns: TourAddOn[]): AddOnUiItem[] {
     pricingType: a.pricingType,
     specialInstructions: a.specialInstructions,
     icon: a.icon,
+    image: a.image,
   }));
 }
 
@@ -1018,15 +1020,27 @@ function AddOnCard({ item }: { item: AddOnUiItem }) {
   const lineTotal = addOnLineTotal(item, qty);
 
   return (
-    <div className="w-[290px] shrink-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="w-[290px] shrink-0 rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+      {item.image && (
+        <div className="relative h-32 w-full">
+          <Image src={item.image} alt={item.title} fill className="object-cover" sizes="(min-width: 768px) 33vw, 50vw" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+          <div className="absolute bottom-3 left-4">
+            <span className="text-white font-extrabold text-sm drop-shadow">{item.title}</span>
+          </div>
+        </div>
+      )}
+      <div className="p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
+          {!item.image && (
           <div className="flex items-center gap-2">
             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-sky-500 to-indigo-500 shadow-sm">
               <AddOnIcon name={item.icon} className="h-5 w-5 text-white" />
             </span>
             <div className="font-extrabold text-slate-900 text-sm leading-tight">{item.title}</div>
           </div>
+          )}
           <div className="mt-1 text-xs text-slate-600">{subtitle}</div>
           {qty > 0 ? (
             <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-extrabold text-amber-800">
@@ -1072,6 +1086,7 @@ function AddOnCard({ item }: { item: AddOnUiItem }) {
           {item.pricingType === 'per-guest' || item.pricingType === 'tiered-per-guest' ? `Tracks guests (${guests})` : 'Adjustable'}
         </div>
       </div>
+    </div>
     </div>
   );
 }
