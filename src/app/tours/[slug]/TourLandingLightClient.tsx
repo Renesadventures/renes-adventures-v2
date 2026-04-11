@@ -21,6 +21,24 @@ import {
 import type { Tour } from '@/data/tours';
 import type { TourAddOn } from '@/data/tour-addons';
 
+export function SafeImage({ src, alt, className, sizes, height, overlay }: { src: string; alt: string; className?: string; sizes?: string; height?: string; overlay?: boolean }) {
+  const [hidden, setHidden] = useState(false);
+  if (hidden || !src) return null;
+  return (
+    <div className={`relative ${height || 'h-44'} w-full`}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className={className || 'object-cover'}
+        sizes={sizes || '(min-width: 768px) 33vw, 100vw'}
+        onError={() => setHidden(true)}
+      />
+      {overlay && <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />}
+    </div>
+  );
+}
+
 type AddOnPricingTypeUi = 'flat' | 'per-guest' | 'tiered-per-guest';
 
 type AddOnUiItem = {
@@ -275,12 +293,21 @@ export function TourHeroMedia({
   tour,
   lowestPrice,
   fallbackImages,
+  heroMedia,
 }: {
   tour: Tour;
   lowestPrice: number;
   fallbackImages: string[];
+  heroMedia?: { video: string; images: string[] } | null;
 }) {
   const heroImage = fallbackImages?.[0] || tour.imageUrl;
+  const hasVideo = heroMedia && heroMedia.video;
+  const heroImages = heroMedia?.images || [];
+
+  // State: 'video' means playing the video, number means showing that image index
+  const [activeMedia, setActiveMedia] = useState<'video' | number>('video');
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const handleCheckout = async () => {
     try {
@@ -291,23 +318,66 @@ export function TourHeroMedia({
     }
   };
 
+  const showImage = (index: number) => {
+    setActiveMedia(index);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
+
+  const showVideo = () => {
+    setActiveMedia('video');
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
   return (
     <section id="hero" className="relative w-full h-screen min-h-[700px] flex items-end">
-      <img
-        src={heroImage}
-        alt={tour.title}
-        className="absolute inset-0 w-full h-full object-cover object-center"
-        onError={(e) => {
-          const t = e.target as HTMLImageElement;
-          if (!t.dataset.fallback) {
-            t.dataset.fallback = '1';
-            t.src = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg';
-          }
-        }}
-      />
+      {/* VIDEO BACKGROUND */}
+      {hasVideo ? (
+        <>
+          <video
+            ref={videoRef}
+            src={heroMedia.video}
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${
+              activeMedia === 'video' ? 'opacity-100' : 'opacity-0'
+            }`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={heroImage}
+          />
+          {/* STATIC IMAGE WHEN THUMBNAIL SELECTED */}
+          {typeof activeMedia === 'number' && heroImages[activeMedia] && (
+            <img
+              src={heroImages[activeMedia]}
+              alt={tour.title}
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+          )}
+        </>
+      ) : (
+        <img
+          src={heroImage}
+          alt={tour.title}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          onError={(e) => {
+            const t = e.target as HTMLImageElement;
+            if (!t.dataset.fallback) {
+              t.dataset.fallback = '1';
+              t.src = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-o5hV6mh8JgSKnVgyD8PdcxgUYxUOd8.jpg';
+            }
+          }}
+        />
+      )}
 
+      {/* GRADIENT OVERLAY */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
+      {/* PRICE BADGE (top-right) */}
       <div className="absolute top-24 right-6 z-10 bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4 text-right">
         {tour.slug === 'blue-hole' ? (
           <>
@@ -323,6 +393,7 @@ export function TourHeroMedia({
         )}
       </div>
 
+      {/* HERO CONTENT */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-20">
         <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase
                      text-emerald-300 bg-black/50 border border-emerald-400/40
@@ -372,7 +443,7 @@ export function TourHeroMedia({
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 mb-8">
           {tour.slug === 'blue-hole' ? (
             <a
               href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
@@ -412,6 +483,58 @@ export function TourHeroMedia({
             View All Tours
           </Link>
         </div>
+
+        {/* ━━━ THUMBNAIL STRIP: VIDEO + 4 IMAGES ━━━ */}
+        {hasVideo && heroImages.length > 0 && (
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {/* Video thumbnail */}
+            <button
+              type="button"
+              onClick={showVideo}
+              className={`relative shrink-0 w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                activeMedia === 'video'
+                  ? 'border-amber-400 ring-2 ring-amber-400/30'
+                  : 'border-white/30 hover:border-white/60'
+              }`}
+            >
+              <img
+                src={heroImage}
+                alt="Play video"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white" className="drop-shadow">
+                  <polygon points="8,5 19,12 8,19" />
+                </svg>
+              </div>
+              {activeMedia === 'video' && (
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-widest text-amber-400 font-bold bg-black/60 px-2 py-0.5 rounded-full">
+                  Playing
+                </div>
+              )}
+            </button>
+
+            {/* 4 image thumbnails */}
+            {heroImages.map((img, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => showImage(idx)}
+                className={`relative shrink-0 w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                  activeMedia === idx
+                    ? 'border-amber-400 ring-2 ring-amber-400/30'
+                    : 'border-white/30 hover:border-white/60'
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`${tour.title} ${idx + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -38,7 +38,7 @@ import {
 } from 'lucide-react';
 import { tours } from '@/data/tours';
 import { TOUR_ADDONS } from '@/data/tour-addons';
-import { TourGuestGallery, TourHeroMedia, TourInteractivePortals } from './TourLandingLightClient';
+import { SafeImage, TourGuestGallery, TourHeroMedia, TourInteractivePortals } from './TourLandingLightClient';
 
 const r2 = (folder: string, file: string) =>
   `https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/${folder}/${file}`;
@@ -575,11 +575,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     const IconComponent = icon === 'Fish' ? Fish : icon === 'ShieldCheck' ? ShieldCheck : icon === 'Waves' ? Waves : icon === 'Sun' ? Sun : icon === 'Anchor' ? Anchor : Camera;
                     return (
                       <div key={title} className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-                        {image && (
-                          <div className="relative h-44 w-full">
-                            <Image src={image} alt={title} fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
-                          </div>
-                        )}
+                        {image && <SafeImage src={image} alt={title} />}
                         <div className="p-6">
                           <div className="flex items-center gap-3">
                             <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200">
@@ -617,11 +613,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     { title: 'Finish', body: 'Slow cruise back—salt on your skin, camera roll full, already planning the next one.', image: '' },
                   ]).map((card, idx) => (
                     <div key={card.title} className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-                      {card.image && (
-                        <div className="relative h-44 w-full">
-                          <Image src={card.image} alt={card.title} fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
-                        </div>
-                      )}
+                      {card.image && <SafeImage src={card.image} alt={card.title} />}
                       <div className="p-6">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center font-black text-amber-700">
@@ -753,12 +745,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                     key={i}
                     className="bg-gray-900 border border-white/15 rounded-2xl overflow-hidden flex flex-col justify-between"
                   >
-                    {reviewImages[i] && (
-                      <div className="relative h-40 w-full">
-                        <Image src={reviewImages[i]} alt={review.author} fill className="object-cover" sizes="(min-width: 768px) 33vw, 100vw" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
-                      </div>
-                    )}
+                    {reviewImages[i] && <SafeImage src={reviewImages[i]} alt={review.author} height="h-40" overlay />}
                     <div className="p-6">
                       <div className="flex gap-0.5 mb-4">
                         {[1, 2, 3, 4, 5].map((s) => (
