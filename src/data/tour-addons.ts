@@ -44,6 +44,7 @@ export const TOUR_ADDONS: TourAddOn[] = [
     pricingType: 'per-guest',
     specialInstructions: '$15 fee paid directly to ranger at time of boat entry',
     icon: 'Anchor',
+    image: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/images/hol-chan-custom-adventure.jpg',
   },
   {
     id: 'tshirt-adult',

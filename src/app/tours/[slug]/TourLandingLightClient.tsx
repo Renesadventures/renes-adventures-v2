@@ -335,7 +335,7 @@ export function TourHeroMedia({
   };
 
   return (
-    <section id="hero" className="relative w-full h-screen min-h-[700px] flex items-end">
+    <section id="hero" className="relative w-full h-screen min-h-[700px] flex items-end bg-black">
       {/* VIDEO BACKGROUND */}
       {hasVideo ? (
         <>
@@ -354,18 +354,25 @@ export function TourHeroMedia({
           />
           {/* STATIC IMAGE WHEN THUMBNAIL SELECTED */}
           {typeof activeMedia === 'number' && heroImages[activeMedia] && (
-            <img
-              src={heroImages[activeMedia]}
-              alt={tour.title}
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
+            <>
+              <div className="absolute inset-0 bg-black" />
+              <img
+                src={heroImages[activeMedia]}
+                alt={tour.title}
+                className="absolute inset-0 w-full h-full object-contain object-center"
+                fetchPriority="high"
+                decoding="sync"
+              />
+            </>
           )}
         </>
       ) : (
         <img
           src={heroImage}
           alt={tour.title}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-contain object-center"
+          fetchPriority="high"
+          decoding="sync"
           onError={(e) => {
             const t = e.target as HTMLImageElement;
             if (!t.dataset.fallback) {
