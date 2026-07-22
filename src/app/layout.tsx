@@ -5,7 +5,6 @@ import AppSoundShell from '@/components/audio/AppSoundShell';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import LiaChatWidget from '@/components/ai/LiaChatWidget';
-import AlertBanner from '@/components/home/AlertBanner';
 import JsonLd from '@/components/seo/JsonLd';
 import { socialSameAs } from '@/data/social';
 import './globals.css';
@@ -65,7 +64,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}>
         <JsonLd data={organizationLd} />
         <AppSoundShell>
-          <AlertBanner />
           <SiteNav />
           <div className='mx-auto w-full max-w-screen-2xl'>{children}</div>
           <SiteFooter />
