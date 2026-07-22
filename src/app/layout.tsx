@@ -6,6 +6,8 @@ import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import LiaChatWidget from '@/components/ai/LiaChatWidget';
 import AlertBanner from '@/components/home/AlertBanner';
+import JsonLd from '@/components/seo/JsonLd';
+import { socialSameAs } from '@/data/social';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://renesadventures.tours'),
   title: "Rene's Adventures | Luxury Charters in Belize",
   description: 'Your day. Your boat. Your legend. Premium charters in Belize with conditions-based intelligence, concierge booking, and story-grade memories.',
+  alternates: { canonical: '/' },
   openGraph: {
     title: "Rene's Adventures | Luxury Charters in Belize",
     description: 'Premium charter experiences on Ambergris Caye—deep sea, reef, sunset rituals, and custom adventures.',
@@ -31,6 +34,28 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': ['TravelAgency', 'LocalBusiness'],
+  '@id': 'https://renesadventures.tours/#organization',
+  name: "Rene's Adventures",
+  description:
+    'Luxury private boat charters on Ambergris Caye, Belize — deep sea fishing, Blue Hole, Secret Beach, and sunset cruises with a licensed, insured local captain.',
+  url: 'https://renesadventures.tours',
+  telephone: '+501-627-3556',
+  email: 'renesadventuresbz@gmail.com',
+  image: 'https://renesadventures.tours/images/tours/deep-sea-fishing.jpg',
+  priceRange: '$$$',
+  areaServed: { '@type': 'Place', name: 'Ambergris Caye, Belize' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'San Pedro',
+    addressRegion: 'Ambergris Caye',
+    addressCountry: 'BZ',
+  },
+  sameAs: socialSameAs(),
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='en'>
@@ -38,6 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link href='https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap' rel='stylesheet' />
       </head>
       <body className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}>
+        <JsonLd data={organizationLd} />
         <AppSoundShell>
           <AlertBanner />
           <SiteNav />
