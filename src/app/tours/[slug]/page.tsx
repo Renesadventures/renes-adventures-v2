@@ -52,10 +52,6 @@ const WHY_COPY: Record<string, { headline: string; sub: string }> = {
     headline: 'Why This Sunset Stays With You',
     sub: 'Belize has roughly 300 days of sunshine a year. This is how you end the best one.',
   },
-  'blue-hole-adventure': {
-    headline: 'Why People Fly Across the World for This',
-    sub: 'There are seven underwater wonders of the world. One of them is two hours from San Pedro.',
-  },
   'blue-hole': {
     headline: 'Why People Fly Across the World for This',
     sub: 'There are seven underwater wonders of the world. One of them is two hours from San Pedro.',
@@ -81,13 +77,6 @@ The sky stops being blue and starts being something else entirely — gold and c
 You are on the water when it happens. Drink in hand. No agenda.
 Some people take photos. Most just watch. Nobody talks much.
 They don't need to.`,
-
-  'blue-hole-adventure': `You've seen the satellite image. The perfect circle of darkness in the middle of a turquoise sea.
-What the image doesn't tell you: it takes two hours to get there. Open ocean. Flying fish jumping the bow. Nothing on the horizon.
-Then it appears.
-You anchor at the edge. You look down. The water goes from clear to black in seconds.
-Three hundred meters of nothing below you.
-You jump anyway.`,
 
   'blue-hole': `You've seen the satellite image. The perfect circle of darkness in the middle of a turquoise sea.
 What the image doesn't tell you: it takes two hours to get there. Open ocean. Flying fish jumping the bow. Nothing on the horizon.
@@ -149,25 +138,6 @@ const REVIEWS: Record<string, { quote: string; author: string; location: string 
         'Our group of 6 did this on our last night in Belize. Everyone agreed it was the best night of the whole trip. Worth every penny.',
       author: 'The Ortega Family',
       location: 'San Diego, CA',
-    },
-  ],
-  'blue-hole-adventure': [
-    {
-      quote:
-        "You hear about the Blue Hole, you see photos — nothing prepares you. Looking down into that dark blue is something I'll carry forever.",
-      author: 'Thomas W.',
-      location: 'London, UK',
-    },
-    {
-      quote:
-        'The boat ride alone is worth it. Two hours across open water to get there, and you feel every mile. Then you see it.',
-      author: 'Camille D.',
-      location: 'Paris, France',
-    },
-    {
-      quote: "Rene's crew knew every reef on the way back. We snorkeled three spots after the Blue Hole. Full day, full value.",
-      author: 'Kevin & Amy S.',
-      location: 'Austin, TX',
     },
   ],
   'blue-hole': [

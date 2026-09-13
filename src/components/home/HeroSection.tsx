@@ -42,7 +42,7 @@ const CHANNELS = [
     videoUrl: `${base}/videos/hero/blue-hole.mp4`,
     fallbackImageUrl: `${base}/images/tours/hol-chan-snorkel.jpg`,
     ctaText: 'Book This Adventure',
-    ctaLink: '/tours/blue-hole-adventure'
+    ctaLink: '/tours/blue-hole'
   },
   {
     id: 'secret-beach',

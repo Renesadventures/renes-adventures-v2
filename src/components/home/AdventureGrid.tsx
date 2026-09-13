@@ -22,6 +22,8 @@ type QuickPick = {
 
   price: number;
 
+  priceDisplay?: string;
+
   videoSrc: string;
 
   imageSrc: string;
@@ -85,6 +87,8 @@ export default function AdventureGrid() {
         title: 'Blue Hole Adventure',
 
         price: 900,
+
+        priceDisplay: 'Contact Us',
 
         tagline: 'UNESCO diving legend',
 
@@ -570,7 +574,7 @@ export default function AdventureGrid() {
 
                       <div className="mt-1 text-xs text-white/80">{t.tagline}</div>
 
-                      <div className="mt-3 text-2xl font-extrabold tracking-tight">${t.price}</div>
+                      <div className="mt-3 text-2xl font-extrabold tracking-tight">{t.priceDisplay ?? `$${t.price}`}</div>
 
                     </div>
 

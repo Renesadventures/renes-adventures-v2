@@ -330,7 +330,7 @@ export default function ConditionsWidget() {
       { id: 'vid-reef-fishing-xxx', type: 'video', src: `${base}/deep-sea-fishing.mp4`, label: 'Reef Fishing' },
       { id: 'vid-lobster-1', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/lobster.mp4', label: 'Lobster' },
       { id: 'vid-deep-sea-5', type: 'video', src: `${base}/deep-sea-fishing-two.mp4`, label: 'Deep Sea' },
-      { id: 'img-nature', type: 'video', src: 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev/girl-snorkeling.mov', label: 'Snorkel' },
+      { id: 'img-nature', type: 'video', src: `${base}/boy-woman-snorkeling.mp4`, label: 'Snorkel' },
       { id: 'img-blue-hole-iconic', type: 'video', src: `${base}/blue-hole-two.mp4`, label: 'Blue Hole' },
     ],
     [base]
