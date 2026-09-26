@@ -235,6 +235,8 @@ export async function createLead(input: LeadInput): Promise<LeadResult> {
         body: `<p><b>New contact from the same guest</b></p><p>${body}</p>`,
         message_type: 'comment',
         subtype_xmlid: 'mail.mt_note',
+        // Without this Odoo 18 escapes the body and the note shows raw tags.
+        body_is_html: true,
       });
       return { ok: true, leadId: existing, existing: true };
     }
@@ -247,7 +249,8 @@ export async function createLead(input: LeadInput): Promise<LeadResult> {
     const vals: Record<string, unknown> = {
       name: title,
       contact_name: input.name,
-      description: buildDescription(input),
+      // description is an HTML field in Odoo 18 — keep the line breaks.
+      description: escapeHtml(buildDescription(input)).replace(/\n/g, '<br/>'),
       // 'lead' (not 'opportunity'): the Charter Pack's stale-inquiry revival
       // only watches leads, so an opportunity would never get chased.
       type: 'lead',
