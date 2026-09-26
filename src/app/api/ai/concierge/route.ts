@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
+import { captureChatLead } from '@/lib/lia-chat-lead';
 import OpenAI from 'openai';
 import { tours, getFeaturedTours } from '@/data/tours';
 import { KnowledgeAssembler } from '@/lib/lia-knowledge/KnowledgeAssembler';
@@ -279,6 +280,12 @@ Example 3 — Local question + reciprocity + transition back to booking:
 Guest: "Where should we eat tonight?"
 Lia: "You’re going to eat well here. Tell me your vibe — romantic, local, or fun-and-casual? If you want my quick shortlist: (1) a local Belizean spot for big flavor, (2) a beachfront dinner for the views, and (3) a lively place if you want a drink after. And while I’ve got you: what day are you thinking for your boat day — tomorrow or later this week?"
 
+CAPTURING BOOKING DETAILS (IMPORTANT)
+- When a guest wants to book, check availability, or get a price for their group, ask for their name and the best way to reach them: email or WhatsApp number.
+- Ask for it ONCE, naturally, e.g. "What's your name and the best email or WhatsApp number? I'll pass everything to Captain Rene so he can confirm your date."
+- Once they share it, say Captain Rene or the team will reach out to confirm. Never promise a confirmed booking or exact availability yourself.
+- Never ask for card numbers or payment details in chat.
+
 NON-NEGOTIABLE
 - You must always end with either a booking step or a follow-up question that advances the booking.`;
 
@@ -402,6 +409,21 @@ export async function POST(request: NextRequest) {
     const aiMessage =
       completion.choices[0]?.message?.content ||
       'I apologize, but I encountered an error. Please try again.';
+
+    // Hand any contact details the guest shared to Lia Desk — after the
+    // reply is sent, so the guest never waits on the CRM.
+    after(async () => {
+      try {
+        await captureChatLead(
+          messages,
+          effectiveMessage,
+          aiMessage,
+          typeof (context as any)?.pageName === 'string' ? (context as any).pageName : undefined,
+        );
+      } catch (err) {
+        console.error('[lia-chat] lead capture failed (non-fatal):', err);
+      }
+    });
 
     return NextResponse.json({ message: aiMessage });
   } catch (error: any) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createLead } from '@/lib/liadesk';
 
 const BROCHURE_PUBLIC_PATH = '/brochures/renes-luxury-brochure.pdf';
 
@@ -9,6 +10,16 @@ function isEmail(v: unknown): v is string {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
+/**
+ * Brochure download.
+ *
+ * Somebody who hands over their email for a luxury charter brochure is one of
+ * the warmest signals this site produces, and until now that name went nowhere
+ * Rene could see. It now creates a CRM lead.
+ *
+ * Order matters: the download is never blocked. If Lia Desk is unreachable the
+ * visitor still gets their brochure and the failure is logged for us.
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -21,7 +32,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
     }
 
-    // Track download intent (reuse existing tracking endpoint)
+    // Lia Desk — the system of record.
+    try {
+      const lead = await createLead({
+        name: name || email,
+        email,
+        interest: tourTitle || 'Luxury brochure',
+        message: 'Downloaded the luxury brochure.',
+        source: 'Website',
+        extra: { tourSlug, tourTitle },
+      });
+      if (!lead.ok) {
+        console.error('[brochure] Lia Desk rejected a lead:', lead.error, { email });
+      }
+    } catch (err) {
+      console.error('[brochure] Lia Desk threw (non-fatal):', err);
+    }
+
+    // Existing tracking. Must never block the download.
     try {
       const baseUrl = new URL(request.url);
       await fetch(new URL('/api/track-brochure', baseUrl), {
@@ -39,7 +67,7 @@ export async function POST(request: NextRequest) {
       // no-op: tracking must never block download
     }
 
-    // Verify brochure exists (avoid 404s being treated as success)
+    // Verify the brochure exists, so a 404 is not reported as success.
     try {
       const baseUrl = new URL(request.url);
       const res = await fetch(new URL(BROCHURE_PUBLIC_PATH, baseUrl), { method: 'HEAD' });

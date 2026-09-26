@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createLead } from '@/lib/liadesk';
 
 export const runtime = 'nodejs';
 
@@ -73,6 +74,39 @@ export async function POST(req: NextRequest) {
         },
       ],
     });
+
+    // Record the booking intent in Lia Desk the moment checkout opens.
+    //
+    // Deliberately BEFORE payment completes: about half of checkouts are
+    // abandoned, and an abandoned high-value charter is exactly the lead Rene
+    // should be calling. Stripe alone would only ever tell him about the ones
+    // that paid.
+    //
+    // The guest's name and email live with Stripe until a webhook exists, so
+    // the lead carries what we have and says plainly where the rest is.
+    try {
+      const lead = await createLead({
+        name: tourName ? `${tourName} booking` : 'Website booking',
+        interest: tourName || 'Charter booking',
+        message:
+          'Started checkout on the website. Contact details are on the Stripe ' +
+          'payment record until the Stripe webhook is wired up.',
+        source: 'Website',
+        guests: Number(guestCount) || undefined,
+        extra: {
+          duration,
+          stripeSessionId: session.id,
+          amountBeforeTax: (baseSubtotal / 100).toFixed(2),
+          status: 'checkout started - not yet paid',
+        },
+      });
+      if (!lead.ok) {
+        console.error('[checkout] Lia Desk rejected a lead:', lead.error);
+      }
+    } catch (err) {
+      // Never block a paying customer because the CRM is having a bad day.
+      console.error('[checkout] Lia Desk threw (non-fatal):', err);
+    }
 
     return NextResponse.json({ url: session.url });
   } catch (err: unknown) {
