@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { createLead, LEAD_SOURCES, type LeadInput, type LeadSource } from '@/lib/liadesk';
+import { draftAndAttach } from '@/lib/lia-brain/draft';
 
 /**
  * POST /api/crm/lead
@@ -102,6 +103,29 @@ export async function POST(req: NextRequest) {
       source: input.source,
     });
     return NextResponse.json({ ok: true, leadId: null, queued: false });
+  }
+
+  // Lia writes the reply and parks it on the lead as a draft. After the
+  // response, so the visitor never waits on a model call, and never sent —
+  // a person reads every draft before it goes anywhere.
+  if (result.leadId) {
+    const leadId = result.leadId;
+    after(async () => {
+      await draftAndAttach(leadId, {
+        kind: 'form',
+        name: input.name,
+        email: input.email,
+        body: input.message || `Enquiry about: ${input.interest || 'a charter'}`,
+        facts: {
+          'Interested in': input.interest,
+          'Requested date': input.tripDate,
+          Guests: input.guests,
+          Phone: input.phone,
+          'Came from': input.source,
+          Page: (input.extra as Record<string, unknown> | undefined)?.page,
+        },
+      });
+    });
   }
 
   return NextResponse.json({

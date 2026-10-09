@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { z } from 'zod';
 import { createLead } from '@/lib/liadesk';
+import { draftAndAttach } from '@/lib/lia-brain/draft';
 
 export const runtime = 'nodejs';
 
@@ -56,6 +57,20 @@ export async function POST(req: NextRequest) {
     console.error('[lead-magnet] Lia Desk rejected a lead:', lead.error, {
       phone,
       offer,
+    });
+  } else if (lead.leadId) {
+    // A draft reply waiting on the lead, never sent. See lib/lia-brain/draft.ts.
+    const leadId = lead.leadId;
+    after(async () => {
+      await draftAndAttach(leadId, {
+        kind: 'form',
+        name,
+        email,
+        body: offer
+          ? `Asked for: ${offer}`
+          : 'Left a phone number through the capture form on the website.',
+        facts: { Phone: phone, Offer: offer, Form: source },
+      });
     });
   }
 

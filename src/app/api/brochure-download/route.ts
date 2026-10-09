@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { createLead } from '@/lib/liadesk';
+import { draftAndAttach } from '@/lib/lia-brain/draft';
 
 const BROCHURE_PUBLIC_PATH = '/brochures/renes-luxury-brochure.pdf';
 
@@ -44,6 +45,19 @@ export async function POST(request: NextRequest) {
       });
       if (!lead.ok) {
         console.error('[brochure] Lia Desk rejected a lead:', lead.error, { email });
+      } else if (lead.leadId) {
+        // Somebody who hands over an email for a charter brochure is as warm
+        // as this site gets. Lia drafts the follow-up; a person sends it.
+        const leadId = lead.leadId;
+        after(async () => {
+          await draftAndAttach(leadId, {
+            kind: 'form',
+            name: name || undefined,
+            email,
+            body: `Downloaded the luxury brochure${tourTitle ? ` from the ${tourTitle} page` : ''}.`,
+            facts: { 'Looking at': tourTitle, Tour: tourSlug },
+          });
+        });
       }
     } catch (err) {
       console.error('[brochure] Lia Desk threw (non-fatal):', err);

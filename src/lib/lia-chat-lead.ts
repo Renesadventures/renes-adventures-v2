@@ -53,6 +53,10 @@ export async function captureChatLead(
   latestUserMessage: string,
   aiReply: string,
   page?: string,
+  /** Why Lia handed this one to a human — written onto the lead so whoever
+   *  picks it up knows what the guest actually needs before they read back
+   *  the whole transcript. */
+  handoffSummary?: string,
 ): Promise<void> {
   const email = findEmail(latestUserMessage);
   const phone = findPhone(latestUserMessage);
@@ -87,7 +91,13 @@ export async function captureChatLead(
     email,
     phone,
     interest: 'Lia chat',
-    message: `Conversation with Lia on the website:\n\n${transcript}`.slice(0, 3800),
+    message: [
+      handoffSummary ? `Lia handed this over:\n${handoffSummary}\n` : '',
+      `Conversation with Lia on the website:\n\n${transcript}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+      .slice(0, 3800),
     source: 'Lia Chat',
     tripDate,
     guests: guestsRaw ? Number(guestsRaw) : undefined,

@@ -289,3 +289,42 @@ export async function liadeskStatus(): Promise<{
     };
   }
 }
+
+/**
+ * Post an internal note onto an existing lead.
+ *
+ * Internal, not an email: it appears in the lead's chatter where Chris and
+ * Rene already work, and Odoo will not send it to the guest. That distinction
+ * is the whole reason Lia's drafted replies are safe — she writes them, a
+ * human reads them, and nothing leaves the building without a person pressing
+ * send.
+ *
+ * Fails soft like everything else here. A missing note is a nuisance; a thrown
+ * error on a lead path is a lost enquiry.
+ */
+export async function postLeadNote(
+  leadId: number,
+  html: string,
+): Promise<{ ok: boolean; error?: string }> {
+  if (!ODOO_KEY) return { ok: false, error: 'LIADESK_API_KEY is not set' };
+  try {
+    await call('crm.lead', 'message_post', [[leadId]], {
+      body: html,
+      message_type: 'comment',
+      // mt_note = internal log, never emailed to the customer.
+      subtype_xmlid: 'mail.mt_note',
+      body_is_html: true,
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Unknown Lia Desk error',
+    };
+  }
+}
+
+/** Plain text to safe HTML for a chatter note. */
+export function noteHtml(text: string): string {
+  return escapeHtml(text).replace(/\n/g, '<br/>');
+}
