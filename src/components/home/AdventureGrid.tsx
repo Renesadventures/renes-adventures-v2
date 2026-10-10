@@ -74,7 +74,7 @@ export default function AdventureGrid() {
 
         videoSrc: `${base}/hero/sunset-ritual.mp4`,
 
-        imageSrc: `${base}/images/renes-activities/boat-silhouetted-against-a-beautiful-sunset-in-the-2025-02-11-23-57-55-utc.jpg`,
+        imageSrc: '/images/renes-activities/sunset-guests-real.jpg',
 
         href: '/tours/sunset-cruise',
 
@@ -112,7 +112,7 @@ export default function AdventureGrid() {
 
         videoSrc: `${base}/hero/secret-beach.mp4`,
 
-        imageSrc: `${base}/images/renes-activities/exotic-beach-landscape-2024-10-12-01-05-44-utc.jpg`,
+        imageSrc: '/images/renes-activities/secret-beach-real.jpg',
 
         href: '/tours/secret-beach',
 
@@ -306,7 +306,7 @@ export default function AdventureGrid() {
 
                   <Image
 
-                    src={`${base}/images/renes-activities/luxury-vacation-cook-islands-south-pacific-oce-2025-03-18-14-51-35-utc.jpg`}
+                    src="/images/renes-activities/full-day-custom-adventure.jpg"
 
                     alt="Full Day Custom Adventure"
 

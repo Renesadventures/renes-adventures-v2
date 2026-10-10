@@ -9,6 +9,56 @@ const outFile = path.join(projectRoot, 'src', 'data', 'asset-manifest.json');
 const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png']);
 const VIDEO_EXTS = new Set(['.mp4']);
 
+// Stock photos whose filename names somewhere that is not Belize.
+// The galleries pick images out of this manifest by keyword, so anything
+// listed here would eventually surface on the site as if it were Rene's water.
+const WRONG_PLACE = [
+  'indian-ocean',
+  'roatan',
+  'bora-bora',
+  'yucatan',
+  'mexico',
+  'cook-islands',
+  'south-pacific',
+  'maldives',
+  'hawaii',
+  'bahamas',
+  'thailand',
+  'philippines',
+  'seychelles',
+  'fiji',
+  'zanzibar',
+  'bali',
+  'greece',
+  'croatia',
+  'isla-mujeres',
+  'cancun',
+  'tulum',
+  'jamaica',
+  'aruba',
+  'curacao',
+  'barbados',
+  'punta-cana',
+  'dominican',
+  'costa-rica',
+  'panama',
+  'honduras',
+  'cozumel',
+  'key-west',
+  'florida',
+  'australia',
+  'red-sea',
+  'egypt',
+  'mauritius',
+  'koh-kradan',
+  'thailan',
+  'kraalbaai',
+  'south-africa',
+  'maldiv',
+];
+
+const isWrongPlace = (p) => WRONG_PLACE.some((w) => p.toLowerCase().includes(w));
+
 function toSafeFileName(fileName) {
   return fileName
     .replace(/[\s()]+/g, '-')
@@ -84,8 +134,10 @@ async function main() {
 
   for (const f of renamedFiles) {
     const ext = path.extname(f).toLowerCase();
-    if (IMAGE_EXTS.has(ext)) images.push(toPublicPath(f));
-    if (VIDEO_EXTS.has(ext)) videos.push(toPublicPath(f));
+    const publicPath = toPublicPath(f);
+    if (isWrongPlace(publicPath)) continue;
+    if (IMAGE_EXTS.has(ext)) images.push(publicPath);
+    if (VIDEO_EXTS.has(ext)) videos.push(publicPath);
   }
 
   images.sort();
