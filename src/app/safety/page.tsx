@@ -36,13 +36,31 @@ export const metadata: Metadata = {
 /** Everything a visitor can check. Replace each TO CONFIRM with the real value. */
 const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
   {
+    label: 'Vessel registration',
+    value: 'SPR-0760 — "Snapperologist", Port of Registry: San Pedro',
+    note: 'Belize Port Authority Vessel Registration Certificate. The number is painted on the hull — check it against any photo on this site.',
+  },
+  {
+    label: 'Belize Port Authority boat licence',
+    value: 'BPA #57061 — Class A, current for 2026',
+  },
+  {
+    label: 'Registered owner',
+    value: 'Renaldo Chen (Captain Rene), San Pedro Town, Belize',
+  },
+  {
+    label: 'Certified passenger capacity',
+    value: '10 — and we carry a maximum of 8 guests',
+    note: 'We run two crew. Eight guests is a choice, not a ceiling we are squeezing up against.',
+  },
+  {
+    label: 'Vessel',
+    value: '25 ft fiberglass, 7 ft beam, 1.5 tons',
+  },
+  {
     label: 'Belize Tourism Board Tour Operator Licence',
     value: 'TO CONFIRM — licence number',
     note: 'Renewed annually. Every BTB licence expires 31 December, so a current one is a current one.',
-  },
-  {
-    label: 'Licence valid through',
-    value: 'TO CONFIRM — 31 December 20XX',
   },
   {
     label: 'Insurer',
@@ -52,10 +70,6 @@ const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
     label: 'Passenger liability cover',
     value: 'TO CONFIRM — amount per passenger',
     note: 'Ask almost any operator on this island for this number. See what happens.',
-  },
-  {
-    label: 'Vessel registration',
-    value: 'TO CONFIRM — registration number',
   },
   {
     label: "Captain's licence",
