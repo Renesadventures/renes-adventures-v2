@@ -6,6 +6,8 @@ import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import LiaChatWidget from '@/components/ai/LiaChatWidget';
 import JsonLd from '@/components/seo/JsonLd';
+import Analytics from '@/components/analytics/Analytics';
+import OutboundTracker from '@/components/analytics/OutboundTracker';
 import { socialSameAs } from '@/data/social';
 import './globals.css';
 
@@ -63,6 +65,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}>
         <JsonLd data={organizationLd} />
+        {/* Measurement. Renders nothing unless the IDs are set. */}
+        <Analytics />
+        <OutboundTracker />
         <AppSoundShell>
           <SiteNav />
           <div className='mx-auto w-full max-w-screen-2xl'>{children}</div>

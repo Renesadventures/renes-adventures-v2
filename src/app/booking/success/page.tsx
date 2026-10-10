@@ -1,8 +1,16 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
+import PurchaseTracker from '@/components/analytics/PurchaseTracker';
 
 export default function BookingSuccess() {
   return (
     <div className="min-h-screen bg-[#060608] flex items-center justify-center text-center px-6">
+      {/* The only event on this site that is money. Reported once per session
+          id. Wrapped in Suspense because it reads the query string, and Next
+          refuses to prerender a page that does so unbounded. */}
+      <Suspense fallback={null}>
+        <PurchaseTracker />
+      </Suspense>
       <div className="max-w-lg">
         <div className="text-6xl mb-6">🎉</div>
         <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>

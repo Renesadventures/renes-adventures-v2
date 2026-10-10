@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse, after } from 'next/server';
 import { createLead, LEAD_SOURCES, type LeadInput, type LeadSource } from '@/lib/liadesk';
 import { draftAndAttach } from '@/lib/lia-brain/draft';
+import { sendCapiEvent, metaCookies, capiConfigured } from '@/lib/analytics/meta-capi';
 
 /**
  * POST /api/crm/lead
@@ -103,6 +104,32 @@ export async function POST(req: NextRequest) {
       source: input.source,
     });
     return NextResponse.json({ ok: true, leadId: null, queued: false });
+  }
+
+  // Tell Meta a real lead happened, from the server, with the guest's hashed
+  // email and phone attached. This is the best-matched event the site can
+  // produce — the browser pixel never sees a verified email — and it is what
+  // lets Meta find more people like the ones who actually enquire.
+  // The browser sends its own copy with the same eventId, so Meta keeps one.
+  if (capiConfigured()) {
+    const { fbp, fbc } = metaCookies(req.headers.get('cookie'));
+    const eventId = typeof body.eventId === 'string' ? body.eventId : `lead-${result.leadId ?? Date.now()}`;
+    after(async () => {
+      const sent = await sendCapiEvent({
+        name: 'Lead',
+        eventId,
+        sourceUrl: clean(body.page, 300),
+        email: input.email,
+        phone: input.phone,
+        firstName: input.name.split(' ')[0],
+        fbp,
+        fbc,
+        clientIp: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
+        userAgent: req.headers.get('user-agent') ?? undefined,
+        contentName: input.interest,
+      });
+      if (!sent.ok) console.error('[crm/lead] Conversions API rejected the lead event:', sent.error);
+    });
   }
 
   // Lia writes the reply and parks it on the lead as a draft. After the

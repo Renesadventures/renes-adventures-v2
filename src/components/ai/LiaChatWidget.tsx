@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+// lia-chat-analytics
+import { EVENTS, track, trackWithServer } from '@/lib/analytics/events';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAIChat } from '@/hooks/useAIChat';
 import ChatMessage from './ChatMessage';
@@ -60,9 +62,13 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-    
+
     const message = input.trim();
     setInput('');
+    // A guest who types is the strongest cheap signal of intent on this site,
+    // and it is the event Meta should optimise the ads against — there will
+    // never be enough bookings a month for Meta to learn from purchases.
+    trackWithServer(EVENTS.CHAT_MESSAGE, { page: typeof window !== 'undefined' ? window.location.pathname : undefined });
     await sendMessage(message, context);
   };
 
@@ -82,7 +88,12 @@ export default function LiaChatWidget({ context }: LiaChatWidgetProps) {
         <motion.button
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            // Opening the chat is weaker than typing in it, so this one stays
+            // browser-only — not worth a server event.
+            track(EVENTS.CHAT_OPENED, { page: typeof window !== 'undefined' ? window.location.pathname : undefined });
+            setIsOpen(true);
+          }}
           className="fixed bottom-4 right-4 z-50 w-14 h-14 bg-tropical-coral hover:bg-tropical-orange text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
         >
           <span className="text-xl" aria-hidden>
