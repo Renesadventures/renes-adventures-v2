@@ -162,7 +162,14 @@ async function sourceId(name: string): Promise<number | false> {
  * Find an OPEN lead for this guest (not won, not archived/lost).
  * A past customer who comes back gets a fresh lead — that is a new booking.
  */
-async function findOpenLead(
+/**
+ * The open lead for this guest, if there is one.
+ *
+ * Exported because WhatsApp needs it: when Rene answers a guest from his own
+ * phone, that reply has to land on the conversation Chris and Eddy are already
+ * reading, not open a second one beside it.
+ */
+export async function findOpenLead(
   email?: string,
   phone?: string,
 ): Promise<number | null> {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse, after } from 'next/server';
 import crypto from 'crypto';
-import { createLead, postLeadNote, noteHtml } from '@/lib/liadesk';
+import { createLead, findOpenLead, postLeadNote, noteHtml } from '@/lib/liadesk';
 import { liaReply, sanitizeGuestText } from '@/lib/lia-brain';
 import {
   autoreplyEnabled,
@@ -9,6 +9,14 @@ import {
   sendDirectMessage,
   sendPrivateReply,
 } from '@/lib/lia-brain/meta-graph';
+import {
+  describeMessage,
+  markRead,
+  sendWhatsApp,
+  waIdToPhone,
+  whatsappAutoreplyEnabled,
+  type WhatsAppChangeValue,
+} from '@/lib/lia-brain/whatsapp';
 
 /**
  * Facebook and Instagram — every raised hand, into one place.
@@ -152,26 +160,29 @@ interface MetaEntry {
   id?: string;
   time?: number;
   messaging?: MetaMessaging[];
-  changes?: Array<{ field?: string; value?: MetaChangeValue }>;
+  changes?: Array<{ field?: string; value?: MetaChangeValue & WhatsAppChangeValue }>;
 }
 
-type Channel = 'Facebook' | 'Instagram';
+type Channel = 'Facebook' | 'Instagram' | 'WhatsApp';
 
 /** Lead + Lia's draft on it. The part that happens no matter what is switched off. */
 async function recordAndDraft(opts: {
   channel: Channel;
   name: string;
   text: string;
-  kind: 'DM' | 'comment';
+  kind: 'DM' | 'comment' | 'message';
+  /** WhatsApp gives us a real dialable number. Nothing else here does. */
+  phone?: string;
   extra: Record<string, unknown>;
 }): Promise<{ leadId?: number; reply: string; handoffs: string[] }> {
-  const { channel, name, text, kind, extra } = opts;
+  const { channel, name, text, kind, phone, extra } = opts;
 
   // Both land as a DM: a comment is answered by Private Reply, which is a DM.
   const result = await liaReply({ channel: 'dm', message: text, history: [] });
 
   const lead = await createLead({
     name,
+    phone,
     interest: `${channel} ${kind}`,
     message: [
       text,
@@ -181,7 +192,12 @@ async function recordAndDraft(opts: {
       .filter(Boolean)
       .join('\n'),
     // Matches the UTM sources already in Lia Desk so channel reporting splits.
-    source: channel === 'Instagram' ? 'Instagram' : 'Facebook Ad',
+    source:
+      channel === 'Instagram'
+        ? 'Instagram'
+        : channel === 'WhatsApp'
+          ? 'WhatsApp'
+          : 'Facebook Ad',
     extra,
   });
 
@@ -196,14 +212,17 @@ async function recordAndDraft(opts: {
     return { reply: result.text, handoffs: result.handoffs.map((h) => h.reason) };
   }
 
-  const sendingOn = autoreplyEnabled();
+  // Two separate switches. Answering a stranger's public comment and answering
+  // someone who already has the business's number are not the same risk.
+  const sendingOn = channel === 'WhatsApp' ? whatsappAutoreplyEnabled() : autoreplyEnabled();
+  const inbox = channel === 'WhatsApp' ? 'WhatsApp itself' : 'the Meta Business Suite inbox';
   await postLeadNote(
     lead.leadId!,
     [
       `<p><b>✎ Lia's reply to this ${channel} ${kind}${sendingOn ? ' — SENT' : ' — NOT SENT'}.</b><br/>`,
       sendingOn
-        ? '<i>Auto-reply is on, so this went to them already. Follow up in the Meta inbox.</i></p>'
-        : '<i>Auto-reply is off. Read it, change what you like, then send it from the Meta inbox.</i></p>',
+        ? `<i>Auto-reply is on, so this went to them already. Follow up in ${inbox}.</i></p>`
+        : `<i>Auto-reply is off. Read it, change what you like, then send it from ${inbox}.</i></p>`,
       result.handoffs.length
         ? `<p><b>Needs a person:</b><br/>${noteHtml(result.summary)}</p>`
         : '',
@@ -217,6 +236,91 @@ async function recordAndDraft(opts: {
     reply: result.text,
     handoffs: result.handoffs.map((h) => h.reason),
   };
+}
+
+/**
+ * WhatsApp — the one channel where the guest already trusts the number.
+ *
+ * Two different things arrive here on a coexisting number. A guest writing in
+ * is a lead. Rene answering from his own phone is not a new lead, but it is the
+ * thing Chris and Eddy have never been able to see, so it gets written onto the
+ * conversation they are already reading.
+ */
+async function handleWhatsAppEntry(entry: MetaEntry): Promise<void> {
+  for (const change of entry.changes ?? []) {
+    if (change.field !== 'messages') continue;
+    const v = change.value ?? {};
+
+    // The contacts array is the only place the guest's display name appears.
+    const names = new Map<string, string>();
+    for (const c of v.contacts ?? []) {
+      if (c.wa_id) names.set(c.wa_id, (c.profile?.name || '').trim());
+    }
+
+    /* ------------------------------------------- the guest wrote to us */
+    for (const m of v.messages ?? []) {
+      if (!firstTime(m.id ?? '')) continue;
+
+      const waId = m.from ?? '';
+      const phone = waIdToPhone(waId);
+      const described = describeMessage(m);
+      if (!described) continue;
+
+      // A WhatsApp message is no more trustworthy than a web form.
+      const { text: clean } = sanitizeGuestText(described);
+      const text = clean || described;
+      const name = names.get(waId) || `WhatsApp ${phone || 'guest'}`;
+      // WhatsApp timestamps are seconds, not milliseconds.
+      const when = m.timestamp
+        ? new Date(Number(m.timestamp) * 1000).toISOString()
+        : new Date().toISOString();
+
+      // Two blue ticks within a second tell the guest somebody is there,
+      // before Lia has written a word.
+      await markRead(m.id ?? '');
+
+      const { leadId, reply, handoffs } = await recordAndDraft({
+        channel: 'WhatsApp',
+        name,
+        text,
+        kind: 'message',
+        phone,
+        extra: {
+          channel: 'WhatsApp',
+          'WhatsApp number': phone,
+          'Received at': when,
+          'Reply in': 'WhatsApp — from the phone or from here',
+        },
+      });
+
+      // An inbound message opens WhatsApp's 24-hour window, so replying to the
+      // message we just received never needs an approved template.
+      if (reply) {
+        const sent = await sendWhatsApp(waId, reply);
+        if (!sent.ok) console.error('[meta/webhook] WhatsApp send failed', sent.error);
+        console.log('[meta/webhook] WhatsApp handled', { leadId, sent: sent.sent, handoffs });
+      }
+    }
+
+    /* ------------------- Rene answered from the phone app (Coexistence) */
+    for (const e of v.message_echoes ?? []) {
+      if (!firstTime(e.id ?? '')) continue;
+      const said = (e.text?.body || '').trim();
+      if (!said) continue;
+
+      const phone = waIdToPhone(e.to ?? '');
+      const leadId = await findOpenLead(undefined, phone);
+      // Rene starting a brand new chat with someone is not an enquiry.
+      if (!leadId) continue;
+
+      await postLeadNote(
+        leadId,
+        `<p><b>\u{1F4F1} Rene replied from his phone</b></p><p>${noteHtml(said)}</p>` +
+          `<p style="color:#888"><small>Sent on WhatsApp to ${noteHtml(phone)}. ` +
+          `Logged here so Chris and Eddy can see it without being on that phone.</small></p>`,
+      );
+    }
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -237,7 +341,13 @@ export async function POST(req: NextRequest) {
   }
 
   const channel: Channel | null =
-    body.object === 'instagram' ? 'Instagram' : body.object === 'page' ? 'Facebook' : null;
+    body.object === 'instagram'
+      ? 'Instagram'
+      : body.object === 'page'
+        ? 'Facebook'
+        : body.object === 'whatsapp_business_account'
+          ? 'WhatsApp'
+          : null;
 
   if (!channel) return NextResponse.json({ ok: true });
 
@@ -247,6 +357,12 @@ export async function POST(req: NextRequest) {
 
   after(async () => {
     for (const entry of entries) {
+      /* -------------------------------------------------------- WhatsApp */
+      if (channel === 'WhatsApp') {
+        await handleWhatsAppEntry(entry);
+        continue;
+      }
+
       /* ---------------------------------------------------- direct messages */
       for (const m of entry.messaging ?? []) {
         // is_echo means the business sent it, not the customer.
