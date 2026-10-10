@@ -168,6 +168,11 @@ export default function SiteFooter() {
           <div className="text-white/50 text-xs">&copy; 2026 Rene&apos;s Adventures. All rights reserved.</div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
             <a href="/blog" className="text-white/60 hover:text-white transition">Belize Guide</a>
+            {/* Safety first in the list on purpose: no competitor on this
+                island publishes a licence number or an insurer, so it is the
+                one link here that is a selling point rather than a legal
+                obligation. */}
+            <a href="/safety" className="text-white/60 hover:text-white transition">Safety, Licence &amp; Insurance</a>
             <a href="/privacy-policy" className="text-white/60 hover:text-white transition">Privacy Policy</a>
             <a href="/terms-of-service" className="text-white/60 hover:text-white transition">Terms of Service</a>
             <a href="/cancellation-policy" className="text-white/60 hover:text-white transition">Cancellation Policy</a>

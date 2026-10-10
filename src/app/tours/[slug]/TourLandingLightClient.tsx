@@ -441,7 +441,8 @@ export function TourHeroMedia({
         </div>
 
         <div className="flex flex-wrap gap-3 mb-8">
-          {['Book 1–8 guests instantly', 'Private charter', 'Native local crew'].map((b) => (
+          {/* "instantly" claimed a booking engine this page does not have. */}
+          {['Private charter, 1–8 guests', 'Licensed & insured', 'Native local crew'].map((b) => (
             <span
               key={b}
               className="text-xs text-white/90 bg-black/50 backdrop-blur-sm
@@ -985,12 +986,20 @@ export function TourPricingPanel() {
         {checkoutLoading ? (
           <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
         ) : (
-          <>🔒 Book This Charter</>
+          <>Message Rene to Book</>
         )}
       </button>
 
       <div className="mt-3 space-y-1.5">
-        {['Bank-level encryption', 'All major cards accepted', 'Instant confirmation'].map((t) => (
+        {/*
+          These used to read "Bank-level encryption / All major cards accepted
+          / Instant confirmation" on a page whose only action is opening
+          WhatsApp. Card payment lives on the custom-charter page; here it was
+          simply untrue, and a padlock that goes nowhere converts worse than an
+          honest enquiry. Restore the payment wording only when this page can
+          actually take a card.
+        */}
+        {['Straight to Rene, not a call centre', 'Licensed and insured — see our Safety page', 'No deposit to ask a question'].map((t) => (
           <div key={t} className="flex items-center gap-2 text-xs text-white/40">
             <span className="text-emerald-400">✓</span>
             {t}

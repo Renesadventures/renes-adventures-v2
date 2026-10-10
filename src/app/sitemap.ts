@@ -13,6 +13,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/belize-guide`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/my-story`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    // Higher priority than the other policy pages: this one is a reason to
+    // book, not a legal footnote.
+    { url: `${BASE_URL}/safety`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/privacy-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE_URL}/terms-of-service`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE_URL}/cancellation-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
