@@ -174,6 +174,7 @@ export default function SiteFooter() {
                 obligation. */}
             <a href="/safety" className="text-white/60 hover:text-white transition">Safety, Licence &amp; Insurance</a>
             <a href="/privacy-policy" className="text-white/60 hover:text-white transition">Privacy Policy</a>
+            <a href="/data-deletion" className="text-white/60 hover:text-white transition">Delete My Data</a>
             <a href="/terms-of-service" className="text-white/60 hover:text-white transition">Terms of Service</a>
             <a href="/cancellation-policy" className="text-white/60 hover:text-white transition">Cancellation Policy</a>
           </div>

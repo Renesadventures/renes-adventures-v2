@@ -17,6 +17,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // book, not a legal footnote.
     { url: `${BASE_URL}/safety`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/privacy-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    // Required by Meta before Facebook, Instagram or WhatsApp permissions
+    // can be submitted for App Review.
+    { url: `${BASE_URL}/data-deletion`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE_URL}/terms-of-service`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE_URL}/cancellation-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
   ];
