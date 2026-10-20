@@ -7,7 +7,7 @@
  * in one person's phone is a message only one person can answer, and Chris is
  * in Iowa, Rene is in Belize and Eddy is in Nicaragua.
  *
- * Once +501 627 3556 moves to the Cloud API, every message that arrives here
+ * Once +501 606 0170 is live on the Cloud API, every message that arrives here
  * becomes a lead in Lia Desk, which all three of them can open from anywhere.
  * The phone keeps working exactly as it does today — that is what Coexistence
  * means — but the conversation stops living only on it.
@@ -27,7 +27,7 @@ const GRAPH = 'https://graph.facebook.com/v21.0';
 
 /** The WABA number that sends. Different from the Page token — a system user token. */
 function waToken(): string {
-  return process.env.WHATSAPP_TOKEN || '';
+  return process.env.WHATSAPP_ACCESS_TOKEN || '';
 }
 
 function phoneNumberId(): string {
@@ -61,7 +61,7 @@ export async function sendWhatsApp(
 ): Promise<{ ok: boolean; sent: boolean; error?: string }> {
   if (!whatsappAutoreplyEnabled()) return { ok: true, sent: false };
   if (!whatsappConfigured()) {
-    return { ok: false, sent: false, error: 'WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID is not set' };
+    return { ok: false, sent: false, error: 'WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID is not set' };
   }
   if (!to || !text.trim()) return { ok: true, sent: false };
 

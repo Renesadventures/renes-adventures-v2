@@ -3,10 +3,10 @@
 #
 #   bash scripts/whatsapp-check.sh
 #
-# Needs WHATSAPP_TOKEN and WHATSAPP_PHONE_NUMBER_ID in the environment, or
+# Needs WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID in the environment, or
 # passed in:
 #
-#   WHATSAPP_TOKEN=EAA... WHATSAPP_PHONE_NUMBER_ID=123... bash scripts/whatsapp-check.sh
+#   WHATSAPP_ACCESS_TOKEN=EAA... WHATSAPP_PHONE_NUMBER_ID=123... bash scripts/whatsapp-check.sh
 #
 # Nothing here sends a message to anybody. It reads.
 
@@ -15,7 +15,7 @@ set -u
 # on a webhook. Register the www URL or the handshake silently fails.
 BASE="${WHATSAPP_SITE:-https://www.renesadventures.tours}"
 GRAPH="https://graph.facebook.com/v21.0"
-TOKEN="${WHATSAPP_TOKEN:-}"
+TOKEN="${WHATSAPP_ACCESS_TOKEN:-}"
 PNID="${WHATSAPP_PHONE_NUMBER_ID:-}"
 FAIL=0
 
@@ -36,7 +36,7 @@ print(d if d is not None else "")' "$@"; }
 # ----------------------------------------------------------------- 1. token
 say "1. Does the token work, and is the number registered?"
 if [ -z "$TOKEN" ] || [ -z "$PNID" ]; then
-  bad "WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID is not set — nothing to check."
+  bad "WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID is not set — nothing to check."
 else
   RES=$(curl -s --max-time 30 \
     "$GRAPH/$PNID?fields=display_phone_number,verified_name,quality_rating,platform_type,code_verification_status" \
