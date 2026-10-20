@@ -43,7 +43,7 @@ const organizationLd = {
   description:
     'Luxury private boat charters on Ambergris Caye, Belize — deep sea fishing, Blue Hole, Secret Beach, and sunset cruises with a licensed, insured local captain.',
   url: 'https://renesadventures.tours',
-  telephone: '+501-627-3556',
+  telephone: '+501-606-0170',
   email: 'renesadventuresbz@gmail.com',
   image: 'https://renesadventures.tours/images/tours/deep-sea-fishing.jpg',
   priceRange: '$$$',

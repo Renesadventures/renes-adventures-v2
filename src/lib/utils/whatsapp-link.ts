@@ -4,7 +4,7 @@ function getBusinessWhatsAppNumber(): string {
   if (cleaned.length >= 8) return cleaned;
 
   // René's business number
-  return '5016273556';
+  return '5016060170';
 }
 
 export function getWhatsAppLink(message: string): string {

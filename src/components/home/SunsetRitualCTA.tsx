@@ -48,15 +48,15 @@ export default function SunsetRitualCTA() {
               </a>
 
               <a
-                href="tel:+5016273556"
+                href="tel:+5016060170"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 py-3 text-base font-semibold text-white backdrop-blur transition-all duration-300 hover:bg-white/10 hover:border-white/35"
               >
                 <Phone className="h-5 w-5 text-amber-300" />
-                +501 627 3556
+                +501 606 0170
               </a>
 
               <a
-                href="https://wa.me/5016273556"
+                href="https://wa.me/5016060170"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-emerald-500/15 px-6 py-3 text-base font-semibold text-white backdrop-blur transition-all duration-300 hover:bg-emerald-500/25 hover:border-emerald-200/40"

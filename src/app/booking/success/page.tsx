@@ -21,8 +21,8 @@ export default function BookingSuccess() {
         </p>
         <p className="text-white/40 text-sm mb-8">
           Questions? WhatsApp us at{' '}
-          <a href="https://wa.me/5016273556" className="text-emerald-400 hover:underline">
-            +501 627 3556
+          <a href="https://wa.me/5016060170" className="text-emerald-400 hover:underline">
+            +501 606 0170
           </a>
         </p>
 

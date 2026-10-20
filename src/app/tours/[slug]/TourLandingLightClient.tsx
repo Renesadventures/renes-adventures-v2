@@ -64,7 +64,7 @@ function clamp(n: number, min: number, max: number) {
 function getWhatsAppNumberClient(): string {
   const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
   const cleaned = typeof raw === 'string' ? raw.replace(/\D/g, '') : '';
-  return cleaned.length >= 8 ? cleaned : '5016273556';
+  return cleaned.length >= 8 ? cleaned : '5016060170';
 }
 
 function buildWhatsAppBookingLink(opts: {
@@ -456,7 +456,7 @@ export function TourHeroMedia({
         <div className="flex flex-wrap gap-3 mb-8">
           {tour.slug === 'blue-hole' ? (
             <a
-              href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+              href="https://wa.me/5016060170?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full
@@ -824,7 +824,7 @@ export function TourPricingPanel() {
         </div>
 
         <a
-          href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+          href="https://wa.me/5016060170?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
           target="_blank"
           rel="noopener noreferrer"
           className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 flex items-center justify-center gap-2 transition-all mb-3"
@@ -1011,7 +1011,7 @@ export function TourPricingPanel() {
         <div className="mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-2">
           <p className="text-white/40 text-xs">Travelling with 9 or more?</p>
           <a
-            href="https://wa.me/5016273556"
+            href="https://wa.me/5016060170"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full text-center px-4 py-2.5 rounded-xl border border-white/20

@@ -40,7 +40,7 @@ ${platformGuidance(platform)}`;
   const user = `Write ONE ${platform} post.
 Angle: ${angle}
 ${tourContext(tourSlug)}
-Booking: link in bio / site renesadventures.tours or WhatsApp +501 627 3556.`;
+Booking: link in bio / site renesadventures.tours or WhatsApp +501 606 0170.`;
 
   try {
     const res = await openai.chat.completions.create({

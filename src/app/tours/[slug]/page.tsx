@@ -670,7 +670,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
                   </div>
                   <div className="mt-4 flex flex-wrap gap-3">
                     <a
-                      href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+                      href="https://wa.me/5016060170?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold transition"
@@ -758,7 +758,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
               {slug === 'blue-hole' ? (
                 <>
                   <a
-                    href="https://wa.me/5016273556?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
+                    href="https://wa.me/5016060170?text=Hi%20Ren%C3%A9%2C%20I%27m%20interested%20in%20the%20Blue%20Hole%20Adventure.%20Can%20you%20share%20pricing%20details%3F"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="h-12 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black border border-emerald-600/20 transition inline-flex items-center justify-center"

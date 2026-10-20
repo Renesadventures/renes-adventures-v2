@@ -112,13 +112,13 @@ export default function SiteFooter() {
             <div className="text-xs uppercase tracking-[0.25em] text-emerald-400">Contact Us</div>
             <div className="mt-4 space-y-3 text-sm text-white/60">
               <div>
-                <a href="tel:+5016273556" className="text-white/60 hover:text-white transition">
-                  +501 627 3556
+                <a href="tel:+5016060170" className="text-white/60 hover:text-white transition">
+                  +501 606 0170
                 </a>
               </div>
               <div>
                 <a
-                  href="https://wa.me/5016273556"
+                  href="https://wa.me/5016060170"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/60 hover:text-white transition"

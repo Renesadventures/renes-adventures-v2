@@ -872,7 +872,7 @@ export default function CustomCharterPage() {
             <div className="rounded-3xl bg-teal-500 p-6 shadow-sm">
               <div className="text-lg font-extrabold text-white">Traveling with more than 8?</div>
               <div className="mt-3 text-teal-50 leading-relaxed">Contact us via WhatsApp or email and we&apos;ll help arrange your trip.</div>
-              <button type="button" onClick={onOpenWhatsAppLargeGroup} className="mt-5 h-12 w-full rounded-2xl bg-white text-teal-800 font-extrabold hover:bg-teal-50 transition text-sm">WhatsApp +501 627 3556</button>
+              <button type="button" onClick={onOpenWhatsAppLargeGroup} className="mt-5 h-12 w-full rounded-2xl bg-white text-teal-800 font-extrabold hover:bg-teal-50 transition text-sm">WhatsApp +501 606 0170</button>
             </div>
             <div className="rounded-3xl bg-gray-950 p-6 shadow-sm border border-white/10">
               <div className="text-lg font-extrabold text-white">Talk to Lia</div>
