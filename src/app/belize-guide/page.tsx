@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { belizeChapters } from '@/data/belize-chapters';
 import JsonLd from '@/components/seo/JsonLd';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 export const metadata: Metadata = {
   title: "Belize · Untold | A Guide to Ambergris Caye | Rene's Adventures",

@@ -27,7 +27,7 @@ export default function ContentStudioPage() {
     setAuthError('');
     const res = await fetch('/api/invoice/auth', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
       body: JSON.stringify({ password }),
     });
     if (res.ok) setAuthed(true);
@@ -38,7 +38,7 @@ export default function ContentStudioPage() {
     setError('');
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
       body: JSON.stringify({ tourSlug, platform, angle }),
     });
     const data = await res.json();

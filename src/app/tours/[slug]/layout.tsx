@@ -9,7 +9,7 @@ import type { Tour } from '@/data/tours';
 import JsonLd from '@/components/seo/JsonLd';
 import TourFAQ from '@/components/tours/TourFAQ';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 // Same policy text already shown site-wide in the footer — reused verbatim
 // so the FAQ answer never drifts from the real cancellation policy.

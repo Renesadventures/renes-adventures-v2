@@ -1,3 +1,4 @@
+import { requireAdmin } from '@/lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { generateImage, replicateConfigured } from '@/lib/replicate';
 import { imagePromptFor } from '@/lib/content/social';
@@ -6,6 +7,8 @@ export const runtime = 'nodejs';
 export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   if (!replicateConfigured()) {
     return NextResponse.json(
       { error: 'Replicate not configured. Add REPLICATE_API_TOKEN to enable image generation.' },

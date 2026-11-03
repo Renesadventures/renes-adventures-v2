@@ -5,7 +5,7 @@ import { belizeChapters, getBelizeChapterBySlug } from '@/data/belize-chapters';
 import { getTourBySlug } from '@/data/tours';
 import JsonLd from '@/components/seo/JsonLd';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 export function generateStaticParams() {
   return belizeChapters.map((c) => ({ slug: c.slug }));

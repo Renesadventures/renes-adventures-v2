@@ -1,3 +1,4 @@
+import { requireAdmin } from '@/lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 export const runtime = 'nodejs';
@@ -8,6 +9,8 @@ const TAX_RATES = [
 ];
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
 

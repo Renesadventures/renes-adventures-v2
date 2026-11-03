@@ -3,7 +3,7 @@ import { tours } from '@/data/tours';
 import { blogPosts } from '@/data/blog-posts';
 import { belizeChapters } from '@/data/belize-chapters';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

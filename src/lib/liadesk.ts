@@ -27,6 +27,15 @@ const ODOO_USER = process.env.LIADESK_USER || 'site@renesadventures.tours';
 const ODOO_KEY = process.env.LIADESK_API_KEY || '';
 /** Salesperson who owns new leads. 6 = Chris Carter on the reneadventures tenant. */
 const OWNER_ID = Number(process.env.LIADESK_OWNER_ID || 6);
+/**
+ * Who gets an inbox/phone ping when a note lands on an existing lead.
+ * 7 = Chris Carter's partner id on the reneadventures tenant (verified 2026-11-02).
+ * Without this, every message after a guest's first one was a silent note.
+ */
+const NOTIFY_PARTNER_IDS = (process.env.LIADESK_NOTIFY_PARTNER_IDS || '7')
+  .split(',')
+  .map((v) => Number(v.trim()))
+  .filter((v) => Number.isInteger(v) && v > 0);
 
 /** How long we are willing to make a website visitor wait on the CRM. */
 const TIMEOUT_MS = 8000;
@@ -242,6 +251,7 @@ export async function createLead(input: LeadInput): Promise<LeadResult> {
         body: `<p><b>New contact from the same guest</b></p><p>${body}</p>`,
         message_type: 'comment',
         subtype_xmlid: 'mail.mt_note',
+        partner_ids: NOTIFY_PARTNER_IDS,
         // Without this Odoo 18 escapes the body and the note shows raw tags.
         body_is_html: true,
       });
@@ -312,6 +322,7 @@ export async function liadeskStatus(): Promise<{
 export async function postLeadNote(
   leadId: number,
   html: string,
+  opts: { notify?: boolean } = {},
 ): Promise<{ ok: boolean; error?: string }> {
   if (!ODOO_KEY) return { ok: false, error: 'LIADESK_API_KEY is not set' };
   try {
@@ -320,6 +331,7 @@ export async function postLeadNote(
       message_type: 'comment',
       // mt_note = internal log, never emailed to the customer.
       subtype_xmlid: 'mail.mt_note',
+      ...(opts.notify ? { partner_ids: NOTIFY_PARTNER_IDS } : {}),
       body_is_html: true,
     });
     return { ok: true };

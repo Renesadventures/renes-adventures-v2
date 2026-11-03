@@ -1,3 +1,4 @@
+import { requireAdmin } from '@/lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { generateReel, replicateConfigured } from '@/lib/replicate';
 import { footageForTour, imagePromptFor } from '@/lib/content/social';
@@ -6,6 +7,8 @@ export const runtime = 'nodejs';
 export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   let body: Record<string, unknown> = {};
   try {
     body = (await req.json()) as Record<string, unknown>;

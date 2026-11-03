@@ -1,3 +1,4 @@
+import { requireAdmin } from '@/lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import {
@@ -12,6 +13,8 @@ export const runtime = 'nodejs';
 const VALID: Platform[] = ['instagram', 'facebook', 'tiktok', 'youtube'];
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'AI not configured.' }, { status: 500 });
 

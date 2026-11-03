@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { blogPosts } from '@/data/blog-posts';
 import JsonLd from '@/components/seo/JsonLd';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 export const metadata: Metadata = {
   title: 'Belize Travel Guide & Charter Journal | Rene’s Adventures',

@@ -6,7 +6,7 @@ import { blogPosts, getPostBySlug } from '@/data/blog-posts';
 import { getTourBySlug } from '@/data/tours';
 import JsonLd from '@/components/seo/JsonLd';
 
-const BASE_URL = 'https://renesadventures.tours';
+const BASE_URL = 'https://www.renesadventures.tours';
 
 export function generateStaticParams() {
   return blogPosts.map((p) => ({ slug: p.slug }));

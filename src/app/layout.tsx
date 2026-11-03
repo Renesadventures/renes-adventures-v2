@@ -16,7 +16,7 @@ const playfair = Playfair_Display({ variable: '--font-playfair', subsets: ['lati
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://renesadventures.tours'),
+  metadataBase: new URL('https://www.renesadventures.tours'),
   title: "Rene's Adventures | Luxury Charters in Belize",
   description: 'Your day. Your boat. Your legend. Premium charters in Belize with conditions-based intelligence, concierge booking, and story-grade memories.',
   alternates: { canonical: '/' },
@@ -38,14 +38,14 @@ export const metadata: Metadata = {
 const organizationLd = {
   '@context': 'https://schema.org',
   '@type': ['TravelAgency', 'LocalBusiness'],
-  '@id': 'https://renesadventures.tours/#organization',
+  '@id': 'https://www.renesadventures.tours/#organization',
   name: "Rene's Adventures",
   description:
     'Luxury private boat charters on Ambergris Caye, Belize — deep sea fishing, Blue Hole, Secret Beach, and sunset cruises with a licensed, insured local captain.',
-  url: 'https://renesadventures.tours',
+  url: 'https://www.renesadventures.tours',
   telephone: '+501-606-0170',
   email: 'renesadventuresbz@gmail.com',
-  image: 'https://renesadventures.tours/images/tours/deep-sea-fishing.jpg',
+  image: 'https://www.renesadventures.tours/images/tours/deep-sea-fishing.jpg',
   priceRange: '$$$',
   areaServed: { '@type': 'Place', name: 'Ambergris Caye, Belize' },
   address: {

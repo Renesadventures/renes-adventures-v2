@@ -36,7 +36,7 @@ export default function AdminInvoicePage() {
     e.preventDefault();
     const res = await fetch('/api/invoice/auth', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
       body: JSON.stringify({ password }),
     });
     if (res.ok) { setAuthed(true); setAuthError(''); }
@@ -62,7 +62,7 @@ export default function AdminInvoicePage() {
     try {
       const res = await fetch('/api/invoice/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
         body: JSON.stringify({ name, email, memo, items }),
       });
       const data = await res.json();
