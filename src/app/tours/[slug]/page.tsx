@@ -750,9 +750,9 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
       <section className="py-16">
         <div className="mx-auto w-full max-w-screen-2xl px-4">
           <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-10 shadow-sm text-center">
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Ready when you are</h2>
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Your day. Your boat. Your adventure.</h2>
             <p className="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
-              {slug === 'blue-hole' ? 'Reach out to discuss your Blue Hole adventure.' : 'Lock in your date, choose your upgrades, and let the crew handle the rest.'}
+              {slug === 'blue-hole' ? 'Reach out to discuss your Blue Hole adventure.' : 'Pick your trip, send your date, done. Rene confirms on WhatsApp. No payment until your date is confirmed.'}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               {slug === 'blue-hole' ? (
@@ -775,16 +775,18 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
               ) : (
                 <>
                   <a
-                    href="#tour-pricing-slot"
+                    href="#quickbook"
                     className="h-12 px-6 rounded-2xl bg-amber-400 text-slate-950 font-black border border-black/10 hover:brightness-105 transition inline-flex items-center justify-center"
                   >
-                    View Pricing
+                    Request my date
                   </a>
                   <a
-                    href="#tour-addons-slot"
+                    href="https://wa.me/5016060170?text=Hi%20Rene%2C%20I%27d%20like%20to%20book%20a%20trip."
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="h-12 px-6 rounded-2xl border border-slate-200 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition inline-flex items-center justify-center"
                   >
-                    Pick Add-Ons
+                    Book on WhatsApp
                   </a>
                 </>
               )}

@@ -27,6 +27,7 @@ import {
 
 import { buildWhatsAppTourLink, getWhatsAppLink } from '@/lib/utils/whatsapp-link';
 import { getTourBySlug, tours } from '@/data/tours';
+import QuickBook, { QuickBookMobileBar } from '@/components/booking/QuickBook';
 
 const base = 'https://pub-8e7f552f8b074b919187d54bd9b298bb.r2.dev';
 
@@ -374,11 +375,11 @@ export default function CustomCharterPage() {
           <div className="mx-auto max-w-7xl px-4 h-14 flex items-center justify-between gap-4">
             <div className="text-white font-extrabold text-sm tracking-wide shrink-0">René&apos;s Custom Adventure</div>
             <div className="hidden md:flex items-center gap-5">
-              {[{ label: 'Overview', href: 'overview' }, { label: 'Build Your Day', href: 'build-your-day' }, { label: 'Add-Ons', href: 'add-ons' }, { label: 'Guarantee', href: 'guarantee' }, { label: 'All Tours', href: 'all-tours' }].map((link) => (
+              {[{ label: 'Overview', href: 'overview' }, { label: 'Book', href: 'book' }, { label: 'Guarantee', href: 'guarantee' }, { label: 'All Tours', href: 'all-tours' }].map((link) => (
                 <button key={link.label} type="button" onClick={() => scrollTo(link.href)} className="text-white/65 hover:text-amber-300 text-sm font-medium transition-colors">{link.label}</button>
               ))}
             </div>
-            <button type="button" onClick={handleCheckout} disabled={checkoutLoading} className="bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs px-5 py-2 rounded-full transition shrink-0 disabled:opacity-60">Book Now</button>
+            <button type="button" onClick={() => scrollTo('book')} disabled={checkoutLoading} className="bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs px-5 py-2 rounded-full transition shrink-0 disabled:opacity-60">Request my date</button>
           </div>
         </div>
       </nav>
@@ -475,7 +476,7 @@ export default function CustomCharterPage() {
                     </div>
                   </div>
                   <div className="mt-5 grid gap-3">
-                    <button type="button" onClick={() => scrollTo('build-your-day')} className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition">Book Your Perfect Day</button>
+                    <button type="button" onClick={() => scrollTo('book')} className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition">Book Your Perfect Day</button>
                     <button type="button" onClick={() => onOpenLia('Build me a perfect Custom Charter day in Belize.')} className="h-14 rounded-2xl border border-white/30 bg-white/10 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/15 transition">Talk to Lia</button>
                     <button type="button" onClick={onOpenWhatsAppLargeGroup} className="h-14 rounded-2xl border border-white/30 bg-white/5 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/10 transition">9+ Guests? Private Fleet</button>
                   </div>
@@ -534,284 +535,49 @@ export default function CustomCharterPage() {
           </section>
         )}
 
-        {/* ── MAIN CONTENT + SIDEBAR ── */}
-        {/* ── MOBILE BOOKING SUMMARY BAR ── */}
-        <div className="lg:hidden bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between gap-4 sticky top-14 z-50 shadow-sm">
-          <div>
-            <div className="text-xs text-slate-500 uppercase tracking-widest">Live Total</div>
-            <div className="text-xl font-extrabold text-amber-500">{formatMoney(liveTotal)}</div>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <span className="font-semibold">{guestCount} guest{guestCount !== 1 ? 's' : ''}</span>
-            <span className="text-slate-300">·</span>
-            <span>{isFullDay ? 'Full Day' : 'Half Day'}</span>
-            {activityCount > 0 && <><span className="text-slate-300">·</span><span className="text-emerald-600 font-semibold">{activityCount} activities</span></>}
-          </div>
-          <button type="button" onClick={handleCheckout} disabled={checkoutLoading}
-            className="bg-amber-400 text-black font-bold text-xs px-4 py-2 rounded-full hover:bg-amber-300 transition disabled:opacity-60 shrink-0">
-            Book Now
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-16">
+        {/* -- BOOK: what you can do + one simple booking box -- */}
+        <section id="book" className="scroll-mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-16">
           <div className="lg:col-span-2">
-
-            {/* ── BUILD YOUR DAY ── */}
-            <section id="build-your-day" className="w-full pb-16">
-              <div className="max-w-3xl">
-                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Build Your Day</div>
-                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">Pick the moments you&apos;ll talk about forever.</h2>
-                <p className="mt-4 text-lg text-slate-700">You call the shots. Captain René handles the rest.</p>
-              </div>
-
-              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {[
-                  { title: 'Maximum Overdrive', icon: <Flame className="h-5 w-5" />, body: 'Non-stop action. 5+ activities. Adrenaline on demand.' },
-                  { title: 'The Explorer', icon: <Map className="h-5 w-5" />, body: 'Balanced pace. See everything. Savor the moments that matter.' },
-                  { title: 'Island Time', icon: <Sun className="h-5 w-5" />, body: 'Slow down. Dive deep. One or two experiences, done right.' },
-                ].map((c) => (
-                  <div key={c.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center">{c.icon}</div>
-                      <div className="font-extrabold text-sm">{c.title}</div>
+            <div className="text-xs font-black uppercase tracking-[0.35em] text-amber-600">Your Day. Your Boat. Your Adventure.</div>
+            <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">What you can do on your day</h2>
+            <p className="mt-4 text-lg text-slate-700 leading-relaxed">No need to choose now. Pick half or full day, send your date, and tell Rene your favorites when he confirms. He plans the day around the weather and the tides.</p>
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {activities.map((a) => (
+                <div key={a.id} className="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                  <div className="relative h-40 bg-slate-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={a.image} alt={a.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="font-extrabold text-slate-900">{a.title}</h3>
+                      <span className="shrink-0 text-xs text-slate-500">about {Math.round(a.minutes / 30) / 2}h</span>
                     </div>
-                    <div className="mt-3 text-slate-600 text-sm leading-relaxed">{c.body}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {activities.map((a) => {
-                  const checked = selectedActivities[a.id];
-                  return (
-                    <article key={a.id} className={`group rounded-3xl border overflow-hidden shadow-sm transition ${a.id === 'beach-bbq' && !isFullDay ? 'border-slate-200 bg-white opacity-50 pointer-events-none' : checked ? 'border-emerald-400 ring-2 ring-emerald-400/20' : 'border-slate-200 bg-white'}`}>
-                      <div className="relative h-44">
-                        <Image src={a.image} alt={a.title} fill className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" sizes="(min-width: 1024px) 33vw, 50vw" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                        <div className="absolute left-4 right-4 bottom-3 flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-white">
-                            <div className="h-8 w-8 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center">{a.icon}</div>
-                            <div className="font-extrabold text-sm leading-tight">{a.title}</div>
-                          </div>
-                          <div className="text-[10px] uppercase tracking-[0.2em] text-white/80">~{Math.round(a.minutes / 30) * 0.5}h</div>
-                        </div>
-                        {checked && <div className="absolute top-3 right-3 h-7 w-7 rounded-full bg-emerald-500 flex items-center justify-center text-white font-black text-sm shadow">✓</div>}
-                      </div>
-                      <div className="bg-white p-5">
-                        {a.id === 'hol-chan' && (
-                          <div className="mb-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2">
-                            <p className="text-xs font-bold text-amber-700">⚠️ $15/person park fee — not collected online</p>
-                            <p className="text-[10px] text-amber-600 mt-0.5">Bring cash. The park ranger collects this fee at boat entry and provides wristbands.</p>
-                          </div>
-                        )}
-                        {a.id === 'beach-bbq' && isFullDay && <p className="text-xs text-emerald-600 font-semibold mb-2">✓ Included in your Full Day — no extra charge</p>}
-                        {a.id === 'beach-bbq' && !isFullDay && (
-                          <div className="mb-2 rounded-lg bg-slate-100 border border-slate-200 px-3 py-2">
-                            <p className="text-xs font-bold text-slate-500">⏱ Not available on Half Day</p>
-                            <p className="text-[10px] text-slate-400 mt-0.5">BBQ requires a full day charter. Upgrade to include it.</p>
-                          </div>
-                        )}
-                        {a.id === 'beach-bbq' && !isFullDay && guestCount > includedGuests && selectedActivities['beach-bbq'] && addOnQty['bbq-extra-guest'] > 0 && (
-                          <div className="mb-2 rounded-lg bg-orange-50 border border-orange-200 px-3 py-2">
-                            <p className="text-xs font-bold text-orange-700">BBQ extra guests auto-added</p>
-                            <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">✓ {addOnQty['bbq-extra-guest']} extra × $25 added to checkout</p>
-                          </div>
-                        )}
-                        {a.id === 'snorkeling' && (
-                          <div className="mb-2 rounded-lg bg-sky-50 border border-sky-200 px-3 py-2">
-                            <p className="text-xs font-bold text-sky-700">Snorkel gear: $15/person</p>
-                            {selectedActivities.snorkeling && addOnQty['snorkel-gear'] > 0 && (
-                              <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">✓ {addOnQty['snorkel-gear']} × $15 added to checkout</p>
-                            )}
-                          </div>
-                        )}
-                        <p className="text-slate-700 text-sm leading-relaxed line-clamp-3">{a.description}</p>
-                        <div className="mt-4 flex gap-2">
-                          <button type="button" onClick={() => toggleActivity(a.id, !selectedActivities[a.id])}
-                            className={`h-11 flex-1 rounded-2xl px-4 font-extrabold uppercase tracking-[0.15em] text-xs transition border ${checked ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
-                            {checked ? '✓ Added' : '+ Add This'}
-                          </button>
-                          <button type="button" onClick={() => { setSelectedVideo(a.video); setSelectedVideoLabel(a.title); setSelectedActivity(a); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                            className="h-11 rounded-2xl px-4 font-extrabold uppercase tracking-[0.15em] text-xs border border-slate-200 bg-white hover:bg-slate-50 transition">
-                            Preview
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-
-              {/* Timeline */}
-              <div className="mt-10 rounded-3xl border border-white/15 bg-gray-950/90 backdrop-blur-md p-6">
-                <div className="flex items-center justify-between gap-4 mb-1">
-                  <div>
-                    <p className="text-xs font-bold tracking-[0.2em] uppercase text-white/40">Live Pace</p>
-                    <p className="mt-1 text-lg font-extrabold text-white">{paceLabel}</p>
-                  </div>
-                  <div className="text-sm text-white/60">{Math.round(totalActivityMinutes / 15) * 15} min total</div>
-                </div>
-                <div className="mt-5 flex h-10 w-full overflow-hidden rounded-2xl border border-white/15 bg-white/5">
-                  {activities.filter((a) => selectedActivities[a.id]).map((a, idx) => {
-                    const w = totalActivityMinutes > 0 ? (a.minutes / totalActivityMinutes) * 100 : 0;
-                    return <div key={a.id} className={`${getTimelineColor(idx)} h-full`} style={{ width: `${w}%` }} title={a.title} />;
-                  })}
-                </div>
-                {activityCount === 0 && <div className="mt-3 text-sm text-white/50">Select activities above to watch your timeline build.</div>}
-              </div>
-
-              {/* Don't see your adventure — colored */}
-              <div className="mt-8 rounded-2xl bg-gradient-to-r from-teal-600 to-sky-700 p-6 flex items-center gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="font-extrabold text-white">Don&apos;t see your perfect adventure?</p>
-                  <p className="text-sm text-white/80 mt-0.5">Full-day private charters from $600 — Mexico Rocks, Caye Caulker, Bliss Beach, and custom destinations. Reach out and we&apos;ll plan it together.</p>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <button type="button" onClick={onOpenWhatsApp} className="h-10 px-4 rounded-full bg-white text-teal-800 text-xs font-bold hover:bg-teal-50 transition">WhatsApp</button>
-                  <button type="button" onClick={() => onOpenLia("Hi Lia — I'm looking for an adventure not listed on the Custom Charter page. Can you help?")} className="h-10 px-4 rounded-full border border-white/30 bg-white/10 text-white text-xs font-bold hover:bg-white/20 transition">Ask Lia</button>
-                </div>
-              </div>
-            </section>
-
-            {/* ── ADD-ONS ── */}
-            <section id="add-ons" className="w-full pb-16">
-              <div className="max-w-3xl">
-                <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Add-Ons</div>
-                <h2 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">You&apos;re already out here. Go bigger.</h2>
-                <p className="mt-4 text-lg text-slate-700">Impulse-buy energy. Zero regrets.</p>
-                {isFullDay && (
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-4 py-2">
-                    <span className="text-emerald-600 text-sm font-bold">✓ Beach BBQ is already included in your Full Day</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {ADDONS.map((a) => {
-                  const q = addOnQty[a.id];
-                  const isActive = q > 0;
-                  return (
-                    <div key={a.id} className={`rounded-3xl border overflow-hidden shadow-sm transition ${isActive ? 'border-amber-300 bg-amber-50' : 'border-slate-200 bg-white'}`}>
-                      {a.image && (
-                        <div className="relative h-32 w-full">
-                          <Image src={a.image} alt={a.label} fill className="object-cover" sizes="50vw" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
-                          <div className="absolute bottom-3 left-4">
-                            <span className="text-white font-extrabold text-sm drop-shadow">{a.label}</span>
-                          </div>
-                        </div>
-                      )}
-                      <div className="p-5">
-                        <div className="flex items-start gap-3">
-                          <input type="checkbox" id={`addon-${a.id}`} checked={isActive} onChange={(e) => toggleAddon(a.id, e.target.checked)} className="mt-1 h-5 w-5 rounded accent-amber-400 cursor-pointer shrink-0" />
-                          <label htmlFor={`addon-${a.id}`} className="flex-1 cursor-pointer">
-                            {!a.image && <div className="font-extrabold text-slate-900 mb-0.5">{a.label}</div>}
-                            <div className="text-sm text-slate-500">{a.note}</div>
-                            {a.noteHighlight && <div className="mt-1 text-xs font-semibold text-amber-600">{a.noteHighlight}</div>}
-                          </label>
-                          <div className="text-sm font-bold text-slate-700 shrink-0">{formatMoney(a.price)}</div>
-                        </div>
-                        {isActive && (
-                          <div className="mt-4 flex items-center justify-between gap-3">
-                            <span className="text-xs uppercase tracking-widest text-slate-500 font-semibold">Quantity</span>
-                            <div className="flex items-center gap-3">
-                              <button type="button" onClick={() => decrementAddon(a.id)} disabled={q <= 0} className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition disabled:opacity-40">−</button>
-                              <span className="min-w-[28px] text-center font-extrabold text-slate-900">{q}</span>
-                              <button type="button" onClick={() => incrementAddon(a.id)} className="h-9 w-9 rounded-full border border-slate-200 bg-white font-black hover:bg-slate-50 transition">+</button>
-                            </div>
-                            <span className="text-sm font-bold text-amber-600">{formatMoney(a.price * q)}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          </div>
-
-          {/* ── STICKY SIDEBAR ── */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl">
-              <div className="rounded-2xl border border-white/20 bg-gray-950/95 backdrop-blur-md p-5">
-                <div className="grid grid-cols-2 gap-2 mb-4">
-                  {(['half', 'full'] as const).map((d) => (
-                    <button key={d} type="button" onClick={() => setDuration(d)} className={`h-9 rounded-xl text-xs font-bold uppercase tracking-widest transition border ${duration === d ? 'bg-white text-slate-950 border-white/30' : 'bg-white/10 text-white border-white/20 hover:bg-white/15'}`}>
-                      {d === 'half' ? 'Half Day' : 'Full Day'}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-                  <span className="text-white/70 text-sm">Guests</span>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => setGuestCount((g) => Math.max(1, g - 1))} className="w-6 h-6 rounded-full border border-white/20 text-white hover:border-white/40 flex items-center justify-center text-sm transition">−</button>
-                    <span className="text-white font-bold w-4 text-center">{guestCount}</span>
-                    <button onClick={() => setGuestCount((g) => Math.min(8, g + 1))} className="w-6 h-6 rounded-full border border-white/20 text-white hover:border-white/40 flex items-center justify-center text-sm transition">+</button>
+                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">{a.description}</p>
+                    {a.id === 'beach-bbq' ? <p className="mt-2 text-xs font-bold text-emerald-600">Included with Full Day</p> : null}
                   </div>
                 </div>
-
-                <div className="flex justify-between text-sm font-bold text-white">
-                  <span>Custom Charter – {isFullDay ? 'Full Day' : 'Half Day'}{isFullDay && <span className="block text-[10px] font-normal text-emerald-400 mt-0.5">BBQ included</span>}</span>
-                  <span>{formatMoney(basePrice)}</span>
-                </div>
-
-                {guestCount > includedGuests && (
-                  <div className="flex justify-between text-sm text-white/80 mt-1">
-                    <span>Additional Guests ({guestCount - includedGuests} @ $75.00)</span>
-                    <span>{formatMoney(extraGuests)}</span>
-                  </div>
-                )}
-
-                {/* ✅ Selected activities at $0.00 */}
-                {selectedActivityList.length > 0 && (
-                  <>
-                    <hr className="border-white/10 my-3" />
-                    <div className="text-[10px] uppercase tracking-widest text-white/40 mb-2">Selected Activities</div>
-                    {selectedActivityList.map((a) => (
-                      <div key={a.id} className="flex justify-between text-xs text-white/70 mt-1">
-                        <span className="flex items-center gap-1 min-w-0 truncate"><span className="text-emerald-400 shrink-0">✓</span> {a.title}</span>
-                        <span className="text-white/40 shrink-0 ml-2">$0.00</span>
-                      </div>
-                    ))}
-                  </>
-                )}
-
-                <hr className="border-white/10 my-3" />
-
-                {ADDONS.map((a) => {
-                  const qty = addOnQty[a.id];
-                  const active = qty > 0;
-                  return (
-                    <div key={a.id} className={`flex items-center justify-between gap-2 py-1.5 transition-opacity ${active ? 'opacity-100' : 'opacity-25 hover:opacity-50'}`}>
-                      <span className="text-xs text-white/70 flex-1 min-w-0 truncate">{active && <span className="text-emerald-400 mr-1">✓</span>}{a.label}</span>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <button onClick={() => decrementAddon(a.id)} className="w-5 h-5 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 flex items-center justify-center text-xs leading-none transition-colors">−</button>
-                        <span className="text-white text-xs w-4 text-center">{qty}</span>
-                        <button onClick={() => incrementAddon(a.id)} className="w-5 h-5 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 flex items-center justify-center text-xs leading-none transition-colors">+</button>
-                        <span className="text-white/60 text-xs w-14 text-right">{qty > 0 ? formatMoney(a.price * qty) : `$${a.price}`}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <hr className="border-white/10 my-3" />
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Subtotal</span><span>{formatMoney(subtotal)}</span></div>
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
-                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Card Processing Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
-
-                <button onClick={handleCheckout} disabled={checkoutLoading} className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
-                  {checkoutLoading ? <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" /> : <>🔒 Secure Checkout</>}
-                </button>
-                <div className="mt-3 space-y-1">
-                  {['Bank-level encryption', 'All major cards accepted', 'Instant confirmation'].map((t) => (
-                    <div key={t} className="flex items-center gap-2 text-xs text-white/70"><span className="text-emerald-400">✓</span> {t}</div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-20">
+              <QuickBook
+                tourSlug="custom-charter"
+                tourTitle="Custom Charter"
+                options={[
+                  { id: 'half', label: 'Half Day', sub: '4 hours', price: baseHalfDay },
+                  { id: 'full', label: 'Full Day', sub: '8 hours', price: baseFullDay, note: 'Beach BBQ included' },
+                ]}
+                includedGuests={includedGuests}
+                extraGuestPrice={75}
+                maxGuests={8}
+                fullDayBbqExtraGuest={25}
+                compoundFees
+              />
+            </div>
+          </div>
+        </section>
 
         {/* ── WHAT TO BRING ── */}
         <section className="mx-auto w-full max-w-screen-2xl px-4 pb-16">
@@ -866,8 +632,8 @@ export default function CustomCharterPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="rounded-3xl bg-amber-400 p-6 shadow-sm">
               <div className="text-lg font-extrabold text-slate-950">Designed for up to 8 guests</div>
-              <div className="mt-3 text-slate-900 leading-relaxed">Book online instantly. Lock your date. Build your day exactly the way you want it.</div>
-              <a href="#build-your-day" onClick={(e) => { e.preventDefault(); scrollTo('build-your-day'); }} className="mt-5 inline-flex items-center justify-center rounded-full bg-slate-950 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800 transition">Book Online</a>
+              <div className="mt-3 text-slate-900 leading-relaxed">Pick half or full day, send your date, done. Rene confirms on WhatsApp. No payment until your date is confirmed.</div>
+              <a href="#book" onClick={(e) => { e.preventDefault(); scrollTo('book'); }} className="mt-5 inline-flex items-center justify-center rounded-full bg-slate-950 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800 transition">Book Online</a>
             </div>
             <div className="rounded-3xl bg-teal-500 p-6 shadow-sm">
               <div className="text-lg font-extrabold text-white">Traveling with more than 8?</div>
@@ -935,25 +701,8 @@ export default function CustomCharterPage() {
         </section>
       </main>
 
-      {/* ── STICKY BOTTOM BAR ── */}
-      <div className={`fixed bottom-0 left-0 right-0 z-[60] bg-gray-950/95 backdrop-blur-md border-t border-white/20 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between transition-transform duration-300 ${stickyVisible ? 'translate-y-0' : 'translate-y-full'}`}>
-        <div>
-          <div className="text-white font-bold text-sm">Custom Charter · {guestCount} Guest{guestCount !== 1 ? 's' : ''} · {isFullDay ? 'Full Day' : 'Half Day'}</div>
-          <div className="text-white/55 text-xs">{activityCount} activities selected</div>
-        </div>
-        <div className="hidden md:block text-white/55 text-xs text-center max-w-xs truncate">
-          {selectedActivityList.map((a) => a.title).join(', ') || 'No activities selected yet'}
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <div className="text-white/55 text-[10px] uppercase tracking-widest">Live Total</div>
-            <div className="text-amber-300 font-extrabold text-lg">{formatMoney(liveTotal)}</div>
-          </div>
-          <button type="button" onClick={handleCheckout} disabled={checkoutLoading} className="bg-amber-400 hover:bg-amber-300 text-black font-bold px-5 py-2.5 rounded-full text-sm transition-all disabled:opacity-60">
-            {checkoutLoading ? '...' : 'Book Your Perfect Day'}
-          </button>
-        </div>
-      </div>
+      {/* -- PHONE BOOKING BAR -- */}
+      <QuickBookMobileBar />
     </>
   );
 }

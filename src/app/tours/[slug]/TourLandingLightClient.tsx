@@ -1,4 +1,5 @@
 'use client';
+import QuickBook, { QuickBookMobileBar, quickBookFromTour } from '@/components/booking/QuickBook';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -1774,12 +1775,10 @@ export function TourInteractivePortals({
   }, [pricingSlotId, addOnsSlotId]);
 
   return (
-    <TourLandingLightProvider tour={tour} addOns={addOns}>
-      {pricingSlot ? createPortal(<TourPricingPanel />, pricingSlot) : null}
-      {addOnsSlot ? createPortal(<TourAddOnsPanel />, addOnsSlot) : null}
-      <NinePlusGuestsModal />
-      <TourMobileSummaryBar />
-    </TourLandingLightProvider>
+    <>
+      {pricingSlot ? createPortal(<QuickBook {...quickBookFromTour(tour)} />, pricingSlot) : null}
+      <QuickBookMobileBar />
+    </>
   );
 }
 
