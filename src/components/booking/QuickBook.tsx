@@ -13,6 +13,9 @@ import { EVENTS, trackWithServer } from '@/lib/analytics/events';
 
 export const SLOGAN = 'Your day. Your boat. Your adventure.';
 
+/** Fuel surcharge on the boat charges (trip + extra guests), added BEFORE tax. Set by Chris 2026-11-03. */
+export const FUEL_SURCHARGE_RATE = 0.1;
+
 export type QuickBookOption = {
   id: 'half' | 'full' | 'trip';
   label: string;
@@ -104,6 +107,9 @@ export default function QuickBook(props: QuickBookProps) {
     if (isFull && fullDayBbqExtraGuest && extra > 0) {
       out.push({ label: `BBQ for ${extra} extra guest${extra > 1 ? 's' : ''}`, amount: extra * fullDayBbqExtraGuest });
     }
+    const boat = option.price + extra * extraGuestPrice;
+    const fuel = Math.round(boat * FUEL_SURCHARGE_RATE * 100) / 100;
+    out.push({ label: `Fuel surcharge ${Math.round(FUEL_SURCHARGE_RATE * 100)}%`, amount: fuel });
     if (bbqAddOn && bbq) out.push({ label: 'Beach BBQ', amount: bbqAddOn.base + extra * bbqAddOn.perExtraGuest });
     const subtotal = out.reduce((s, l) => s + l.amount, 0);
     const taxRaw = subtotal * 0.125;
@@ -118,7 +124,7 @@ export default function QuickBook(props: QuickBookProps) {
     `Date: ${date || 'flexible'}`,
     `Guests: ${guests}`,
     bbqAddOn && bbq ? 'Beach BBQ: yes' : null,
-    lines ? `Quoted total: ${money(lines.total)} (incl. 12.5% tax + 6% card fee)` : 'Price on request',
+    lines ? `Quoted total: ${money(lines.total)} (incl. 10% fuel surcharge, 12.5% tax, 6% card fee)` : 'Price on request',
   ].filter(Boolean).join('\n');
 
   const waLink = getWhatsAppLink(`Hi Rene,\n\nI'd like to book:\n${summary}\n\nThank you!`);
