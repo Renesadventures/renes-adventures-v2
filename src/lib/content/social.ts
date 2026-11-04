@@ -42,7 +42,7 @@ export function footageForTour(slug: string): string[] {
 
 export const BRAND_VOICE = `Brand: Rene's Adventures — luxury PRIVATE boat charters on Ambergris Caye, Belize.
 Captain Rene, 25 years local, fully licensed and insured. All-inclusive pricing.
-Positioning: "Your day, your boat, your legend." No fixed itinerary, no strangers on the boat.
+Slogan (use it word for word, never change it): "Your day. Your boat. Your adventure." Close posts with it often. No fixed itinerary, no strangers on the boat.
 Ideal guest: a traveler who does NOT want a generic cattle-boat tour wasting their one week in Belize.
 NEVER use the words "eco-tourism" or "sustainable". Never say "8 person max" — say "designed for up to 8 guests".
 Family-friendly. Confident, warm, a little swagger. Never corporate or generic.`;

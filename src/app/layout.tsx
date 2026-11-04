@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.renesadventures.tours'),
   title: "Rene's Adventures | Luxury Charters in Belize",
-  description: 'Your day. Your boat. Your legend. Premium charters in Belize with conditions-based intelligence, concierge booking, and story-grade memories.',
+  description: "Your day. Your boat. Your adventure. Private boat charters on Ambergris Caye, Belize with Captain Rene. No strangers on board. Licensed and insured.",
   alternates: { canonical: '/' },
   openGraph: {
     title: "Rene's Adventures | Luxury Charters in Belize",

@@ -155,7 +155,7 @@ export default async function BlogPostPage({
             <p className="text-xs uppercase tracking-[0.25em] text-[#d4af37]">Ready when you are</p>
             <h3 className="mt-2 text-xl font-semibold">Book the {post.relatedTourLabel}</h3>
             <p className="mt-2 text-white/70 leading-relaxed">
-              Your day, your boat, your legend. Licensed, insured, and all-inclusive with Captain
+              Your day. Your boat. Your adventure. Licensed, insured, and all-inclusive with Captain
               Rene.
             </p>
             <Link
