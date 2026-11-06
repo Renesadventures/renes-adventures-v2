@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
 type AssetListResponse = {
   images: string[];
@@ -18,26 +16,40 @@ const FALLBACK_IMAGES = [
   '/images/tours/sunset-cruise.jpg',
 ];
 
+/**
+ * Gallery images live in the R2 bucket. This list used to be read from
+ * public/images/renes-activities at runtime, which forced ~95 MB of images into
+ * every Vercel deployment and listed 3 files that were never uploaded to R2
+ * (broken images on the live site). Every name below was verified 200 on R2.
+ */
+const R2_ACTIVITY_IMAGES = [
+  "beach-bon-fire-two.jpg",
+  "beach-bon-fire.jpg",
+  "belize-survival-kit.png",
+  "boat-cabin.jpg",
+  "boat-deck-two.jpg",
+  "boat-deck.jpeg",
+  "boat-deep-sea-fishing.jpg",
+  "boat-family-sunset.png",
+  "boat-no-background.png",
+  "boat-one.jpeg",
+  "boat-snorkeling.jpg",
+  "boat-sunset.png",
+  "boat-three.jpeg",
+  "boat-two.jpeg",
+  "captain-rene.jpeg",
+  "dont-do-this-in-belize.png",
+  "health-and-safety.png",
+  "legal-and-immigration.png",
+  "Poster_Gemini.png",
+  "pre-trip-preparation.png",
+  "sunset-your-perfect-belize-day.jpg"
+];
+
 export async function GET() {
-  try {
-    const dir = path.join(process.cwd(), 'public', 'images', 'renes-activities');
-    const entries = await fs.readdir(dir, { withFileTypes: true });
-
-    const images = entries
-      .filter((e) => e.isFile())
-      .map((e) => e.name)
-      .filter((n) => /\.(jpe?g|png|webp)$/i.test(n))
-      .map((n) => `${R2_IMAGES_BASE}/${n}`);
-
-    if (images.length === 0) {
-      const payload: AssetListResponse = { images: FALLBACK_IMAGES, source: 'fallback' };
-      return NextResponse.json(payload, { status: 200 });
-    }
-
-    const payload: AssetListResponse = { images, source: 'renes-activities' };
-    return NextResponse.json(payload, { status: 200 });
-  } catch {
-    const payload: AssetListResponse = { images: FALLBACK_IMAGES, source: 'fallback' };
-    return NextResponse.json(payload, { status: 200 });
-  }
+  const images = R2_ACTIVITY_IMAGES.map((n) => `${R2_IMAGES_BASE}/${encodeURIComponent(n)}`);
+  const payload: AssetListResponse = images.length
+    ? { images, source: 'renes-activities' }
+    : { images: FALLBACK_IMAGES, source: 'fallback' };
+  return NextResponse.json(payload, { status: 200 });
 }
