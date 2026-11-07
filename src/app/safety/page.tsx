@@ -83,9 +83,9 @@ const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
 
 const PROMISES: Array<{ title: string; body: string }> = [
   {
-    title: 'Never more than eight. Ever.',
+    title: 'A private boat for your group.',
     body:
-      'Eight guests is the hard limit on every charter we run, and we do not combine groups to fill a boat. If you booked it, it is yours. A crowded boat is not a cheaper trip — it is a different trip.',
+      'Our standard boat carries up to eight guests. For a larger group, René can arrange a larger boat or additional boats to fit your headcount. Your charter is private to your party.',
   },
   {
     title: 'Two certified guides on every charter.',
