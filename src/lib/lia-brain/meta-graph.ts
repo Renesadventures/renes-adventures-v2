@@ -1,7 +1,7 @@
 /**
  * The three outbound calls to Meta. Nothing else in the codebase talks to Graph.
  *
- * All three are no-ops unless LIA_SOCIAL_AUTOREPLY is set to "on". That switch
+ * General replies are no-ops unless LIA_SOCIAL_AUTOREPLY is set to "on". That switch
  * is off by default and must stay off until two things are true: App Review has
  * granted the permissions, and Chris has agreed to let Lia answer in his
  * inboxes. Until then the whole social engine runs in draft mode — it reads
@@ -69,6 +69,22 @@ export async function sendDirectMessage(
     message: { text: text.slice(0, 1800) },
   });
   return { ...r, sent: r.ok };
+}
+
+/** A guide request is explicitly solicited and is separate from general auto-replies. */
+export async function sendReneGuideMessage(
+  recipient: { id: string } | { comment_id: string },
+  text: string,
+  instagramAccountId?: string,
+): Promise<{ ok: boolean; sent: boolean; error?: string }> {
+  await throttle();
+  const endpoint = instagramAccountId ? `${encodeURIComponent(instagramAccountId)}/messages` : 'me/messages';
+  const response = await post(endpoint, {
+    recipient,
+    ...(!instagramAccountId && 'id' in recipient ? { messaging_type: 'RESPONSE' } : {}),
+    message: { text },
+  });
+  return { ...response, sent: response.ok };
 }
 
 /**

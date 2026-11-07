@@ -2,12 +2,14 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import crypto from 'crypto';
 import { createLead, findOpenLead, postLeadNote, noteHtml } from '@/lib/liadesk';
 import { liaReply, sanitizeGuestText } from '@/lib/lia-brain';
+import { reneGuideReply } from '@/lib/lia-brain/rene-guide';
 import {
   autoreplyEnabled,
   publicReplyText,
   replyToComment,
   sendDirectMessage,
   sendPrivateReply,
+  sendReneGuideMessage,
 } from '@/lib/lia-brain/meta-graph';
 import {
   describeMessage,
@@ -39,7 +41,9 @@ import {
  *   2. A lead is created in Lia Desk, so the team sees it.
  *   3. Lia's reply is written onto that lead as a draft.
  *
- * Sending is the only part that is gated. LIA_SOCIAL_AUTOREPLY=on is off by
+ * General sending is gated by LIA_SOCIAL_AUTOREPLY. The exact Rene keyword
+ * can send the fixed campaign reply with the public guide URL.
+ * LIA_SOCIAL_AUTOREPLY=on is off by
  * default, so until App Review passes and Chris says go, this reads everything
  * and answers nobody — and the drafts are still waiting on each lead.
  *
@@ -174,11 +178,14 @@ async function recordAndDraft(opts: {
   /** WhatsApp gives us a real dialable number. Nothing else here does. */
   phone?: string;
   extra: Record<string, unknown>;
+  preset?: { text: string; sent: boolean };
 }): Promise<{ leadId?: number; reply: string; handoffs: string[] }> {
-  const { channel, name, text, kind, phone, extra } = opts;
+  const { channel, name, text, kind, phone, extra, preset } = opts;
 
   // Both land as a DM: a comment is answered by Private Reply, which is a DM.
-  const result = await liaReply({ channel: 'dm', message: text, history: [] });
+  const result = preset
+    ? { text: preset.text, handoffs: [], summary: '', model: 'Rene guide campaign' }
+    : await liaReply({ channel: 'dm', message: text, history: [] });
 
   const lead = await createLead({
     name,
@@ -197,7 +204,7 @@ async function recordAndDraft(opts: {
         ? 'Instagram'
         : channel === 'WhatsApp'
           ? 'WhatsApp'
-          : 'Facebook Ad',
+          : preset ? 'Facebook' : 'Facebook Ad',
     extra,
   });
 
@@ -214,15 +221,15 @@ async function recordAndDraft(opts: {
 
   // Two separate switches. Answering a stranger's public comment and answering
   // someone who already has the business's number are not the same risk.
-  const sendingOn = channel === 'WhatsApp' ? whatsappAutoreplyEnabled() : autoreplyEnabled();
+  const sendingOn = preset?.sent ?? (channel === 'WhatsApp' ? whatsappAutoreplyEnabled() : autoreplyEnabled());
   const inbox = channel === 'WhatsApp' ? 'WhatsApp itself' : 'the Meta Business Suite inbox';
   await postLeadNote(
     lead.leadId!,
     [
       `<p><b>✎ Lia's reply to this ${channel} ${kind}${sendingOn ? ' — SENT' : ' — NOT SENT'}.</b><br/>`,
       sendingOn
-        ? `<i>Auto-reply is on, so this went to them already. Follow up in ${inbox}.</i></p>`
-        : `<i>Auto-reply is off. Read it, change what you like, then send it from ${inbox}.</i></p>`,
+        ? `<i>This reply was sent. Follow up in ${inbox}.</i></p>`
+        : `<i>This reply was not sent. Read it, change what you like, then send it from ${inbox}.</i></p>`,
       result.handoffs.length
         ? `<p><b>Needs a person:</b><br/>${noteHtml(result.summary)}</p>`
         : '',
@@ -385,6 +392,18 @@ export async function POST(req: NextRequest) {
         const ageHours = m.timestamp ? (Date.now() - m.timestamp) / 3_600_000 : 0;
         const withinWindow = ageHours < 24;
 
+        const guide = withinWindow && entry.id && psid && psid !== entry.id ? reneGuideReply(rawText) : null;
+        if (guide) {
+          const sent = await sendReneGuideMessage({ id: psid }, guide, channel === 'Instagram' ? entry.id : undefined);
+          if (!sent.ok) console.error('[meta/webhook] guide DM failed', { channel, error: sent.error });
+          await recordAndDraft({
+            channel, name, text, kind: 'DM',
+            extra: { channel, 'Sender ID': psid, 'Received at': when, Campaign: 'Rene guide' },
+            preset: { text: guide, sent: sent.sent },
+          });
+          continue;
+        }
+
         const { leadId, reply, handoffs } = await recordAndDraft({
           channel,
           name,
@@ -414,20 +433,35 @@ export async function POST(req: NextRequest) {
 
       /* ------------------------------------------------------ comments, ads */
       for (const change of entry.changes ?? []) {
-        if (change.field !== 'comments') continue;
         const v = change.value ?? {};
-        if (v.verb && v.verb !== 'add') continue;
+        const isFacebookFeedComment = channel === 'Facebook' && change.field === 'feed' && v.item === 'comment';
+        if (change.field !== 'comments' && !isFacebookFeedComment) continue;
+        if ((isFacebookFeedComment || v.verb) && v.verb !== 'add') continue;
+        if (v.from?.id && v.from.id === entry.id) continue;
 
         const commentId = v.comment_id || v.id || '';
+        const rawText = (v.message || v.text || '').trim();
+        if (!rawText || !commentId) continue;
+        const guide = entry.id ? reneGuideReply(rawText) : null;
+        // Facebook also sends feed changes unrelated to this campaign. Keep their existing routing.
+        if (isFacebookFeedComment && !guide) continue;
         if (!firstTime(commentId)) continue;
 
-        const rawText = (v.message || v.text || '').trim();
-        if (!rawText) continue;
-
-        // Do not reply to the page's own comments.
+        // The keyword gets a fixed guide reply. Other comments follow the existing draft workflow.
         const fromName = v.from?.name || v.from?.username || `${channel} commenter`;
         const { text } = sanitizeGuestText(rawText);
         if (!text) continue;
+
+        if (guide) {
+          const sent = await sendReneGuideMessage({ comment_id: commentId }, guide, channel === 'Instagram' ? entry.id : undefined);
+          if (!sent.ok) console.error('[meta/webhook] guide private reply failed', { channel, error: sent.error });
+          await recordAndDraft({
+            channel, name: fromName, text, kind: 'comment',
+            extra: { channel, 'Commented on': v.post_id || v.media?.id || 'a post or ad', 'Comment ID': commentId, Campaign: 'Rene guide' },
+            preset: { text: guide, sent: sent.sent },
+          });
+          continue;
+        }
 
         const { leadId, reply, handoffs } = await recordAndDraft({
           channel,

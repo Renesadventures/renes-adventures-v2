@@ -32,6 +32,7 @@ import { stripMoney, knowledgeBlock, corpus } from '../src/lib/lia-brain/knowled
 import { detectHandoff } from '../src/lib/lia-brain/handoff';
 import { liaReply } from '../src/lib/lia-brain';
 import { draftReply } from '../src/lib/lia-brain/draft';
+import { reneGuideReply } from '../src/lib/lia-brain/rene-guide';
 
 let pass = 0;
 let fail = 0;
@@ -45,6 +46,14 @@ function check(name: string, ok: boolean, detail = ''): void {
     console.log(`  FAIL  ${name}${detail ? `  — ${detail}` : ''}`);
   }
 }
+
+const guideTestUrl = 'https://example.com/belize-guide.pdf';
+check('Rene keyword sends the guide and asks for dates', /example\.com[^\n]*\n\nWhen are you/.test(reneGuideReply('René!', guideTestUrl) ?? ''));
+check('mixed case Rene works', !!reneGuideReply(' rEnE ', guideTestUrl));
+check('ordinary comments do not get the guide', reneGuideReply('Captain Rene was great', guideTestUrl) === null);
+check('the old Adventure keyword stays inactive', reneGuideReply('Adventure', guideTestUrl) === null);
+check('the campaign is off without a link', reneGuideReply('Rene', '') === null);
+check('the campaign refuses non-HTTPS URLs', reneGuideReply('Rene', 'http://example.com/guide') === null);
 
 /* ============================================ 1. prices cannot get through === */
 
