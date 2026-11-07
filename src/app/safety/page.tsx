@@ -1,39 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-/**
- * The licence-and-insurance page — the one piece of unclaimed ground in this
- * market.
- *
- * Research across every San Pedro operator found the same thing: three of
- * them assert that they are "licensed" or "certified", and NOT ONE publishes
- * a licence number, an insurer, a policy limit, or a certificate. The booking
- * marketplaces do not verify it either. So asserting it earns nothing — every
- * competitor already does — while actually proving it is territory nobody has
- * taken.
- *
- * The tone matters as much as the content. "LICENSED AND INSURED" as a banner
- * reads defensive, and faintly alarming to somebody booking a holiday. What
- * converts is quiet competence with the evidence attached: this is Rene's
- * boat, Rene is at the wheel, here is the licence, here is the insurer, here
- * is why eight is the maximum.
- *
- * ────────────────────────────────────────────────────────────────────────
- * BEFORE THIS GOES LIVE, fill in every value marked TO CONFIRM below.
- * A page that proves nothing is worse than no page, because it draws
- * attention to the claim and then fails to back it. If a number is not
- * available yet, delete that row rather than shipping a placeholder.
- * ────────────────────────────────────────────────────────────────────────
- */
+/** Public safety and vessel insurance details for guests. */
 
 export const metadata: Metadata = {
   title: "Safety, Licensing & Insurance | Rene's Adventures",
   description:
-    'Our Belize Tourism Board licence, our insurance, our vessel, and the hard limits we run to. Published, not claimed.',
+    'See Rene’s Adventures’ vessel registration, marine liability insurance and how we put safety first on private charters in Belize.',
   alternates: { canonical: '/safety' },
 };
 
-/** Everything a visitor can check. Replace each TO CONFIRM with the real value. */
+/** Public vessel and insurance details. */
 const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
   {
     label: 'Vessel registration',
@@ -58,26 +35,14 @@ const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
     value: '25 ft fiberglass, 7 ft beam, 1.5 tons',
   },
   {
-    label: 'Belize Tourism Board Tour Operator Licence',
-    value: 'TO CONFIRM — licence number',
-    note: 'Renewed annually. Every BTB licence expires 31 December, so a current one is a current one.',
+    label: 'Marine insurer',
+    value: 'Insurance Corporation of Belize Limited',
+    note: 'Marine third-party liability insurance for the Snapperologist’s commercial passenger service in Belize territorial waters.',
   },
   {
-    label: 'Insurer',
-    value: 'TO CONFIRM — insurer name',
-  },
-  {
-    label: 'Passenger liability cover',
-    value: 'TO CONFIRM — amount per passenger',
-    note: 'Ask almost any operator on this island for this number. See what happens.',
-  },
-  {
-    label: "Captain's licence",
-    value: 'TO CONFIRM — held since 20XX',
-  },
-  {
-    label: 'Last vessel inspection',
-    value: 'TO CONFIRM — month and year',
+    label: 'Certificate policy period',
+    value: 'October 20, 2026 to October 20, 2027',
+    note: 'Coverage is subject to the policy’s terms, exclusions and conditions.',
   },
 ];
 
@@ -114,18 +79,18 @@ export default function SafetyPage() {
     <main className="bg-[#060608] text-white">
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-16">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-          Licensed, insured, and happy to prove it
+          Safety first, before we leave the dock
         </h1>
 
         <p className="mt-5 max-w-3xl text-white/70 leading-relaxed">
-          Belize has a lot of boats and not all of them are operating legally. Plenty of
-          operators will tell you they are licensed. Very few will show you the licence.
-          Everything below is checkable, and we would rather you checked.
+          We want you to know what’s in place before you step aboard. Here are the
+          registration and insurance details for the Snapperologist, our standard
+          charter boat, and how René prepares for your day on the water.
         </p>
 
         {/* ---------------------------------------------------- credentials */}
         <section className="mt-12">
-          <h2 className="text-xl font-semibold tracking-tight">The paperwork</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Vessel registration and insurance</h2>
           <dl className="mt-6 max-w-3xl divide-y divide-white/10 border-y border-white/10">
             {CREDENTIALS.map((c) => (
               <div key={c.label} className="py-4 md:flex md:items-baseline md:gap-6">
@@ -140,21 +105,15 @@ export default function SafetyPage() {
             ))}
           </dl>
 
-          {/*
-            Put the scans here once they exist. A redacted photograph of the
-            licence and the insurance certificate does more than any sentence
-            on this page — it is the difference between claiming and proving,
-            and it is the whole point of the page.
-          */}
           <p className="mt-6 max-w-3xl text-sm text-white/45">
-            Want to see the documents? Ask us and we will send the licence and the
-            certificate of insurance. No charter should be shy about that.
+            Ask René for a redacted copy of the vessel insurance certificate or to talk
+            through the safety setup before you book.
           </p>
         </section>
 
         {/* ------------------------------------------------------- promises */}
         <section className="mt-16">
-          <h2 className="text-xl font-semibold tracking-tight">How we actually run</h2>
+          <h2 className="text-xl font-semibold tracking-tight">How we prepare for your day</h2>
           <div className="mt-6 grid max-w-5xl gap-6 md:grid-cols-2">
             {PROMISES.map((p) => (
               <div key={p.title} className="border-l-2 border-white/15 pl-5">
@@ -168,14 +127,12 @@ export default function SafetyPage() {
         {/* ----------------------------------------------------- questions */}
         <section className="mt-16 max-w-3xl">
           <h2 className="text-xl font-semibold tracking-tight">
-            Questions about safety go to Rene
+            Talk to René before you book
           </h2>
           <p className="mt-4 leading-relaxed text-white/70">
-            Not to our website chat, and not to an assistant. If you have a question about
-            whether something is safe for your family, your swimming ability or your
-            health, it goes to the captain — and he answers it himself, before you book.
-            That is deliberate: a chatbot should never be the thing that tells a parent
-            their child will be fine on the water.
+            Bringing kids or anyone new to the water? Tell René a little about your
+            group. He’ll talk you through the boat, the conditions and what to expect
+            so you can feel comfortable before you book.
           </p>
           <p className="mt-5">
             <Link

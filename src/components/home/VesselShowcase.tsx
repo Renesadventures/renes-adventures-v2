@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type MediaItem =
   | { type: 'video'; src: string; label: string }
@@ -287,6 +288,13 @@ export default function VesselShowcase() {
             </div>
           ))}
         </div>
+
+        <p className="mt-5 text-center text-sm leading-relaxed text-white/65">
+          Before you book, see how René prepares for your day on the water.{' '}
+          <Link href="/safety" className="text-amber-300 underline underline-offset-4 hover:text-amber-200">
+            See vessel registration, insurance and safety details
+          </Link>
+        </p>
 
       </div>
     </section>

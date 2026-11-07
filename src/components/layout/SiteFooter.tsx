@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { activeSocialLinks, type SocialPlatform } from '@/data/social';
 
 function SocialIcon({ platform }: { platform: SocialPlatform }) {
@@ -50,7 +51,16 @@ export default function SiteFooter() {
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10 items-start">
           <div>
-            <div className="text-white text-xl font-semibold tracking-tight">Rene&apos;s Adventures</div>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/images/renes-adventures-logo.jpeg"
+                alt=""
+                width={64}
+                height={62}
+                className="h-16 w-16 shrink-0 rounded-lg bg-white object-contain"
+              />
+              <div className="text-xl font-semibold tracking-tight text-white">Rene&apos;s Adventures</div>
+            </div>
             <div className="mt-2 text-white/70 text-sm font-semibold">Belize Custom Charter Co.</div>
             <div className="mt-3 text-white/60 text-sm leading-relaxed max-w-md">
               Your premier destination for custom charters and unforgettable Caribbean adventures in Belize.

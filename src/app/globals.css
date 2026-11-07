@@ -57,3 +57,25 @@ body {
   background: rgba(11, 18, 32, 0.82);
   backdrop-filter: blur(10px);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .rene-brand-mark {
+    animation: rene-brand-arrive 450ms ease-out both;
+  }
+
+  .rene-brand-name {
+    animation: rene-brand-arrive 450ms 100ms ease-out both;
+  }
+
+  @keyframes rene-brand-arrive {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

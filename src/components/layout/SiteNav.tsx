@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -48,8 +49,15 @@ export default function SiteNav() {
     <div className="fixed top-0 left-0 right-0 z-50">
       <div className="bg-slate-950/70 backdrop-blur-xl border-b border-white/10">
         <div className="mx-auto w-full max-w-screen-2xl px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="text-white font-semibold tracking-tight">
-            Rene&apos;s Adventures
+          <Link href="/" className="flex shrink-0 items-center gap-2 text-sm font-semibold tracking-tight text-white sm:text-base">
+            <Image
+              src="/images/renes-adventures-logo.jpeg"
+              alt=""
+              width={40}
+              height={39}
+              className="rene-brand-mark h-8 w-8 rounded-md bg-white object-contain sm:h-10 sm:w-10"
+            />
+            <span className="rene-brand-name">Rene&apos;s Adventures</span>
           </Link>
 
           {/* Desktop nav */}
