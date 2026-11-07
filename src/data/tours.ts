@@ -169,7 +169,7 @@ export const tours: Tour[] = [
       "Champagne, wine, or beverages of your choice",
       "Optional waterfront restaurant stop",
       "2.5 hours on the water — no rush",
-      "Up to 8 guests — private charter"
+      "Private charter with larger groups by arrangement"
     ]
   },
   {

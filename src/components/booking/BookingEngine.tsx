@@ -139,7 +139,7 @@ export default function BookingEngine({
   return (
     <div className="rounded-2xl border border-white/10 bg-black/30 p-3 text-white">
       <div className="text-[11px] text-white/70 leading-relaxed">
-        Online booking for 1–8 guests. Groups of 9+ call René for Private Fleet coordination.
+        Book the standard boat online. For larger groups, René can arrange a larger boat or additional boats.
       </div>
 
       <div className="mt-2 text-base font-semibold">{title}</div>
@@ -187,7 +187,7 @@ export default function BookingEngine({
             −
           </button>
           <div className="min-w-[64px] text-center">
-            <div className="text-2xl font-extrabold text-[#FFD400]">{largeGroup ? '9+' : guests}</div>
+            <div className="text-2xl font-extrabold text-[#FFD400]">{largeGroup ? 'Group' : guests}</div>
             <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">Guests</div>
           </div>
           <button
@@ -209,7 +209,7 @@ export default function BookingEngine({
               : 'border-[#FFD400]/55 bg-gradient-to-r from-[#D4AF37] via-[#FFD400] to-[#D4AF37] text-slate-950 hover:brightness-105'
           }`}
         >
-          9+ GUESTS? REQUEST PRIVATE FLEET
+          PLAN A LARGER GROUP
         </button>
 
         {largeGroup && (
@@ -218,7 +218,7 @@ export default function BookingEngine({
             onClick={() => onLargeGroupChange(false)}
             className="mt-2 w-full rounded-xl bg-white/10 text-white font-semibold px-5 py-3 border border-white/20 hover:bg-white/15 transition"
           >
-            Back to 1–8 Guests
+            Back to Standard Boat
           </button>
         )}
 

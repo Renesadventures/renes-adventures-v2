@@ -24,12 +24,12 @@ function buildTourFaqs(tour: Tour, isInquiryOnly: boolean, price: number) {
     q: `How much does the ${tour.title} tour cost?`,
     a: isInquiryOnly
       ? `Pricing for the ${tour.title} tour is by inquiry — message us on WhatsApp or email and we'll get back to you with a quote.`
-      : `The ${tour.title} tour starts at $${price} for up to ${tour.includedGuests} guests. Additional guests are $${tour.additionalGuestPrice} per person, up to ${tour.maxGuests} total. This doesn't include 12.5% tax, 6% service fee, or gratuity.`,
+      : `The ${tour.title} tour starts at $${price} for up to ${tour.includedGuests} guests. Additional guests are $${tour.additionalGuestPrice} per person on the standard boat. For larger groups, ask René for a custom quote. This doesn't include 12.5% tax, 6% service fee, or gratuity.`,
   });
 
   faqs.push({
     q: 'How many guests can join?',
-    a: `Up to ${tour.maxGuests} guests per charter. The base price covers ${tour.includedGuests}; additional guests are $${tour.additionalGuestPrice} each.`,
+    a: `The standard boat seats up to ${tour.maxGuests}. The base price covers ${tour.includedGuests}, and additional guests are $${tour.additionalGuestPrice} each on that boat. René can arrange a larger boat or additional boats for your group.`,
   });
 
   faqs.push({

@@ -50,8 +50,8 @@ const CREDENTIALS: Array<{ label: string; value: string; note?: string }> = [
   },
   {
     label: 'Certified passenger capacity',
-    value: '10 — and we carry a maximum of 8 guests',
-    note: 'We run two crew. Eight guests is a choice, not a ceiling we are squeezing up against.',
+    value: '10 certified. The standard boat carries up to 8 guests.',
+    note: 'We run two crew on the standard boat. René can arrange a larger boat or additional boats for larger groups.',
   },
   {
     label: 'Vessel',

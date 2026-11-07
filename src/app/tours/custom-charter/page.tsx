@@ -342,7 +342,7 @@ export default function CustomCharterPage() {
 
   const onOpenLia = (message: string) => window.dispatchEvent(new CustomEvent('lia:open', { detail: { message } }));
   const onOpenWhatsApp = () => window.open(buildWhatsAppTourLink({ tourName: 'Custom Charter' }), '_blank', 'noopener,noreferrer');
-  const onOpenWhatsAppLargeGroup = () => window.open(getWhatsAppLink('Hi René,\n\nWe are 9+ guests. Can you help us book a private fleet for a Custom Charter?\n\nThank you!'), '_blank', 'noopener,noreferrer');
+  const onOpenWhatsAppLargeGroup = () => window.open(getWhatsAppLink('Hi René,\n\nCan you help arrange a boat or additional boats for our group? Our headcount and preferred date are:\n\nThank you!'), '_blank', 'noopener,noreferrer');
 
   function buildLineItems() {
     const items: { price_data: { currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }[] = [];
@@ -436,9 +436,9 @@ export default function CustomCharterPage() {
                       <div className="mt-1 text-sm text-white/85">Full day: {formatMoney(baseFullDay)} <span className="text-amber-400/90 font-semibold">— BBQ included</span></div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs uppercase tracking-[0.35em] text-white/80">Capacity</div>
-                      <div className="mt-2 text-sm font-semibold text-white">Designed for up to 8 guests</div>
-                      <div className="mt-1 text-sm text-white/85">Traveling with more? We&apos;ll arrange it.</div>
+                      <div className="text-xs uppercase tracking-[0.35em] text-white/80">Standard boat</div>
+                      <div className="mt-2 text-sm font-semibold text-white">Book the standard boat</div>
+                      <div className="mt-1 text-sm text-white/85">Larger groups welcome. Ask René about a bigger boat or additional boats.</div>
                     </div>
                   </div>
                   <div className="mt-6 grid grid-cols-2 gap-3">
@@ -477,7 +477,7 @@ export default function CustomCharterPage() {
                   <div className="mt-5 grid gap-3">
                     <button type="button" onClick={() => scrollTo('build-your-day')} className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition">Book Your Perfect Day</button>
                     <button type="button" onClick={() => onOpenLia('Build me a perfect Custom Charter day in Belize.')} className="h-14 rounded-2xl border border-white/30 bg-white/10 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/15 transition">Talk to Lia</button>
-                    <button type="button" onClick={onOpenWhatsAppLargeGroup} className="h-14 rounded-2xl border border-white/30 bg-white/5 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/10 transition">9+ Guests? Private Fleet</button>
+                    <button type="button" onClick={onOpenWhatsAppLargeGroup} className="h-14 rounded-2xl border border-white/30 bg-white/5 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/10 transition">Plan a Larger Group</button>
                   </div>
                 </div>
               </div>
@@ -513,7 +513,7 @@ export default function CustomCharterPage() {
                       <div className="w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-400 font-bold">R</div>
                       <div>
                         <p className="text-white text-sm font-bold">Captain René</p>
-                        <p className="text-white/40 text-xs">San Pedro, Belize · 25 years on these waters</p>
+                        <p className="text-white/40 text-xs">Born in Punta Gorda · A lifetime on Belize’s waters</p>
                       </div>
                     </div>
                     <blockquote className="text-white/80 text-sm leading-relaxed italic border-l-2 border-amber-400/50 pl-4">&quot;{selectedActivity.renesTip}&quot;</blockquote>
@@ -865,13 +865,13 @@ export default function CustomCharterPage() {
           </div>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="rounded-3xl bg-amber-400 p-6 shadow-sm">
-              <div className="text-lg font-extrabold text-slate-950">Designed for up to 8 guests</div>
+              <div className="text-lg font-extrabold text-slate-950">Book the standard boat</div>
               <div className="mt-3 text-slate-900 leading-relaxed">Book online instantly. Lock your date. Build your day exactly the way you want it.</div>
               <a href="#build-your-day" onClick={(e) => { e.preventDefault(); scrollTo('build-your-day'); }} className="mt-5 inline-flex items-center justify-center rounded-full bg-slate-950 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800 transition">Book Online</a>
             </div>
             <div className="rounded-3xl bg-teal-500 p-6 shadow-sm">
-              <div className="text-lg font-extrabold text-white">Traveling with more than 8?</div>
-              <div className="mt-3 text-teal-50 leading-relaxed">Contact us via WhatsApp or email and we&apos;ll help arrange your trip.</div>
+              <div className="text-lg font-extrabold text-white">Traveling with a larger group?</div>
+              <div className="mt-3 text-teal-50 leading-relaxed">Share your headcount and dates. René can arrange a larger boat or additional boats.</div>
               <button type="button" onClick={onOpenWhatsAppLargeGroup} className="mt-5 h-12 w-full rounded-2xl bg-white text-teal-800 font-extrabold hover:bg-teal-50 transition text-sm">WhatsApp +501 606 0170</button>
             </div>
             <div className="rounded-3xl bg-gray-950 p-6 shadow-sm border border-white/10">

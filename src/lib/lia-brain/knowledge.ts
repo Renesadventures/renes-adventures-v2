@@ -99,7 +99,7 @@ function buildCorpus(): Passage[] {
       `Runs as: ${[t.hasHalfDay ? t.duration : null, t.hasFullDay ? t.fullDayDuration ?? 'Full day' : null]
         .filter(Boolean)
         .join(' or ')}.`,
-      `Private charter for up to ${t.maxGuests} guests.`,
+      `The standard boat seats up to ${t.maxGuests}. René can arrange a larger boat or additional boats for larger groups.`,
       t.features?.length ? `What it includes: ${t.features.join('; ')}.` : '',
       `Full details and pricing: the ${t.title} page on the website (/tours/${t.slug}).`,
     ].filter(Boolean);
@@ -130,7 +130,7 @@ function buildCorpus(): Passage[] {
         'reserve entry. Aboard: snorkel gear, bottled water, sodas, snacks and rum punch. ' +
         'The full day includes the private Beach BBQ — fresh catch, ceviche, rice, ' +
         'potatoes and vegetables, with lobster and conch when the season is open. ' +
-        'Catch is cleaned, filleted and yours to keep. Up to eight guests.',
+        'Catch is cleaned, filleted and yours to keep. Ask René about arrangements for larger groups.',
     ),
   );
   if (tourGear?.length) {

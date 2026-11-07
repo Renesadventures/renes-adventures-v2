@@ -81,7 +81,7 @@ export const blogPosts: BlogPost[] = [
         heading: 'What is included',
         paragraphs: [
           'Rene’s Adventures runs all-inclusive: fuel, rods, tackle, ice, water, sodas, snacks, rum punch, and fishing licenses are already in the posted price. The boat is fully licensed and insured — not the cash-only, handshake operation you will find at a lot of docks in the region. The price you see is the price you pay, plus tax, service fee, and whatever you decide to tip.',
-          'Deep sea charters are designed for up to eight guests, and a beach BBQ can be added so the day ends with your catch cooked on the sand.',
+          'René can arrange a larger boat or additional boats for your deep sea charter, and a beach BBQ can be added so the day ends with your catch cooked on the sand.',
         ],
       },
     ],
@@ -174,7 +174,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Why private is the upgrade',
         paragraphs: [
-          'A Secret Beach day with Rene’s Adventures is designed for up to eight guests and priced all-inclusive, with a beach BBQ available as an add-on. You control the clock and the route. For a group that wants the postcard water without the cattle-crowd experience, the boat is the difference between a nice afternoon and a great one.',
+          'A Secret Beach day with Rene’s Adventures is priced all-inclusive on the standard boat, with a beach BBQ available as an add-on. Ask René about a larger boat or additional boats for your group. You control the clock and the route. For a group that wants the postcard water without the cattle-crowd experience, the boat is the difference between a nice afternoon and a great one.',
         ],
       },
     ],
@@ -216,7 +216,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Booking it',
         paragraphs: [
-          'The sunset cruise runs about two and a half hours and is designed for up to eight guests. Evenings book up, especially in high season, so it is worth locking your date early.',
+          'The sunset cruise runs about two and a half hours. Ask René about a larger boat or additional boats for your group. Evenings book up, especially in high season, so it is worth locking your date early.',
         ],
       },
     ],
@@ -263,7 +263,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Local, licensed, all-inclusive',
         paragraphs: [
-          'Rene’s Adventures is run by Captain Rene, a local with 25 years on this water, and the operation is fully licensed and insured. Charters are priced all-inclusive — fuel, gear, ice, drinks, and licenses in the posted price — and designed for up to eight guests. Tell us what your ideal day looks like and we will build the charter around it.',
+          'Rene’s Adventures is run by Captain René, a Belizean Maya captain born in Punta Gorda who grew up with the sea and reefs. The operation is fully licensed and insured. Standard boat rates include fuel, gear, ice, drinks, and licenses. For larger groups, René can arrange a larger boat or additional boats. Tell us what your ideal day looks like and we will build the charter around it.',
         ],
       },
     ],
@@ -306,7 +306,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "Half day or full day",
         paragraphs: [
-          "A half day (4 hours) runs $400 and covers up to 4 guests, with additional guests at $75 each up to a maximum of 8. A full day (8 hours) runs $600 and gives you time to work multiple reef sections, chase a moving school, or pull lines early to snorkel a spot along the way — a reef trip pairs naturally with a stop at Hol Chan or Shark Ray Alley if your group wants to add it.",
+          "A half day (4 hours) runs $400 and covers up to 4 guests, with additional guests at $75 each on the standard boat. A full day (8 hours) runs $600 and gives you time to work multiple reef sections, chase a moving school, or pull lines early to snorkel a spot along the way — a reef trip pairs naturally with a stop at Hol Chan or Shark Ray Alley if your group wants to add it.",
         ],
       },
       {
@@ -343,7 +343,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "The pricing model",
         paragraphs: [
-          "Every charter is private — it is your boat and your group, not a shared seat on someone else's schedule. Prices are all-inclusive: fuel, gear, ice, drinks, and licenses are built into the posted rate rather than added on afterward. Each tour is priced for up to 4 guests included, with additional guests at $75 per person up to a maximum of 8 total.",
+          "Every charter is private — it is your boat and your group, not a shared seat on someone else's schedule. Prices are all-inclusive: fuel, gear, ice, drinks, and licenses are built into the posted rate rather than added on afterward. Each tour is priced for up to 4 guests included, with additional guests at $75 per person on the standard boat. Ask René for a quote for larger groups.",
         ],
       },
       {

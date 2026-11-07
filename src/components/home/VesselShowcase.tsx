@@ -89,7 +89,8 @@ const MEDIA: MediaItem[] = [
 
 const SPECS = [
   { label: 'Vessel', value: 'White 25 ft Center Console' },
-  { label: 'Capacity', value: 'Up to 8 Guests' },
+  { label: 'Standard Boat', value: 'Up to 8 Guests' },
+  { label: 'Larger Groups', value: 'Larger boat or additional boats by request' },
   { label: 'Amenities', value: 'Ice Cooler · Sound System · Shade' },
   { label: 'Safety', value: 'Life Jackets · First Aid · Marine Radio' },
 ];

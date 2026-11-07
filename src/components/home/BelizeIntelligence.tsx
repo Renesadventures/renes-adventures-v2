@@ -132,7 +132,7 @@ function useGuideContent() {
           'Activity calendar: what to do each month of the year',
           'Emergency contacts: police, coast guard, embassy numbers',
           'Offline maps and GPS waypoints for popular destinations',
-          'Captain Rene\'s personal recommendations — 25 years of local knowledge',
+          'Captain Rene\'s personal recommendations grounded in a lifetime of local knowledge',
         ],
         insiderTip:
           'Golf cart rental prices vary 40% between vendors. We include the best-rated rental with the lowest rate, direct contact included.',
@@ -446,7 +446,7 @@ export default function BelizeIntelligence() {
                 Your Complete Belize Intelligence
               </h2>
               <p className="mt-2 max-w-2xl text-sm sm:text-base text-white/70">
-                Everything you need before you land. Smart planning from a local captain with 25 years on these waters.
+                Everything you need before you land. Plan with Captain René, a Belizean Maya captain born in Punta Gorda who has spent a lifetime learning from the sea, the stars and the reefs.
               </p>
             </div>
 
@@ -678,7 +678,7 @@ export default function BelizeIntelligence() {
                       </div>
                       <div className="mt-1 text-xs text-amber-200/70 leading-relaxed">
                         5 sections. 35+ insider tips. Local emergency contacts. Accommodation &amp; transport guide.
-                        Restaurant recommendations voted by tourists. Captain Rene&apos;s 25 years of local knowledge — all for $20.
+                        Restaurant recommendations voted by tourists. Captain René shares knowledge passed down through generations on Belize’s waters. Get the kit for $20.
                       </div>
                       <div className="mt-3 flex items-center gap-4">
                         <div className="text-2xl font-extrabold text-white">$20</div>

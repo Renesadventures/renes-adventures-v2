@@ -663,7 +663,7 @@ export default async function TourPage({ params }: { params: Promise<{ slug: str
               {slug === 'blue-hole' ? (
                 <>
                   <div className="mt-3 text-slate-700">
-                    Full-day adventure to one of the world&apos;s most iconic dive sites. Designed for up to 8 guests.
+                    Full-day adventure to one of the world&apos;s most iconic dive sites. For larger groups, ask René about a larger boat or additional boats.
                   </div>
                   <div className="mt-4">
                     <span className="text-2xl font-black text-amber-600">Contact for Pricing</span>

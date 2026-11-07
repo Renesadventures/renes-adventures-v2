@@ -404,7 +404,7 @@ export default function AdventureGrid() {
 
                       <div className="mt-1 text-sm text-slate-700">
 
-                        Up to 8 guests | 8 hours | Fully customizable
+                        8 hours · Private charter · Larger groups welcome
 
                       </div>
 

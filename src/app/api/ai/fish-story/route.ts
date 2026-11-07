@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 
 export const runtime = 'nodejs';
 
-const SYSTEM_PROMPT = `You are the storyteller for Rene's Adventures, a luxury charter company in San Pedro, Ambergris Caye, Belize. Captain René has 25+ years on these waters.
+const SYSTEM_PROMPT = `You are the storyteller for Rene's Adventures, a luxury charter company in San Pedro, Ambergris Caye, Belize. Captain René is Belizean Maya, born in Punta Gorda. He grew up with the sea and reefs of Belize.
 
 You will receive a photo from a guest's fishing or adventure trip. Analyze the image and write:
 

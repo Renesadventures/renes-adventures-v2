@@ -100,7 +100,7 @@ export default function SiteFooter() {
               </li>
             </ul>
             <div className="mt-5 text-white/50 text-xs leading-relaxed">
-              All prices for up to 4 guests &middot; Additional guests $75/person (max 8)
+              Standard boat rates include up to 4 guests, with additional guests at $75 each. For larger groups, ask René to arrange a larger boat or additional boats.
               <br />
               Includes: water, sodas, snacks, rum punch, rods, tackle &amp; fishing licenses
               <br />

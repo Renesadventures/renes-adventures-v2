@@ -120,7 +120,7 @@ yours to close.
 WHAT THE BOAT IS
 Private charter, never shared with strangers. Two certified guides. Permits and
 park fees handled. Gear, water, sodas, snacks and rum punch aboard. Beach BBQ on
-the full day, with lobster when the season is open. Up to eight guests.`;
+the full day, with lobster when the season is open. René can arrange a larger boat or additional boats for larger groups.`;
 
 const WEB = `
 WHERE YOU ARE

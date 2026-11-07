@@ -442,7 +442,7 @@ export function TourHeroMedia({
 
         <div className="flex flex-wrap gap-3 mb-8">
           {/* "instantly" claimed a booking engine this page does not have. */}
-          {['Private charter, 1–8 guests', 'Licensed & insured', 'Native local crew'].map((b) => (
+          {['Private charter', 'Licensed & insured', 'Native local crew'].map((b) => (
             <span
               key={b}
               className="text-xs text-white/90 bg-black/50 backdrop-blur-sm
@@ -820,7 +820,7 @@ export function TourPricingPanel() {
         <div className="text-center mb-6">
           <div className="text-xs uppercase tracking-[0.35em] text-sky-400 mb-2">Pricing</div>
           <div className="text-2xl font-extrabold text-white">Contact for Pricing</div>
-          <p className="text-white/60 text-sm mt-2">Designed for up to 8 guests</p>
+          <p className="text-white/60 text-sm mt-2">Standard boat booking</p>
         </div>
 
         <a
@@ -1347,16 +1347,16 @@ export function TourOrderSummaryPanel() {
             </div>
           </div>
           <div className="mt-3 text-xs text-slate-600">
-            Book 1-8 guests online instantly.
+            Book the standard boat online.
             <br />
-            9+ guests? We&apos;ll coordinate a custom fleet.
+            For larger groups, René can arrange a larger boat or additional boats.
           </div>
           <button
             type="button"
             onClick={() => setQuote((p) => ({ ...p, open: true, success: false, error: null }))}
             className="mt-3 w-full h-11 rounded-2xl border border-slate-300 bg-white text-slate-900 font-extrabold hover:bg-slate-50 transition"
           >
-            Get Quote for 9+ Guests
+            Get a Larger Group Quote
           </button>
         </div>
 
@@ -1623,7 +1623,7 @@ export function NinePlusGuestsModal() {
       <div className="relative w-full max-w-xl rounded-3xl border border-white/15 bg-white/95 backdrop-blur-xl p-6 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-xs uppercase tracking-[0.35em] text-sky-700">9+ Guests</div>
+            <div className="text-xs uppercase tracking-[0.35em] text-sky-700">Larger Groups</div>
             <div className="mt-2 text-2xl font-extrabold text-slate-900">Get a custom quote</div>
             <div className="mt-2 text-sm text-slate-700">
               Tell us the basics and we&apos;ll price it fast.
