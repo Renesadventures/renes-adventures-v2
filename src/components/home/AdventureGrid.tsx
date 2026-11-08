@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 
 
@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { ShieldCheck, Star } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 
 
@@ -404,19 +404,9 @@ export default function AdventureGrid() {
 
                       <div className="mt-1 text-sm text-slate-700">
 
-                        8 hours · Private charter · Larger groups welcome
+                        8 hours Â· Private charter Â· Larger groups welcome
 
                       </div>
-
-                    </div>
-
-
-
-                    <div className="shrink-0 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 text-sm font-semibold text-slate-800 ring-1 ring-black/5">
-
-                      <Star className="h-4 w-4 text-amber-500" />
-
-                      4.9 (127)
 
                     </div>
 
