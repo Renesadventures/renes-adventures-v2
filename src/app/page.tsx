@@ -4,8 +4,7 @@ import ConditionsWidget from '@/components/home/ConditionsWidget';
 import AdventureGrid from '@/components/home/AdventureGrid';
 import BelizeIntelligence from '@/components/home/BelizeIntelligence';
 import FishStoryCreator from '@/components/home/FishStoryCreator';
-// StoryWall hidden 2026-11-08: testimonials were not from real guests (confirmed by Chris). Replace with real reviews/photos.
-// import StoryWall from '@/components/home/StoryWall';
+import StoryWall from '@/components/home/StoryWall';
 import VesselShowcase from '@/components/home/VesselShowcase';
 import BelizeDiscovery from '@/components/home/BelizeDiscovery';
 import SunsetRitualCTA from '@/components/home/SunsetRitualCTA';
@@ -45,7 +44,7 @@ export default function Home() {
       <ConditionsWidget />
       <AdventureGrid />
       <FishStoryCreator />
-      {/* <StoryWall /> hidden: unverified testimonials */}
+      <StoryWall />
       <VesselShowcase />
       <BelizeDiscovery />
       <BelizeIntelligence />
