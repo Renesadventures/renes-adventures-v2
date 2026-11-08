@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 
 
@@ -404,7 +404,7 @@ export default function AdventureGrid() {
 
                       <div className="mt-1 text-sm text-slate-700">
 
-                        8 hours Â· Private charter Â· Larger groups welcome
+                        8 hours · Private charter · Larger groups welcome
 
                       </div>
 
