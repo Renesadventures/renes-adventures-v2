@@ -401,6 +401,8 @@ export default function CustomCharterPage() {
           open={contactOpen}
           summary={`René's Custom Adventure · ${isFullDay ? 'Full Day' : 'Half Day'} · ${guestCount} guest${guestCount === 1 ? '' : 's'}`}
           totalLabel={formatMoney(liveTotal)}
+          cardFeeLabel={formatMoney(serviceFee)}
+          noCardTotalLabel={formatMoney(liveTotal - serviceFee)}
           busy={checkoutLoading}
           error={checkoutError}
           onClose={() => setContactOpen(false)}
@@ -497,7 +499,7 @@ export default function CustomCharterPage() {
                     </div>
                   </div>
                   <div className="mt-5 grid gap-3">
-                    <button type="button" onClick={() => scrollTo('build-your-day')} className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition">Book Your Perfect Day</button>
+                    <button type="button" onClick={handleCheckout} disabled={checkoutLoading} className="h-14 rounded-2xl bg-amber-400 text-slate-950 font-black text-lg border border-black/15 hover:brightness-105 transition disabled:opacity-60">Book Your Perfect Day</button>
                     <button type="button" onClick={() => onOpenLia('Build me a perfect Custom Charter day in Belize.')} className="h-14 rounded-2xl border border-white/30 bg-white/10 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/15 transition">Talk to Lia</button>
                     <button type="button" onClick={onOpenWhatsAppLargeGroup} className="h-14 rounded-2xl border border-white/30 bg-white/5 text-white font-extrabold text-sm uppercase tracking-[0.25em] hover:bg-white/10 transition">Plan a Larger Group</button>
                   </div>
@@ -822,6 +824,9 @@ export default function CustomCharterPage() {
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Fuel Surcharge (10% of boat)</span><span>{formatMoney(fuel)}</span></div>
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Card Processing Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
+                <div className="mt-3 rounded-xl bg-emerald-500/15 border border-emerald-400/40 px-3 py-2 text-sm text-emerald-100">
+                  <b>Save {formatMoney(serviceFee)}:</b> pay with Venmo or cash and skip the 6% card fee ({formatMoney(liveTotal - serviceFee)} total). Message, call or email us to book that way.
+                </div>
 
                 <button onClick={handleCheckout} disabled={checkoutLoading} className="mt-4 w-full rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-60 text-black font-bold py-3 flex items-center justify-center gap-2 transition-all">
                   {checkoutLoading ? <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" /> : <>🔒 Secure Checkout</>}

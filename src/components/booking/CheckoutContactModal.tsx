@@ -17,6 +17,10 @@ interface Props {
   summary: string;
   /** Pre-formatted total, e.g. "$524.70" */
   totalLabel: string;
+  /** The 6% card fee, e.g. "$29.70" — shown as what they save with Venmo or cash. */
+  cardFeeLabel?: string;
+  /** Total without the card fee, e.g. "$495.00". */
+  noCardTotalLabel?: string;
   busy?: boolean;
   error?: string | null;
   onClose: () => void;
@@ -28,7 +32,7 @@ interface Props {
  * reach them. Without it, a guest who closes the payment page is a stranger
  * we can never call back.
  */
-export default function CheckoutContactModal({ open, summary, totalLabel, busy, error, onClose, onSubmit }: Props) {
+export default function CheckoutContactModal({ open, summary, totalLabel, cardFeeLabel, noCardTotalLabel, busy, error, onClose, onSubmit }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -115,7 +119,14 @@ export default function CheckoutContactModal({ open, summary, totalLabel, busy, 
           className="mt-5 w-full rounded-full bg-amber-400 px-6 py-4 text-base font-extrabold text-black hover:bg-amber-300 disabled:opacity-60">
           {busy ? 'Opening secure payment…' : `Continue to payment · ${totalLabel}`}
         </button>
-        <p className="mt-2 text-center text-xs text-slate-500">Prefer Venmo or cash (no 6% card fee)? Message us on WhatsApp.</p>
+        <div className="mt-4 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          <b>Save {cardFeeLabel || 'the 6% card fee'}:</b> pay with Venmo or cash instead of a card{noCardTotalLabel ? ` (${noCardTotalLabel} total)` : ''}. Venmo is paid when you book.
+          <div className="mt-2 flex flex-wrap gap-2">
+            <a href="https://wa.me/5016060170?text=Hi%20Ren%C3%A9%2C%20I%27d%20like%20to%20book%20and%20pay%20with%20Venmo%20or%20cash." target="_blank" rel="noopener noreferrer" className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white">WhatsApp</a>
+            <a href="tel:+5016060170" className="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-300">Call +501 606-0170</a>
+            <a href="mailto:renesadventuresbz@gmail.com?subject=Booking%20with%20Venmo%20or%20cash" className="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-300">Email</a>
+          </div>
+        </div>
       </form>
     </div>
   );
