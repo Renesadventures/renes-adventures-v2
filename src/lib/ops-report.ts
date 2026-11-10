@@ -96,7 +96,36 @@ export interface TodoRow {
   callable: boolean;
 }
 
+export type RangeKey = 'today' | '7' | '30' | '90' | 'all';
+export const RANGES: { key: RangeKey; label: string }[] = [
+  { key: 'today', label: 'Today' },
+  { key: '7', label: '7 days' },
+  { key: '30', label: '30 days' },
+  { key: '90', label: '90 days' },
+  { key: 'all', label: 'All time' },
+];
+export function rangeLabel(r: RangeKey): string {
+  return r === 'all' ? 'all time' : r === 'today' ? 'today' : `the last ${r} days`;
+}
+
+export interface HistoryRow {
+  month: string;
+  visits: number;
+  enquiries: number;
+  toPayment: number;
+  abandoned: number;
+  paid: number;
+  money: number;
+  siteChanges: number;
+  milestones: number;
+  posts: number;
+}
+
 export interface Report {
+  range: RangeKey;
+  moneyRange: number;
+  history: HistoryRow[];
+  work: { at: string; kind: string; summary: string }[];
   generatedAt: string;
   day: string;
   errors: string[];
@@ -161,10 +190,10 @@ async function stripeTotals(errors: string[]): Promise<{ today: number | null; m
   }, { today: null, month: null });
 }
 
-export async function buildReport(view: 'owner' | 'full'): Promise<Report> {
+export async function buildReport(view: 'owner' | 'full', range: RangeKey = '30'): Promise<Report> {
   const errors: string[] = [];
   const today0 = dayStartUtc(0);
-  const d30 = dayStartUtc(30);
+  const d30 = range === 'all' ? '2000-01-01 00:00:00' : range === 'today' ? dayStartUtc(0) : dayStartUtc(Number(range));
   const month0 = monthStartUtc();
   const todayStr = belizeDateStr();
 
@@ -196,6 +225,34 @@ export async function buildReport(view: 'owner' | 'full'): Promise<Report> {
     }, []),
     stripeTotals(errors),
   ]);
+
+  const [hist, work, moneyR] = await Promise.all([
+    safe('History', errors, () => q<Record<string, unknown>[]>('ops.event', 'read_group', [[], ['kind', 'value:sum'], ['occurred_at:month', 'kind']], { lazy: false, orderby: 'occurred_at:month desc' }), []),
+    safe('Work log', errors, () => q('ops.event', 'search_read', [[['kind', 'in', ['site_change', 'task_done', 'post_published']], ['occurred_at', '>=', d30]]], { fields: ['occurred_at', 'kind', 'summary'], order: 'occurred_at desc', limit: view === 'full' ? 120 : 30 }), []),
+    safe('Money in range', errors, () => q<{ value: number }[]>('ops.event', 'search_read', [[['kind', 'in', ['payment_succeeded', 'refund']], ['occurred_at', '>=', d30]]], { fields: ['value'] }), []),
+  ]);
+  const histMap = new Map<string, HistoryRow>();
+  for (const g of hist) {
+    const month = String(g['occurred_at:month'] || '');
+    if (!month) continue;
+    const row = histMap.get(month) || { month, visits: 0, enquiries: 0, toPayment: 0, abandoned: 0, paid: 0, money: 0, siteChanges: 0, milestones: 0, posts: 0 };
+    const n = Number(g.__count || 0);
+    const k = String(g.kind);
+    if (k === 'visit') row.visits += n;
+    if (['form_lead', 'guide_request', 'chat_handoff', 'contact_captured'].includes(k)) row.enquiries += n;
+    if (k === 'checkout_started') row.toPayment += n;
+    if (k === 'checkout_expired') row.abandoned += n;
+    if (k === 'payment_succeeded') {
+      row.paid += n;
+      row.money += Number(g.value || 0);
+    }
+    if (k === 'refund') row.money += Number(g.value || 0);
+    if (k === 'site_change') row.siteChanges += n;
+    if (k === 'task_done') row.milestones += n;
+    if (k === 'post_published') row.posts += n;
+    histMap.set(month, row);
+  }
+  const history = [...histMap.values()];
 
   const counts: Record<string, number> = {};
   for (const g of eventsToday) counts[g.kind] = g.__count;
@@ -333,6 +390,10 @@ export async function buildReport(view: 'owner' | 'full'): Promise<Report> {
   blindSpots.push({ what: 'Trips actually run, walk-ups and cash/Venmo payments', why: 'They never touch the website or Stripe.', fix: 'René logs each trip as a catch log (already required by Fisheries); cash/Venmo bookings get entered as a lead marked paid.' });
 
   return {
+    range,
+    moneyRange: moneyR.reduce((s, e) => s + (e.value || 0), 0),
+    history,
+    work: (work as Record<string, unknown>[]).map((w) => ({ at: String(w.occurred_at), kind: String(w.kind), summary: String(w.summary || '') })),
     generatedAt: new Date().toISOString(),
     day: todayStr,
     errors,

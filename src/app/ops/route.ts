@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyOpsLink, type OpsView } from '@/lib/ops-auth';
-import { buildReport, kindLabel, type Report } from '@/lib/ops-report';
+import { buildReport, kindLabel, rangeLabel, RANGES, type RangeKey, type Report } from '@/lib/ops-report';
 
 /**
  * GET /ops — Rene's Adventures end-of-day report ("Faro for Rene's").
@@ -53,7 +53,9 @@ export async function GET(req: NextRequest) {
 
   let report: Report;
   try {
-    report = await buildReport(link.v);
+    const rq = req.nextUrl.searchParams.get('r') as RangeKey | null;
+    const range: RangeKey = rq && RANGES.some((x) => x.key === rq) ? rq : '30';
+    report = await buildReport(link.v, range);
   } catch (e) {
     return new NextResponse(page('Report unavailable', `<div class="card"><h2>Lia Desk could not be reached</h2><p>${esc(e instanceof Error ? e.message : 'Unknown error')}</p><p>Try again in a minute.</p></div>`), { status: 503, headers: SECURITY_HEADERS });
   }
@@ -115,7 +117,7 @@ function assessment(r: Report): { text: string; moves: string[] } {
   if (moves.length < 3) moves.push('Post today\'s planned content and answer every comment within the hour.');
   const top = r.bySource30.find((s) => s.enquiries || s.paid);
   const text =
-    `Last 30 days: ${n0(visits)} visits, ${n0(enquiries)} enquiries, ${n0(toPay)} sent to payment, ${n0(paid)} paid (${money(r.moneyMonth)} this month in Lia Desk` +
+    `${rangeLabel(r.range).replace(/^./, (c) => c.toUpperCase())}: ${n0(visits)} visits, ${n0(enquiries)} enquiries, ${n0(toPay)} sent to payment, ${n0(paid)} paid (${money(r.moneyRange)} in this period, ${money(r.moneyMonth)} this month in Lia Desk` +
     (r.stripeMonth !== null ? `; Stripe shows ${money(r.stripeMonth)}` : '') + '). ' +
     (top ? `Best source so far: ${top.source}. ` : 'Not enough tracked traffic yet to name a best source. ') +
     (paid === 0 ? 'The site is not converting yet; the booking fix (contact before payment) is the first lever.' : '');
@@ -132,6 +134,8 @@ function render(r: Report, view: OpsView, who: string): string {
   const out: string[] = [];
 
   out.push(`<header><div class="brand">Rene's Adventures</div><h1>Today · ${esc(new Date(r.day + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }))}</h1><div class="sub">Belize time · updated ${esc(updated)} · for ${esc(who)}${view === 'full' ? ' · full view' : ''}</div></header>`);
+
+  out.push(`<nav class="ranges">${RANGES.map((x) => `<a href="/ops?r=${x.key}" class="${x.key === r.range ? 'on' : ''}">${esc(x.label)}</a>`).join('')}</nav>`);
 
   if (r.errors.length) {
     out.push(`<div class="warn">Some sources didn't answer: ${r.errors.map(esc).join(' · ')}. Everything else is current.</div>`);
@@ -195,7 +199,7 @@ function render(r: Report, view: OpsView, who: string): string {
       ['Paid', r.counts30.payment_succeeded || 0],
     ];
     const max = Math.max(1, ...steps.map((s) => s[1]));
-    out.push(`<section class="card"><h2>Funnel · last 30 days</h2>${steps.map(([l, v], i) => {
+    out.push(`<section class="card"><h2>Funnel · ${esc(rangeLabel(r.range))}</h2>${steps.map(([l, v], i) => {
       const prev = i ? steps[i - 1][1] : 0;
       const rate = i && prev ? ` <span class="small">${Math.round((v / prev) * 100)}% of previous</span>` : '';
       return `<div class="fn"><div class="fl">${esc(l)}</div><div class="fb"><span style="width:${Math.max(2, (v / max) * 100)}%"></span></div><div class="fv">${n0(v)}${rate}</div></div>`;
@@ -214,6 +218,18 @@ function render(r: Report, view: OpsView, who: string): string {
 
     // ---- Activity feed ----
     out.push(`<section class="card"><details><summary><b>Latest activity</b> (${r.feed.length})</summary><ul class="feed">${r.feed.map((f) => `<li><span class="small">${esc(belizeTime(f.at))}</span> ${esc(kindLabel(f.kind))}${f.summary ? ` · ${esc(f.summary)}` : ''}${f.source ? ` <span class="small">(${esc(f.source)})</span>` : ''}${f.value ? ` · ${money(f.value)}` : ''}</li>`).join('')}</ul></details></section>`);
+  }
+
+  // ---- History (everything Lia Desk knows, month by month) ----
+  if (r.history.length) {
+    const tot = r.history.reduce((a, h) => ({ visits: a.visits + h.visits, enquiries: a.enquiries + h.enquiries, toPayment: a.toPayment + h.toPayment, abandoned: a.abandoned + h.abandoned, paid: a.paid + h.paid, money: a.money + h.money, siteChanges: a.siteChanges + h.siteChanges, milestones: a.milestones + h.milestones, posts: a.posts + h.posts }), { visits: 0, enquiries: 0, toPayment: 0, abandoned: 0, paid: 0, money: 0, siteChanges: 0, milestones: 0, posts: 0 });
+    out.push(`<section class="card"><h2>History · month by month</h2><p class="small">Back-filled from Stripe (every payment attempt since the start), the website's change history and the work log. Website visits and enquiry sources are only tracked from Nov 9, 2026.</p><div class="scroll"><table><thead><tr><th>Month</th><th>Sent to payment</th><th>Abandoned</th><th>Paid</th><th>$ in</th><th>Site changes</th><th>Work done</th><th>Posts</th><th>Visits</th><th>Enquiries</th></tr></thead><tbody>${r.history.map((h) => `<tr><td>${esc(h.month)}</td><td>${n0(h.toPayment)}</td><td>${n0(h.abandoned)}</td><td>${n0(h.paid)}</td><td>${h.money ? money(h.money) : ''}</td><td>${n0(h.siteChanges)}</td><td>${n0(h.milestones)}</td><td>${n0(h.posts)}</td><td>${n0(h.visits)}</td><td>${n0(h.enquiries)}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td>${n0(tot.toPayment)}</td><td>${n0(tot.abandoned)}</td><td>${n0(tot.paid)}</td><td>${money(tot.money)}</td><td>${n0(tot.siteChanges)}</td><td>${n0(tot.milestones)}</td><td>${n0(tot.posts)}</td><td>${n0(tot.visits)}</td><td>${n0(tot.enquiries)}</td></tr></tbody></table></div></section>`);
+  }
+
+  // ---- Work delivered in the range ----
+  if (r.work.length) {
+    const label = (k: string) => (k === 'site_change' ? 'Website' : k === 'post_published' ? 'Post' : 'Work');
+    out.push(`<section class="card"><details${view === 'full' ? ' open' : ''}><summary><b>Work delivered · ${esc(rangeLabel(r.range))}</b> (${r.work.length})</summary><ul class="feed">${r.work.map((w) => `<li><span class="small">${esc(w.at.slice(0, 10))}</span> <span class="tag">${label(w.kind)}</span> ${esc(w.summary)}</li>`).join('')}</ul></details></section>`);
   }
 
   // ---- Assessment ----
@@ -246,6 +262,6 @@ h1{margin:6px 0 2px;font-size:24px}.sub{opacity:.8;font-size:13px}main{max-width
 .warn{background:#fff4d6;color:#7a5200;border-radius:10px;padding:10px 12px;margin:12px 0;font-size:14px}
 ul{padding-left:20px;margin:6px 0}.brief li{margin:4px 0}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:6px 4px;border-bottom:1px solid rgba(127,127,127,.2)}
 .fn{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:center;margin:6px 0;font-size:14px}.fb{background:rgba(127,127,127,.15);border-radius:6px;height:12px}.fb span{display:block;height:12px;border-radius:6px;background:var(--gold)}
-summary{cursor:pointer;padding:4px 0}.blind{padding:8px 0;border-top:1px solid rgba(127,127,127,.2)}.feed li{margin:3px 0}
+summary{cursor:pointer;padding:4px 0}.blind{padding:8px 0;border-top:1px solid rgba(127,127,127,.2)}.feed li{margin:3px 0}.ranges{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.ranges a{padding:6px 12px;border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;border:1px solid rgba(127,127,127,.3)}.ranges a.on{background:var(--gold);color:#000;font-weight:700}.scroll{overflow-x:auto}.tot td{font-weight:800}.tag{font-size:11px;font-weight:700;background:rgba(127,127,127,.15);border-radius:6px;padding:1px 6px}
 </style></head><body><main>${body}</main></body></html>`;
 }
