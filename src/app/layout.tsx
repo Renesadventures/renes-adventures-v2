@@ -9,6 +9,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import Analytics from '@/components/analytics/Analytics';
 import OutboundTracker from '@/components/analytics/OutboundTracker';
 import OpsTracker from '@/components/analytics/OpsTracker';
+import MessageReneFallback from '@/components/contact/MessageReneFallback';
 import { socialSameAs } from '@/data/social';
 import './globals.css';
 
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Analytics />
         <OutboundTracker />
         <OpsTracker />
+        <MessageReneFallback />
         <AppSoundShell>
           <SiteNav />
           <div className='mx-auto w-full max-w-screen-2xl'>{children}</div>
