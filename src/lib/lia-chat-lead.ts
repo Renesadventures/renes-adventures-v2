@@ -87,6 +87,7 @@ export async function captureChatLead(
     .join('\n');
 
   const result = await createLead({
+    eventKind: 'chat_handoff',
     name: name || email || phone || 'Lia chat guest',
     email,
     phone,

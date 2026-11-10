@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     // Lia Desk — the system of record.
     try {
       const lead = await createLead({
+    eventKind: 'guide_request',
         name: name || email,
         email,
         interest: tourTitle || 'Luxury brochure',

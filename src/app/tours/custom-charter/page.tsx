@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import CheckoutContactModal, { type CheckoutContact } from '@/components/booking/CheckoutContactModal';
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -316,10 +317,13 @@ export default function CustomCharterPage() {
   const extraGuests = useMemo(() => Math.max(0, guestCount - includedGuests) * 75, [guestCount, includedGuests]);
   const addOnsTotal = useMemo(() => ADDONS.reduce((s, a) => s + a.price * addOnQty[a.id], 0), [addOnQty]);
   const subtotal = useMemo(() => basePrice + extraGuests + addOnsTotal, [addOnsTotal, basePrice, extraGuests]);
-  // Sequential tax per Chris Carter 3/9/2026: 12.5% on base, then 6% on base+tax
-  const tax = useMemo(() => subtotal * 0.125, [subtotal]);
-  const subtotalAfterTax = useMemo(() => subtotal + tax, [subtotal, tax]);
-  const serviceFee = useMemo(() => subtotalAfterTax * 0.06, [subtotalAfterTax]);
+  // Chris: 10% fuel on the boat (base charter) BEFORE tax; then 12.5% tax; then 6% card fee.
+  // Must match src/lib/checkout-catalog.ts, which is what Stripe actually charges.
+  const cents = (n: number) => Math.round(n * 100) / 100;
+  const fuel = useMemo(() => cents(basePrice * 0.1), [basePrice]);
+  const tax = useMemo(() => cents((subtotal + fuel) * 0.125), [subtotal, fuel]);
+  const subtotalAfterTax = useMemo(() => subtotal + fuel + tax, [subtotal, fuel, tax]);
+  const serviceFee = useMemo(() => cents(subtotalAfterTax * 0.06), [subtotalAfterTax]);
   const liveTotal = useMemo(() => subtotalAfterTax + serviceFee, [subtotalAfterTax, serviceFee]);
 
   const selectedActivityList = useMemo(() => activities.filter((a) => selectedActivities[a.id]), [activities, selectedActivities]);
@@ -354,13 +358,22 @@ export default function CustomCharterPage() {
   }
 
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  async function handleCheckout() {
+  const [contactOpen, setContactOpen] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  // Step 1: who is coming (so René can reach them even if they don't finish paying).
+  function handleCheckout() {
+    setCheckoutError(null);
+    setContactOpen(true);
+  }
+  // Step 2: the secure payment page.
+  async function submitCheckout(contact: CheckoutContact) {
     setCheckoutLoading(true);
+    setCheckoutError(null);
     try {
-      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lineItems: buildLineItems(), guestCount, duration: isFullDay ? 'Full Day' : 'Half Day', tourName: "Rene's Custom Adventure" }) });
+      const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lineItems: buildLineItems(), guestCount, duration: isFullDay ? 'Full Day' : 'Half Day', tourName: "Rene's Custom Adventure", contact }) });
       const data = await res.json();
-      if (data.url) { window.location.href = data.url; } else { alert('Checkout failed: ' + (data.error ?? 'Unknown error')); }
-    } catch { alert('Network error — please try again.'); } finally { setCheckoutLoading(false); }
+      if (data.url) { window.location.href = data.url; } else { setCheckoutError(data.error ?? 'Checkout failed. Please try again.'); }
+    } catch { setCheckoutError('Network error — please try again.'); } finally { setCheckoutLoading(false); }
   }
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -384,6 +397,15 @@ export default function CustomCharterPage() {
       </nav>
 
       <main className="min-h-screen bg-gradient-to-b from-[#F0FDFF] via-white to-[#FFF7ED] text-slate-900 pb-24">
+        <CheckoutContactModal
+          open={contactOpen}
+          summary={`René's Custom Adventure · ${isFullDay ? 'Full Day' : 'Half Day'} · ${guestCount} guest${guestCount === 1 ? '' : 's'}`}
+          totalLabel={formatMoney(liveTotal)}
+          busy={checkoutLoading}
+          error={checkoutError}
+          onClose={() => setContactOpen(false)}
+          onSubmit={submitCheckout}
+        />
 
         {/* ── HERO ── */}
         <section id="overview" className="relative">
@@ -797,6 +819,7 @@ export default function CustomCharterPage() {
 
                 <hr className="border-white/10 my-3" />
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Subtotal</span><span>{formatMoney(subtotal)}</span></div>
+                <div className="flex justify-between text-sm text-white/80 mt-1"><span>Fuel Surcharge (10% of boat)</span><span>{formatMoney(fuel)}</span></div>
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Belize Sales Tax (12.5%)</span><span>{formatMoney(tax)}</span></div>
                 <div className="flex justify-between text-sm text-white/80 mt-1"><span>Card Processing Fee (6%)</span><span>{formatMoney(serviceFee)}</span></div>
 

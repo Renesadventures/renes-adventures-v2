@@ -370,6 +370,7 @@ export default function BelizeIntelligence() {
           guestCount: 1,
           duration: 'N/A',
           tourName: 'Belize Survival Kit',
+          contact: { name: name.trim(), email: email.trim(), phone: phone.trim() || undefined, tripDate: visitDate || undefined, marketingOk: false },
         }),
       });
 

@@ -8,6 +8,7 @@ import LiaChatWidget from '@/components/ai/LiaChatWidget';
 import JsonLd from '@/components/seo/JsonLd';
 import Analytics from '@/components/analytics/Analytics';
 import OutboundTracker from '@/components/analytics/OutboundTracker';
+import OpsTracker from '@/components/analytics/OpsTracker';
 import { socialSameAs } from '@/data/social';
 import './globals.css';
 
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* Measurement. Renders nothing unless the IDs are set. */}
         <Analytics />
         <OutboundTracker />
+        <OpsTracker />
         <AppSoundShell>
           <SiteNav />
           <div className='mx-auto w-full max-w-screen-2xl'>{children}</div>

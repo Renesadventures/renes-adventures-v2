@@ -1,3 +1,5 @@
+import { sendOpsEvent, type OpsClientKind } from '@/lib/analytics/ops-client';
+
 /**
  * The measurement layer. Before this file, nothing on this website was
  * measured — no analytics, no advertising pixel, nothing. Facebook ads had
@@ -50,6 +52,16 @@ export const EVENTS = {
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
+
+/** Browser events that are also written to Lia Desk's activity log. */
+const OPS_KIND: Partial<Record<EventName, OpsClientKind>> = {
+  [EVENTS.CHAT_OPENED]: 'chat_opened',
+  [EVENTS.CHAT_MESSAGE]: 'chat_message',
+  [EVENTS.CHAT_HANDOFF]: 'chat_handoff',
+  [EVENTS.WHATSAPP_CLICK]: 'whatsapp_click',
+  [EVENTS.PHONE_CLICK]: 'phone_click',
+  [EVENTS.BOOKING_STARTED]: 'booking_started',
+};
 
 /**
  * Meta's standard event names. Using the standard names where one fits means
@@ -107,6 +119,16 @@ export function newEventId(): string {
 export function track(name: EventName, payload: TrackPayload = {}): string {
   const eventId = typeof payload.eventId === 'string' ? payload.eventId : newEventId();
   if (typeof window === 'undefined') return eventId;
+
+  // Lia Desk is the source of truth: the funnel events go there too.
+  const opsKind = OPS_KIND[name];
+  if (opsKind) {
+    sendOpsEvent(opsKind, {
+      page: typeof payload.page === 'string' ? payload.page : undefined,
+      item: typeof payload.item === 'string' ? payload.item : undefined,
+      value: typeof payload.value === 'number' ? payload.value : undefined,
+    });
+  }
 
   try {
     window.gtag?.('event', name, { ...payload, event_id: eventId });
