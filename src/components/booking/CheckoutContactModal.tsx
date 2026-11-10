@@ -53,7 +53,7 @@ export default function CheckoutContactModal({ open, summary, totalLabel, busy, 
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return setLocalError('Please tell us your name.');
-    if (!email.trim() && !phone.trim()) return setLocalError('Please leave an email or a WhatsApp number so René can reach you.');
+    if (!email.trim() && !phone.trim()) return setLocalError('Please leave an email or a phone number so René can reach you.');
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) return setLocalError('That email address looks incomplete.');
     setLocalError(null);
     onSubmit({
@@ -90,7 +90,7 @@ export default function CheckoutContactModal({ open, summary, totalLabel, busy, 
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email"
             className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:border-amber-500 focus:outline-none" />
         </label>
-        <label className="mt-3 block text-sm font-semibold">WhatsApp number <span className="font-normal text-slate-500">(email or WhatsApp, at least one)</span>
+        <label className="mt-3 block text-sm font-semibold">Phone number <span className="font-normal text-slate-500">(WhatsApp if you have it; email or phone, at least one)</span>
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" inputMode="tel" placeholder="+1 555 123 4567"
             className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:border-amber-500 focus:outline-none" />
         </label>

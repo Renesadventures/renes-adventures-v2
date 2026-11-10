@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Please tell us your name.' }, { status: 400 });
   }
   if (!email && !phone) {
-    return NextResponse.json({ error: 'Please leave an email or a WhatsApp number so René can reach you.' }, { status: 400 });
+    return NextResponse.json({ error: 'Please leave an email or a phone number so René can reach you.' }, { status: 400 });
   }
   if (email && !EMAIL_RE.test(email)) {
     return NextResponse.json({ error: 'That email address looks incomplete.' }, { status: 400 });
