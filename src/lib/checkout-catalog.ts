@@ -31,7 +31,17 @@ export const CATALOG: Record<string, CatalogItem> = {
   'Belize Survival Kit': { amount: 2000, boat: false },
 };
 
-/** Chris: 10% fuel on the boat price, added BEFORE tax. */
+/**
+ * Chris: 10% fuel on the boat price, added BEFORE tax.
+ *
+ * Belize fuel is up about 27% year on year and the charter prices were set
+ * before that, so the difference is passed through as its own named line.
+ * This is the ONE place the rate lives: the booking page, /api/checkout and
+ * the staff invoice tool (src/app/admin/invoice) all read it from here, so
+ * changing the percentage is a one-line edit and nothing can drift.
+ * On the website it rides on the boat lines only; on a staff invoice every
+ * line is the charter, so there it rides on the whole subtotal.
+ */
 export const FUEL_RATE = 0.1;
 /** Belize sales tax (GST). */
 export const TAX_RATE = 0.125;

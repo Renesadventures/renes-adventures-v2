@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { FUEL_RATE } from '@/lib/checkout-catalog';
 
 const BRAND = {
   teal: '#0d9488',
@@ -9,6 +10,10 @@ const BRAND = {
   text: '#f1f5f9',
   muted: '#94a3b8',
 };
+
+// The rate itself lives in src/lib/checkout-catalog.ts, the one place the
+// website and this tool both read it from. Only the wording is built here.
+const FUEL_LABEL = `Fuel surcharge (${Math.round(FUEL_RATE * 100)}%)`;
 
 interface LineItem {
   id: string;
@@ -28,6 +33,8 @@ export default function AdminInvoicePage() {
   const [email, setEmail] = useState('');
   const [memo, setMemo] = useState('');
   const [items, setItems] = useState<LineItem[]>([newItem()]);
+  // On by default - fuel is up about 27% and the prices were set before that.
+  const [fuelSurcharge, setFuelSurcharge] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ total: string; url: string } | null>(null);
   const [error, setError] = useState('');
@@ -50,11 +57,17 @@ export default function AdminInvoicePage() {
   function addItem() { setItems(prev => [...prev, newItem()]); }
   function removeItem(id: string) { setItems(prev => prev.filter(i => i.id !== id)); }
 
+  // The same arithmetic the server does, so what the staff member approves is
+  // what Stripe bills. The surcharge is a line item, so the tax and the card
+  // fee both charge on it. Stripe tax rates do NOT compound - each one is
+  // charged on the invoice subtotal - so the fee is 6% of the same base as the
+  // tax, not 6% of base + tax.
   const subtotal = items.reduce((s, i) => s + (parseFloat(i.amount) || 0), 0);
-  const tax = subtotal * 0.125;
-  const afterTax = subtotal + tax;
-  const fee = afterTax * 0.06;
-  const total = afterTax + fee;
+  const fuel = fuelSurcharge ? Math.round(subtotal * FUEL_RATE * 100) / 100 : 0;
+  const taxed = subtotal + fuel;
+  const tax = taxed * 0.125;
+  const fee = taxed * 0.06;
+  const total = taxed + tax + fee;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,13 +76,15 @@ export default function AdminInvoicePage() {
       const res = await fetch('/api/invoice/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
-        body: JSON.stringify({ name, email, memo, items }),
+        // Only WHETHER the surcharge applies - the server prices it.
+        body: JSON.stringify({ name, email, memo, items, fuelSurcharge }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Invoice failed');
       setResult({ total: data.total, url: data.invoiceUrl });
       setName(''); setEmail(''); setMemo('');
       setItems([newItem()]);
+      setFuelSurcharge(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -180,6 +195,23 @@ export default function AdminInvoicePage() {
               </button>
             </section>
 
+            {/* Fuel surcharge */}
+            <section style={{ ...sectionStyle, marginTop: 12 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={fuelSurcharge}
+                  onChange={e => setFuelSurcharge(e.target.checked)}
+                  style={{ width: 18, height: 18, accentColor: BRAND.teal, cursor: 'pointer' }}
+                />
+                <span style={{ color: BRAND.text, fontSize: '0.95rem', fontWeight: 600 }}>{FUEL_LABEL}</span>
+              </label>
+              <p style={{ color: BRAND.muted, fontSize: '0.75rem', margin: '8px 0 0 28px' }}>
+                Its own line on the guest&apos;s invoice, 10% of the items above. Untick it for a
+                deposit, a goodwill gesture or a repeat guest.
+              </p>
+            </section>
+
             {/* Memo */}
             <section style={{ ...sectionStyle, marginTop: 12 }}>
               <h2 style={sectionTitleStyle}>Memo <span style={{ color: BRAND.muted, fontWeight: 400 }}>(optional)</span></h2>
@@ -191,6 +223,9 @@ export default function AdminInvoicePage() {
             <section style={{ ...sectionStyle, marginTop: 12, fontSize: '0.9rem' }}>
               <h2 style={sectionTitleStyle}>Total Preview</h2>
               <div style={rowStyle}><span style={{ color: BRAND.muted }}>Subtotal</span><span style={{ color: BRAND.text }}>{fmt(subtotal)}</span></div>
+              {fuelSurcharge && (
+                <div style={rowStyle}><span style={{ color: BRAND.muted }}>{FUEL_LABEL}</span><span style={{ color: BRAND.text }}>{fmt(fuel)}</span></div>
+              )}
               <div style={rowStyle}><span style={{ color: BRAND.muted }}>Belize Sales Tax (12.5%)</span><span style={{ color: BRAND.text }}>{fmt(tax)}</span></div>
               <div style={rowStyle}><span style={{ color: BRAND.muted }}>Card Processing Fee (6%)</span><span style={{ color: BRAND.text }}>{fmt(fee)}</span></div>
               <div style={{ ...rowStyle, borderTop: `1px solid ${BRAND.border}`, paddingTop: 10, marginTop: 6 }}>
