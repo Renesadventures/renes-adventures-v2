@@ -236,6 +236,9 @@ async function recordAndDraft(opts: {
       `<p>${noteHtml(result.text)}</p>`,
       `<p style="color:#888"><small>Written by Lia (${result.model}). No prices quoted, no safety or weather answered.</small></p>`,
     ].join(''),
+    // Ping the team. A Facebook, Instagram or WhatsApp enquiry used to land
+    // here as a silent note, so a guest could write in and nobody was told.
+    { notify: true },
   );
 
   return {

@@ -333,6 +333,29 @@ export async function createLead(input: LeadInput): Promise<LeadResult> {
     if (isIsoDate(input.tripDate)) vals.date_deadline = input.tripDate;
 
     const leadId = (await ldCall('crm.lead', 'create', [vals])) as number;
+
+    // Tell the team the lead exists. Creating a record is not the same as
+    // telling a human, and without this a brand-new enquiry landed silently:
+    // only a guest's *second* contact ever pinged anybody. Swallowed on
+    // failure — a missed ping must never cost us the lead itself.
+    if (NOTIFY_PARTNER_IDS.length) {
+      try {
+        await ldCall('crm.lead', 'message_post', [[leadId]], {
+          body:
+            `<p><b>New enquiry</b> \u2014 ${escapeHtml(title)}</p><p>` +
+            `${escapeHtml(buildDescription(withSource)).replace(/\n/g, '<br/>')}</p>`,
+          message_type: 'comment',
+          subtype_xmlid: 'mail.mt_note',
+          partner_ids: NOTIFY_PARTNER_IDS,
+          body_is_html: true,
+        });
+      } catch (err) {
+        console.error('[liadesk] lead created but the team was not notified', {
+          leadId,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
     await logOpsEvent({
       kind: input.eventKind || 'form_lead',
       summary: `${input.interest || input.source || 'Enquiry'}: ${input.name}`,
