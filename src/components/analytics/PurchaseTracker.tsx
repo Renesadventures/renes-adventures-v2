@@ -36,7 +36,13 @@ export default function PurchaseTracker() {
     // here would be worse than none. Feed real revenue in later from the
     // Stripe webhook, which is the only place that knows what was actually
     // charged.
-    trackWithServer(EVENTS.PURCHASE, { item: 'charter booking', page: '/booking/success' });
+    // ref is the Stripe session id: the activity log keys the record on it, so
+    // a refresh or a second device writes one row, not three.
+    trackWithServer(EVENTS.PURCHASE, {
+      item: 'charter booking',
+      page: '/booking/success',
+      ref: sessionId,
+    });
   }, [params]);
 
   return null;

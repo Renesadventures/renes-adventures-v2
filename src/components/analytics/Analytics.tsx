@@ -3,9 +3,9 @@
 import Script from 'next/script';
 
 /**
- * Loads Google Analytics and the Meta pixel.
+ * Loads Google Analytics, the Meta pixel and the TikTok pixel.
  *
- * Both are optional. With no measurement ID and no pixel ID in the
+ * All three are optional. With no measurement ID and no pixel IDs in the
  * environment, this renders nothing at all and the site behaves exactly as it
  * did before — which is how it shipped for its whole life until now.
  *
@@ -16,8 +16,9 @@ import Script from 'next/script';
 export default function Analytics() {
   const ga = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const pixel = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const tiktok = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
 
-  if (!ga && !pixel) return null;
+  if (!ga && !pixel && !tiktok) return null;
 
   return (
     <>
@@ -66,6 +67,26 @@ export default function Analytics() {
             />
           </noscript>
         </>
+      ) : null}
+
+      {tiktok ? (
+        <Script id="tiktok-pixel" strategy="afterInteractive">
+          {`
+            !function(w,d,t){
+            w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
+            ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+            ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+            for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+            ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
+            ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;
+            ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};
+            var s=d.createElement("script");s.type="text/javascript",s.async=!0,s.src=r+"?sdkid="+e+"&lib="+t;
+            var a=d.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)};
+            ttq.load('${tiktok}');
+            ttq.page();
+            }(window,document,'ttq');
+          `}
+        </Script>
       ) : null}
     </>
   );

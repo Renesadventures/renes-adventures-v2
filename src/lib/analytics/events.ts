@@ -13,17 +13,18 @@ import { sendOpsEvent, type OpsClientKind } from '@/lib/analytics/ops-client';
  *  1. ONE LIST OF EVENTS. Every event this business cares about is named once,
  *     here. No string literals scattered through components. If it is not in
  *     EVENTS, it does not get sent.
- *  2. ONE CALL SITE SHAPE. track(EVENTS.x, {...}) goes to Google and to Meta
- *     together. A component never talks to gtag or fbq directly.
+ *  2. ONE CALL SITE SHAPE. track(EVENTS.x, {...}) goes to Google, to Meta and
+ *     to TikTok together. A component never talks to gtag, fbq or ttq
+ *     directly.
  *  3. SILENT WHEN UNCONFIGURED. No measurement ID, no pixel, no consent —
  *     every call is a no-op. Tracking must never be able to break the website
  *     or block a booking.
  *
- * On deduplication: the browser pixel and the server both report the valuable
- * events. Meta would count those twice, so every event carries an eventId that
- * both sides send. Meta keeps one. That is the whole trick, and getting it
- * wrong is the most common way a Conversions API setup quietly ruins its own
- * numbers.
+ * On deduplication: the browser pixels and the server both report the valuable
+ * events. Meta and TikTok would each count those twice, so every event carries
+ * an eventId that both sides send. They keep one. That is the whole trick, and
+ * getting it wrong is the most common way a server-side conversions setup
+ * quietly ruins its own numbers.
  */
 
 export const EVENTS = {
@@ -61,6 +62,15 @@ const OPS_KIND: Partial<Record<EventName, OpsClientKind>> = {
   [EVENTS.WHATSAPP_CLICK]: 'whatsapp_click',
   [EVENTS.PHONE_CLICK]: 'phone_click',
   [EVENTS.BOOKING_STARTED]: 'booking_started',
+  // A completed booking belongs in the activity log too. It is sent as its own
+  // kind rather than as 'payment_succeeded': the Stripe webhook owns that one,
+  // keyed on the Stripe session id, and it is the only thing that knows what
+  // was actually charged. A browser beacon writing the same kind would either
+  // collide with that key — making the webhook skip the lead update entirely —
+  // or add a second row and double the paid-booking count on /ops. So this
+  // records that the guest reached the confirmation page, and nothing about
+  // money.
+  [EVENTS.PURCHASE]: 'purchase',
 };
 
 /**
@@ -81,6 +91,25 @@ const META_NAME: Partial<Record<EventName, string>> = {
   [EVENTS.CONTENT_VIEW]: 'ViewContent',
 };
 
+/**
+ * TikTok's standard event names. Same reasoning as Meta's: a standard name is
+ * something TikTok can optimise delivery against, a custom one is much weaker.
+ * The names do not line up with Meta's — TikTok has no 'Lead', it has
+ * 'SubmitForm' — so this is a second map rather than a shared one.
+ */
+const TIKTOK_NAME: Partial<Record<EventName, string>> = {
+  [EVENTS.LEAD]: 'SubmitForm',
+  [EVENTS.CHAT_MESSAGE]: 'Contact',
+  [EVENTS.CHAT_HANDOFF]: 'Contact',
+  [EVENTS.WHATSAPP_CLICK]: 'Contact',
+  [EVENTS.PHONE_CLICK]: 'Contact',
+  [EVENTS.BOOKING_STARTED]: 'InitiateCheckout',
+  [EVENTS.CHECKOUT_STARTED]: 'InitiateCheckout',
+  [EVENTS.PURCHASE]: 'CompletePayment',
+  [EVENTS.BROCHURE]: 'Download',
+  [EVENTS.CONTENT_VIEW]: 'ViewContent',
+};
+
 export interface TrackPayload {
   /** US dollars, not cents. Only on events where money is real. */
   value?: number;
@@ -97,6 +126,7 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
     fbq?: ((...args: unknown[]) => void) & { callMethod?: unknown; queue?: unknown[] };
+    ttq?: { track?: (...args: unknown[]) => void; page?: () => void };
     dataLayer?: unknown[];
   }
 }
@@ -127,6 +157,7 @@ export function track(name: EventName, payload: TrackPayload = {}): string {
       page: typeof payload.page === 'string' ? payload.page : undefined,
       item: typeof payload.item === 'string' ? payload.item : undefined,
       value: typeof payload.value === 'number' ? payload.value : undefined,
+      ref: typeof payload.ref === 'string' ? payload.ref : undefined,
     });
   }
 
@@ -151,6 +182,27 @@ export function track(name: EventName, payload: TrackPayload = {}): string {
     /* same */
   }
 
+  try {
+    const tiktokName = TIKTOK_NAME[name];
+    if (tiktokName && window.ttq?.track) {
+      const tiktokPayload: Record<string, unknown> = {};
+      if (typeof payload.value === 'number') {
+        tiktokPayload.value = payload.value;
+        tiktokPayload.currency = payload.currency || 'USD';
+      }
+      if (payload.item) {
+        tiktokPayload.content_name = payload.item;
+        tiktokPayload.content_type = 'product';
+      }
+      // event_id, not eventID: TikTok spells it differently from Meta, and a
+      // misspelt one is silently ignored — which means every conversion gets
+      // counted twice with nothing to show it is happening.
+      window.ttq.track(tiktokName, tiktokPayload, { event_id: eventId });
+    }
+  } catch {
+    /* same */
+  }
+
   return eventId;
 }
 
@@ -158,7 +210,8 @@ export function track(name: EventName, payload: TrackPayload = {}): string {
  * Report an event from the browser AND from our own server, sharing one
  * eventId. Use this for the events that matter commercially — a server-sent
  * copy survives ad blockers and Safari's tracking prevention, which is the
- * entire reason the Conversions API exists.
+ * entire reason the Meta Conversions API and the TikTok Events API exist. One
+ * POST to /api/track feeds both.
  *
  * Fire-and-forget: the caller is never made to wait, and a failure is logged
  * rather than surfaced.

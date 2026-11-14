@@ -2,6 +2,7 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { createLead, LEAD_SOURCES, type LeadInput, type LeadSource } from '@/lib/liadesk';
 import { draftAndAttach } from '@/lib/lia-brain/draft';
 import { sendCapiEvent, metaCookies, capiConfigured } from '@/lib/analytics/meta-capi';
+import { sendTikTokEvent, tiktokCookies, tiktokConfigured } from '@/lib/analytics/tiktok-events';
 
 /**
  * POST /api/crm/lead
@@ -106,29 +107,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, leadId: null, queued: false });
   }
 
-  // Tell Meta a real lead happened, from the server, with the guest's hashed
-  // email and phone attached. This is the best-matched event the site can
-  // produce — the browser pixel never sees a verified email — and it is what
-  // lets Meta find more people like the ones who actually enquire.
-  // The browser sends its own copy with the same eventId, so Meta keeps one.
-  if (capiConfigured()) {
-    const { fbp, fbc } = metaCookies(req.headers.get('cookie'));
+  // Tell Meta and TikTok a real lead happened, from the server, with the
+  // guest's hashed email and phone attached. This is the best-matched event the
+  // site can produce — the browser pixels never see a verified email — and it
+  // is what lets each platform find more people like the ones who actually
+  // enquire. The browser sends its own copy with the same eventId, so each
+  // platform keeps one. Both sends happen after the response, so a slow ad
+  // platform can never make a guest wait on a form.
+  const metaOn = capiConfigured();
+  const tiktokOn = tiktokConfigured();
+  if (metaOn || tiktokOn) {
+    const cookie = req.headers.get('cookie');
     const eventId = typeof body.eventId === 'string' ? body.eventId : `lead-${result.leadId ?? Date.now()}`;
+    const shared = {
+      eventId,
+      sourceUrl: clean(body.page, 300),
+      email: input.email,
+      phone: input.phone,
+      clientIp: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
+      userAgent: req.headers.get('user-agent') ?? undefined,
+      contentName: input.interest,
+    };
     after(async () => {
-      const sent = await sendCapiEvent({
-        name: 'Lead',
-        eventId,
-        sourceUrl: clean(body.page, 300),
-        email: input.email,
-        phone: input.phone,
-        firstName: input.name.split(' ')[0],
-        fbp,
-        fbc,
-        clientIp: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
-        userAgent: req.headers.get('user-agent') ?? undefined,
-        contentName: input.interest,
-      });
-      if (!sent.ok) console.error('[crm/lead] Conversions API rejected the lead event:', sent.error);
+      if (metaOn) {
+        const sent = await sendCapiEvent({
+          name: 'Lead',
+          firstName: input.name.split(' ')[0],
+          ...shared,
+          ...metaCookies(cookie),
+        });
+        if (!sent.ok) console.error('[crm/lead] Meta Conversions API rejected the lead event:', sent.error);
+      }
+      if (tiktokOn) {
+        // TikTok calls a form fill SubmitForm; there is no 'Lead' event there.
+        const sent = await sendTikTokEvent({
+          name: 'SubmitForm',
+          ...shared,
+          ...tiktokCookies(cookie),
+        });
+        if (!sent.ok) console.error('[crm/lead] TikTok Events API rejected the lead event:', sent.error);
+      }
     });
   }
 

@@ -16,7 +16,7 @@ import { logOpsEvent, type OpsKind } from '@/lib/liadesk';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const ALLOWED: Record<string, { kind: OpsKind; oncePer: 'session' | 'minute' | 'none' }> = {
+const ALLOWED: Record<string, { kind: OpsKind; oncePer: 'session' | 'minute' | 'ref'; note?: string }> = {
   visit: { kind: 'visit', oncePer: 'session' },
   chat_opened: { kind: 'chat_opened', oncePer: 'session' },
   chat_message: { kind: 'chat_message', oncePer: 'minute' },
@@ -24,6 +24,14 @@ const ALLOWED: Record<string, { kind: OpsKind; oncePer: 'session' | 'minute' | '
   whatsapp_click: { kind: 'whatsapp_click', oncePer: 'minute' },
   phone_click: { kind: 'phone_click', oncePer: 'minute' },
   booking_started: { kind: 'booking_started', oncePer: 'session' },
+  // The guest landing on the confirmation page after paying. Recorded as
+  // 'other', NOT 'payment_succeeded': the Stripe webhook owns that kind, keyed
+  // on the Stripe session id, and it is the only source that knows the real
+  // amount. If this public endpoint could write 'payment_succeeded' it would
+  // either steal the webhook's idempotency key — so the lead never gets marked
+  // paid — or add a second row and double every paid count on /ops. Keyed on
+  // the Stripe session id so a refresh or a second device writes once.
+  purchase: { kind: 'other', oncePer: 'ref', note: 'Booking confirmed on the website' },
 };
 
 /** Simple per-instance limit: 30 beacons per IP per minute. */
@@ -48,7 +56,7 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   if (limited(ip)) return NextResponse.json({ ok: true, skipped: 'rate' });
 
-  let body: { kind?: string; page?: string; item?: string; value?: number };
+  let body: { kind?: string; page?: string; item?: string; value?: number; ref?: string };
   try {
     body = JSON.parse(await req.text());
   } catch {
@@ -63,10 +71,12 @@ export async function POST(req: NextRequest) {
 
   const sid = attribution.sessionId || attribution.visitorId;
   const minute = new Date().toISOString().slice(0, 16);
+  const ref = typeof body.ref === 'string' ? body.ref.slice(0, 180) : undefined;
   const externalRef =
     rule.oncePer === 'session' ? `${sid}`
     : rule.oncePer === 'minute' ? `${sid}:${minute}`
-    : undefined;
+    : ref ? `web:${ref}`
+    : `${sid}`;
 
   const page = typeof body.page === 'string' ? body.page.slice(0, 200) : undefined;
   const item = typeof body.item === 'string' ? body.item.slice(0, 120) : undefined;
@@ -77,7 +87,9 @@ export async function POST(req: NextRequest) {
     const res = await logOpsEvent({
       kind: rule.kind,
       channel: 'website',
-      summary: [item, t ? `from ${t.source}` : undefined].filter(Boolean).join(' · ') || undefined,
+      summary:
+        [rule.note, item, t ? `from ${t.source}` : undefined].filter(Boolean).join(' · ') ||
+        undefined,
       page,
       value: typeof body.value === 'number' ? body.value : undefined,
       externalRef,

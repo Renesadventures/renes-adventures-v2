@@ -14,11 +14,12 @@ export type OpsClientKind =
   | 'whatsapp_click'
   | 'phone_click'
   | 'booking_started'
+  | 'purchase'
   | 'guide_view';
 
 export function sendOpsEvent(
   kind: OpsClientKind,
-  data: { page?: string; item?: string; value?: number } = {},
+  data: { page?: string; item?: string; value?: number; ref?: string } = {},
 ): void {
   if (typeof window === 'undefined') return;
   try {
@@ -27,6 +28,9 @@ export function sendOpsEvent(
       page: data.page || window.location.pathname,
       item: data.item,
       value: data.value,
+      // An id the caller owns (a Stripe session, say) so the same thing
+      // reported twice is written once.
+      ref: data.ref,
     });
     const blob = new Blob([body], { type: 'application/json' });
     if (navigator.sendBeacon && navigator.sendBeacon('/api/ops/event', blob)) return;
