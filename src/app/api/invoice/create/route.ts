@@ -4,10 +4,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 export const runtime = 'nodejs';
 
-const TAX_RATES = [
-  'txr_1T9BaWF2SeVntE6bt6TCL56G', // Belize Sales Tax 12.5%
-  'txr_1T9BayF2SeVntE6b1i1GCC5C', // Card Processing Fee 6%
-];
+/**
+ * Belize Sales Tax 12.5% and Card Processing Fee 6%, as Stripe tax rate ids.
+ *
+ * These ids belong to one Stripe account in one mode. A test-mode key cannot
+ * see a live-mode rate, so hardcoding them meant the invoice tool broke the
+ * moment anyone tried to test it — which is exactly when you least want a
+ * surprise. STRIPE_TAX_RATE_IDS (comma separated) overrides them, so the
+ * preview deployment can carry test-mode rates while production keeps these.
+ */
+const TAX_RATES = (process.env.STRIPE_TAX_RATE_IDS || '')
+  .split(',')
+  .map((id) => id.trim())
+  .filter(Boolean);
+
+if (!TAX_RATES.length) {
+  TAX_RATES.push(
+    'txr_1T9BaWF2SeVntE6bt6TCL56G', // Belize Sales Tax 12.5%
+    'txr_1T9BayF2SeVntE6b1i1GCC5C', // Card Processing Fee 6%
+  );
+}
 
 /** The guest reads this on the invoice, so it says the rate out loud. */
 const FUEL_DESCRIPTION = `Fuel surcharge (${Math.round(FUEL_RATE * 100)}%)`;

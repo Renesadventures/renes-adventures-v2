@@ -9,6 +9,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import Analytics from '@/components/analytics/Analytics';
 import OutboundTracker from '@/components/analytics/OutboundTracker';
 import OpsTracker from '@/components/analytics/OpsTracker';
+import TestModeBanner from '@/components/TestModeBanner';
 import MessageReneFallback from '@/components/contact/MessageReneFallback';
 import { socialSameAs } from '@/data/social';
 import './globals.css';
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}>
         <JsonLd data={organizationLd} />
         {/* Measurement. Renders nothing unless the IDs are set. */}
+        <TestModeBanner />
         <Analytics />
         <OutboundTracker />
         <OpsTracker />
