@@ -45,17 +45,24 @@ export async function POST(req: NextRequest) {
       ? existing.data[0]
       : await stripe.customers.create({ name, email });
 
-    // Add invoice items
+    // Build the lines first, in memory, and check them before Stripe sees
+    // anything. The old order created Stripe objects as it went, so a single
+    // bad number left half-made items behind on the customer.
+    const lines: { description: string; amount: number }[] = [];
     let subtotal = 0; // cents, the charter lines only
     for (const item of items) {
       const amount = Math.round(parseFloat(item.amount) * 100);
+      if (!Number.isFinite(amount) || amount <= 0) {
+        return NextResponse.json(
+          { error: `"${item.description || 'A line'}" has no usable amount.` },
+          { status: 400 },
+        );
+      }
       subtotal += amount;
-      await stripe.invoiceItems.create({
-        customer: customer.id,
-        amount,
-        currency: 'usd',
-        description: item.description,
-      });
+      lines.push({ description: String(item.description || 'Charter'), amount });
+    }
+    if (!lines.length) {
+      return NextResponse.json({ error: 'Add at least one line before sending.' }, { status: 400 });
     }
 
     // Fuel surcharge: 10% of the lines above, worked out HERE from those lines.
@@ -67,28 +74,54 @@ export async function POST(req: NextRequest) {
     // sale - and the guest sees a named line instead of a mystery tax.
     if (fuelSurcharge !== false) {
       const fuel = Math.round(subtotal * FUEL_RATE);
-      if (fuel > 0) {
-        await stripe.invoiceItems.create({
-          customer: customer.id,
-          amount: fuel,
-          currency: 'usd',
-          description: FUEL_DESCRIPTION,
-        });
-      }
+      if (fuel > 0) lines.push({ description: FUEL_DESCRIPTION, amount: fuel });
     }
 
-    // Create invoice with auto tax rates
+    // The invoice is created FIRST, empty, and every line is then attached to
+    // it by id.
+    //
+    // This is what sent a customer a $0 invoice. The old code made the items
+    // with only a customer id, which makes them *pending* items, and then
+    // called invoices.create without saying what to do with pending items.
+    // Since Stripe API 2022-11-15 the default for that is "exclude" - so the
+    // invoice went out carrying nothing, and the lines stayed on the customer
+    // waiting to ambush the next invoice.
+    //
+    // pending_invoice_items_behavior stays 'exclude' on purpose: it also stops
+    // any item orphaned by the old bug from silently landing on a new invoice.
     const invoice = await stripe.invoices.create({
       customer: customer.id,
       default_tax_rates: TAX_RATES,
       description: memo || undefined,
       collection_method: 'send_invoice',
       days_until_due: 1,
+      pending_invoice_items_behavior: 'exclude',
       metadata: { source: 'renes-adventures-staff-invoice' },
     });
+    if (!invoice.id) {
+      return NextResponse.json({ error: 'Stripe did not return an invoice id.' }, { status: 500 });
+    }
 
-    // Finalize and send
+    for (const line of lines) {
+      await stripe.invoiceItems.create({
+        customer: customer.id,
+        invoice: invoice.id,
+        amount: line.amount,
+        currency: 'usd',
+        description: line.description,
+      });
+    }
+
+    // Finalize, then refuse to send a zero invoice. A guest receiving a bill
+    // for $0.00 is worse than an error on our screen: it looks like a mistake
+    // they might be entitled to, and it has to be explained to them.
     const finalized = await stripe.invoices.finalizeInvoice(invoice.id);
+    if (!finalized.total || finalized.total <= 0) {
+      return NextResponse.json(
+        { error: 'The invoice came to $0.00, so nothing was sent. Check the amounts and try again.' },
+        { status: 500 },
+      );
+    }
     await stripe.invoices.sendInvoice(finalized.id);
 
     const total = finalized.total / 100;
