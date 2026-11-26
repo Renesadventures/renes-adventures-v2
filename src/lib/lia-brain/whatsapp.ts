@@ -99,6 +99,9 @@ export async function sendWhatsApp(
  * reply needs. Never gated — reading a message is not answering it.
  */
 export async function markRead(messageId: string): Promise<void> {
+  // Off by default: on a coexisting number a read receipt also clears the unread
+  // badge on Rene's phone, so he could miss a guest. Rene's Desk does the alerting.
+  if ((process.env.WHATSAPP_MARK_READ || '').toLowerCase() !== 'on') return;
   if (!whatsappConfigured() || !messageId) return;
   try {
     await fetch(`${GRAPH}/${phoneNumberId()}/messages`, {
