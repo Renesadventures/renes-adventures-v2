@@ -114,7 +114,7 @@ function soundsUnsure(text: string): boolean {
 
 /* ------------------------------------------------------------------ reply --- */
 
-export async function liaReply(input: LiaReplyInput): Promise<LiaReplyResult> {
+async function liaReplyGuarded(input: LiaReplyInput): Promise<LiaReplyResult> {
   const { channel, message, context, now = new Date() } = input;
   const history = input.history ?? [];
 
@@ -241,4 +241,14 @@ function fallbackResult(handoffs: Handoff[], _channel: LiaChannel): LiaReplyResu
     model: 'fallback',
     fallback: true,
   };
+}
+
+/**
+ * Lia's brain. Open mode by default (Eddy, 26 Nov 2026): full knowledge, real
+ * prices, her own judgement. LIA_MODE=guarded switches back to the old rules.
+ */
+export async function liaReply(input: LiaReplyInput): Promise<LiaReplyResult> {
+  if ((process.env.LIA_MODE || 'open').toLowerCase() === 'guarded') return liaReplyGuarded(input);
+  const { liaReplyOpen } = await import('./open');
+  return liaReplyOpen(input);
 }
