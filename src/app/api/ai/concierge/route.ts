@@ -18,6 +18,8 @@ import { liveLog, validChatId } from '@/lib/lia-live';
  */
 
 export const runtime = 'nodejs';
+// Lia's open brain reads the whole knowledge base; give the model room to answer.
+export const maxDuration = 60;
 
 const RequestSchema = z
   .object({

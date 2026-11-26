@@ -48,9 +48,11 @@ How a total is built (same maths as the booking page and Stripe):
 Worked examples, paying by card:
 - Half Day: ${usd(half.subtotal)} + fuel ${usd(half.fuel)} + tax ${usd(half.tax)} + card fee ${usd(half.cardFee)} = ${usd(half.total)}
 - Full Day with beach BBQ: ${usd(full.subtotal)} + fuel ${usd(full.fuel)} + tax ${usd(full.tax)} + card fee ${usd(full.cardFee)} = ${usd(full.total)}
-The base price covers a small group; "Additional Guest" is per extra person. If you are
-not sure how many guests the base price covers for their trip, say the team will confirm
-the exact total for their group — never invent it.
+The Half Day and Full Day base prices cover up to 4 guests. Each guest beyond 4 is an
+"Additional Guest" (boat line, so fuel applies), and on the Full Day each extra guest also
+adds "Beach BBQ – Extra Guest". The standard boat takes up to 8; for more, the team arranges
+a larger boat or a second boat and confirms the total. Never invent a total you can't build
+from this list.
 The Great Blue Hole is priced on request only (fuel and distance vary): never quote it.
 Hol Chan Marine Reserve ranger fee is paid at the reserve, not to us.
 Guests can book and pay on the website (tour page → Book) or ask for an invoice.`;
@@ -86,7 +88,7 @@ function persona(channel: LiaChannel): string {
       ? 'You are replying in a Facebook/Instagram/WhatsApp message on a phone: 1–4 short sentences, no walls of text.'
       : channel === 'email'
         ? 'You are drafting an email a person will review before sending. Up to four short paragraphs. Sign off as the Rene\'s Adventures team.'
-        : 'You are the chat on the Rene\'s Adventures website. Short paragraphs; a list is fine when it genuinely helps.';
+        : 'You are the chat on the Rene\'s Adventures website, on a phone-sized window. Keep replies short: 2–6 sentences, or a tight list only when they ask for a breakdown (like a price total). Offer more detail rather than dumping it.';
   return `You are Lia, the concierge for Rene's Adventures in San Pedro, Ambergris Caye, Belize.
 You are a brilliant, warm local who knows Belize inside out — the reef, the fish, the
 seasons, the weather patterns, where to stay, how to get here, where to eat, what kids
@@ -114,11 +116,13 @@ Only four lines you never cross:
 Getting them to a person — this is how bookings happen:
 - When a guest is ready to book or needs something only the team can confirm, ask for
   their name and WhatsApp number or email in the same message, if they haven't given it.
-- End that reply with a hidden line, exactly:
-  [[HANDOFF: <date|party_size|price|blue_hole|safety|weather|frustration|contact_shared|uncertain> | <one line telling the team what this guest wants>]]
+- End that reply with ONE hidden line in exactly this shape, choosing ONE reason word:
+  [[HANDOFF: date | Guest wants a full day on 12 March for 4, staying at Ramon's]]
+  Reason words: date, party_size, price, blue_hole, safety, weather, frustration, contact_shared, uncertain.
   Use it when: they want to book or check a date, the group is over 8, Blue Hole, a
   custom request, a complaint, they ask for a person, or they just gave contact details.
-  Never mention the tag. Do not use it for questions you can answer yourself.`;
+  Never mention the tag. Do NOT use it for general questions (what's San Pedro like, what's
+  biting in March, how much is a half day) — answer those yourself with no tag.`;
 }
 
 let KNOWLEDGE: string | null = null;
@@ -136,7 +140,7 @@ Prices inside articles were removed on purpose — use the PRICE LIST.\n\n${out}
   return KNOWLEDGE;
 }
 
-const TAG_RE = /\[\[\s*HANDOFF\s*:\s*([a-z_]+)\s*\|?\s*([^\]]*)\]\]/i;
+const TAG_RE = /\[\[\s*HANDOFF\s*:([\s\S]*?)\]\]/i;
 const REASONS: HandoffReason[] = ['date', 'party_size', 'price', 'blue_hole', 'safety', 'weather', 'frustration', 'contact_shared', 'uncertain'];
 
 function modelName(): string {
@@ -188,7 +192,7 @@ export async function liaReplyOpen(input: LiaReplyInput): Promise<LiaReplyResult
     })),
     { role: 'user' as const, content: cleanMessage },
   ];
-  const maxOut = channel === 'dm' ? 350 : channel === 'email' ? 700 : 600;
+  const maxOut = channel === 'dm' ? 300 : channel === 'email' ? 700 : 450;
 
   const openai = new OpenAI({ apiKey });
   let model = modelName();
@@ -211,10 +215,14 @@ export async function liaReplyOpen(input: LiaReplyInput): Promise<LiaReplyResult
 
   let handoffs: Handoff[] = [...deterministic];
   const m = raw.match(TAG_RE);
-  const text = raw.replace(TAG_RE, '').replace(/\[\[[^\]]*$/, '').trim();
+  // Strip every tag (and any half-written one) before the guest sees the text.
+  const text = raw.replace(/\[\[\s*HANDOFF[\s\S]*?\]\]/gi, '').replace(/\[\[\s*HANDOFF[\s\S]*$/i, '').trim();
   if (m) {
-    const reason = (REASONS.includes(m[1].toLowerCase() as HandoffReason) ? m[1].toLowerCase() : 'uncertain') as HandoffReason;
-    const label = (m[2] || '').trim() || 'Lia is handing this guest to the team';
+    const inner = m[1].trim();
+    const parts = inner.split('|').map((x) => x.trim()).filter(Boolean);
+    const word = (parts[0] || '').toLowerCase();
+    const reason = (REASONS.find((r) => word === r || word.startsWith(r)) || REASONS.find((r) => inner.toLowerCase().includes(r)) || 'uncertain') as HandoffReason;
+    const label = (parts.length > 1 ? parts[parts.length - 1].replace(/^<|>$/g, '') : inner).slice(0, 240) || 'Lia is handing this guest to the team';
     if (!handoffs.some((h) => h.reason === reason)) {
       handoffs.unshift({ reason, label, to: reason === 'safety' || reason === 'weather' ? TEAM.captain : TEAM.bookings, priority: 90 });
     }
