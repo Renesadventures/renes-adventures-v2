@@ -15,7 +15,7 @@ import { postLeadNote, noteHtml, updateLead } from '@/lib/liadesk';
  * the normal Stripe webhook finds the lead by its session and the Desk rings
  * "BOOKED".
  *
- * Auth: x-lia-key must equal LIA_INTERNAL_KEY.
+ * Auth: x-lia-key must equal DESK_KEY (or LIA_INTERNAL_KEY when DESK_KEY is not set).
  */
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -34,7 +34,7 @@ function same(a: string, b: string) {
 const clean = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/[<>]/g, '').trim().slice(0, max) : '');
 
 export async function POST(req: NextRequest) {
-  const key = process.env.LIA_INTERNAL_KEY || '';
+  const key = process.env.DESK_KEY || process.env.LIA_INTERNAL_KEY || '';
   if (!key || !same(req.headers.get('x-lia-key') || '', key)) {
     return NextResponse.json({ error: 'not allowed' }, { status: 401 });
   }
