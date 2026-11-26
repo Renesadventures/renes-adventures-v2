@@ -2,6 +2,7 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { z } from 'zod';
 import { captureChatLead } from '@/lib/lia-chat-lead';
 import { liaReply } from '@/lib/lia-brain';
+import { liveLog, validChatId } from '@/lib/lia-live';
 
 /**
  * The website chat.
@@ -31,6 +32,7 @@ const RequestSchema = z
       .optional()
       .default([]),
     context: z.unknown().optional(),
+    chatId: z.string().max(80).optional(),
   })
   .superRefine((val, ctx) => {
     const hasMessage = typeof val.message === 'string' && val.message.trim().length > 0;
@@ -81,6 +83,18 @@ export async function POST(request: NextRequest) {
       | { pageName?: string; selectedTour?: string }
       | undefined;
 
+    const chatId = validChatId(parsed.data.chatId);
+    const page = typeof rawContext?.pageName === 'string' ? rawContext.pageName : undefined;
+    // Lia live: log the guest's message first. If a person has taken over this
+    // chat from Rene's Desk, Lia stays quiet and the person's reply reaches the
+    // guest through /api/ai/concierge/updates.
+    if (chatId) {
+      const live = await liveLog({ key: chatId, guest: effectiveMessage, page });
+      if (live.human_active) {
+        return NextResponse.json({ message: '', human: true });
+      }
+    }
+
     const result = await liaReply({
       channel: 'web',
       history: messages,
@@ -103,6 +117,14 @@ export async function POST(request: NextRequest) {
 
     // Lead capture runs after the response, so the guest never waits on the CRM.
     after(async () => {
+      if (chatId) {
+        await liveLog({
+          key: chatId,
+          lia: result.text,
+          page,
+          handoff_summary: result.handoffs.length ? result.summary || result.handoffs.map((h) => h.reason).join('; ') : undefined,
+        });
+      }
       try {
         await captureChatLead(
           messages,
