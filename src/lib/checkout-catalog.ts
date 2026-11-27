@@ -20,7 +20,6 @@ export interface CatalogItem {
 export const CATALOG: Record<string, CatalogItem> = {
   "Rene's Custom Adventure – Half Day": { amount: 40000, boat: true },
   "Rene's Custom Adventure – Full Day (BBQ Included)": { amount: 67500, boat: true },
-  "Full Day Deep Sea Custom Charter with Beach BBQ": { amount: 90000, boat: true },
   'Additional Guest': { amount: 7500, boat: false },
   'Beach BBQ – Extra Guest': { amount: 2500, boat: false },
   'Snorkel Gear Rental': { amount: 1500, boat: false },
